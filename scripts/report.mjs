@@ -44,11 +44,11 @@ function summarize(events) {
       if (!earliest || ts < earliest) earliest = ts;
       if (!latest || ts > latest) latest = ts;
     }
-    if (e.type === "item_created") counts.items_attempted++;
-    if (e.type === "gate_passed") counts.gates_passed++;
-    if (e.type === "gate_failed") counts.gates_failed++;
-    if (e.type === "ratchet_rejected") counts.ratchet_rejections++;
-    if (e.type === "merged") {
+    if (e.event === "item_created") counts.items_attempted++;
+    if (e.event === "gate_passed") counts.gates_passed++;
+    if (e.event === "gate_failed") counts.gates_failed++;
+    if (e.event === "ratchet_rejected") counts.ratchet_rejections++;
+    if (e.event === "merged") {
       counts.merges++;
       counts.lines_changed += e.lines_changed || 0;
       counts.estimated_hours_saved += e.estimated_hours_saved || 0.5;
