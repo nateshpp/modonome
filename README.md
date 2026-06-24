@@ -21,8 +21,10 @@ Off by default. No central service.
 
 <p align="center">
   <a href="https://github.com/nateshpp/modonome/actions/workflows/ci.yml"><img src="https://github.com/nateshpp/modonome/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License" /></a>
   <a href="agentproof/README.md"><img src="https://img.shields.io/badge/AgentProof-16%2F16-brightgreen" alt="AgentProof 16/16" /></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/runtime%20dependencies-0-brightgreen" alt="Zero runtime dependencies" /></a>
+  <a href="https://github.com/nateshpp/modonome/commits"><img src="https://img.shields.io/github/last-commit/nateshpp/modonome" alt="Last commit" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License" /></a>
 </p>
 
 ---
