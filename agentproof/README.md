@@ -269,15 +269,15 @@ Open an issue to claim a scenario number before writing it.
 
 ---
 
-## Standards submissions
+## Standards alignment
 
-AgentProof is being proposed for adoption by:
+AgentProof is designed to align with the control requirements in:
 
-- **OWASP Agentic Working Group** as a reference test suite for the OWASP Top 10 for Agentic Applications
-- **OpenSSF Securing Software Repositories WG** as an anti-gaming ratchet conformance standard
-- **AAIF** as a governed autonomy benchmark
+- **OWASP Agentic Working Group**: the anti-gaming ratchet as a reference for assertion and test-integrity gates in the Top 10 for Agentic Applications
+- **OpenSSF Securing Software Repositories WG**: drift guard and config validation as supply-chain automation safety controls
+- **AAIF**: a governed autonomy benchmark
 
-To collaborate on a submission, open an issue at `github.com/nateshpp/modonome`.
+If your working group wants to integrate or extend AgentProof, open an issue at `github.com/nateshpp/modonome`.
 
 ---
 

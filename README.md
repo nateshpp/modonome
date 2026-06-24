@@ -21,14 +21,13 @@ Off by default. No central service.
 
 <p align="center">
   <a href="https://github.com/nateshpp/modonome/actions/workflows/ci.yml"><img src="https://github.com/nateshpp/modonome/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
-  <a href="https://www.npmjs.com/package/modonome"><img src="https://img.shields.io/npm/v/modonome" alt="npm" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License" /></a>
   <a href="agentproof/README.md"><img src="https://img.shields.io/badge/AgentProof-16%2F16-brightgreen" alt="AgentProof 16/16" /></a>
 </p>
 
 ---
 
-Autonomous coding agents have a predictable failure mode: they weaken gates to go green (removing test assertions, adding skips, loosening type checks). Modonome is the first tool to make that structurally impossible. The ratchet that blocks it runs in CI, in code the agent cannot edit. [We published the specification](GOVERNED-AUTONOMY-SPEC.md) and Modonome is the reference implementation, scoring **[16/16 on AgentProof](agentproof/README.md)**.
+Autonomous coding agents can weaken gates to go green (removing test assertions, adding skips, loosening type checks). Modonome blocks this pattern structurally: the ratchet that prevents it runs in CI, in code the agent cannot edit. The specification is published as [GOVERNED-AUTONOMY-SPEC.md](GOVERNED-AUTONOMY-SPEC.md), and Modonome is a reference implementation, scoring **[16/16 on AgentProof](agentproof/README.md)**.
 
 ## Try it in 60 seconds (changes nothing)
 
