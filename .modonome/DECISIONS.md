@@ -10,25 +10,18 @@ Every decision defaults to hold when unanswered.
     prompts, templates, .github) owner-reviewed. See docs/adr/ADR-001.
   resolved: 2026-06-24
 
-## Open
-
 - id: shadow-mode-implementation-timing
   question: Implement shadow mode in v0.2 or keep as a later milestone?
-  decision: ADR-002 says v0.2. Confirm when v0.2 scope is finalized.
-  options:
-    - v02: Implement --shadow flag on dry-run-sweep in v0.2 as WI-011.
-    - later: Defer beyond v0.2 and keep it off the near-term roadmap.
-  recommendation: v0.2, see ADR-002.
-  default_on_timeout: hold
+  decision: v0.2. Implement --shadow flag on dry-run-sweep as a queued work item.
+  resolved: 2026-06-24
 
 - id: agentproof-conformance-interface
   question: Publish a standalone conformance interface spec for third-party runners?
-  decision: ADR-003 says yes for v0.3. Confirm scope before starting WI-012.
-  options:
-    - standalone-spec: agentproof/CONFORMANCE-INTERFACE.md with stdio runner protocol.
-    - in-repo-only: Keep AgentProof as an internal benchmark; do not publish a separate spec.
-  recommendation: standalone-spec, see ADR-003.
-  default_on_timeout: hold
+  decision: Yes. Publish agentproof/CONFORMANCE-INTERFACE.md as a community-evolving
+    standard with an open stdio runner protocol. See ADR-003 and WI-012.
+  resolved: 2026-06-24
+
+## Open
 
 - id: dry-run-git-integration
   question: Should dry-run read git history for repo-specific proposals (WI-015)?
