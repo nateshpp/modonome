@@ -44,6 +44,32 @@ read from the environment or CI.
 Open questions live in `.modonome/DECISIONS.md`. Each carries a recommendation and a default
 of hold. Unanswered means no action.
 
+## Current maintainer structure
+
+Modonome is v0.1-alpha with a single maintainer. The CODEOWNERS file assigns @nateshpp to
+every path. We state this plainly because the tool sells separation of duties, and one person
+holding all the keys is the exact gap a careful reader should flag.
+
+Here is the mitigation. The governance model is not a private policy. It is open and auditable:
+
+- The spec is public. The prompt, schemas, and rules ship in the repo.
+- The ratchet and validators are open source. Anyone can read how a gate decides pass or fail.
+- The CI enforcement lives in code, not in a person's discretion. Branch protection, required
+  checks, and protected-path rules run the same way for everyone, including the maintainer.
+
+So the trust does not rest on one person being careful. It rests on rules that any contributor
+can read, run, and challenge.
+
+Here is the path forward. As the project earns contributors, we move from one owner to several:
+
+- Split CODEOWNERS so prompts, schemas, and scripts each have a dedicated owner review.
+- Require a second owner on Tier 3 and Tier 4 changes once a second owner exists.
+- Nominate co-owners through the contribution process. A sustained record of merged reviews
+  earns a path to owner review on a path, then to a CODEOWNERS entry.
+
+We will not claim a governance board or a multi-owner review that does not exist yet. This
+section will change as the maintainer set grows, and the change will be visible in Git history.
+
 ## Learning
 
 Lessons are captured only on a real correction signal, staged in `.modonome/LEARNINGS.md`,

@@ -6,6 +6,28 @@ release evidence, and approvals are controlled. Sometimes that is GitHub. Someti
 mainframe SCM, a package-platform transport stream, an ALM workspace, or a metadata export
 mirrored into a review repo.
 
+## Today versus Milestone 4
+
+Modonome is v0.1-alpha. Be clear about what ships now and what is planned. The table below
+is the vision for every estate type. Most of those estates do not yet have a built-in
+adapter. Read it as the destination, not the current feature list.
+
+What works today, on any estate, through mirror mode and dry-run:
+
+- Read-only adoption pass over exported source, config, metadata, and evidence.
+- Dry-run mapping of modernization work, debt themes, and gate gaps.
+- Owner-reviewable proposal generation with no write action against the platform.
+- Local state, packets, and metrics produced from those reads.
+
+What requires the Milestone 4 enterprise estate adapters (see `ROADMAP.md`):
+
+- Platform-specific write-back into mainframe, SAP, Oracle, Salesforce, and ServiceNow.
+- Transport-aware proposals, ACL risk review, and metadata diff as built-in gate evidence.
+- An owner-gated write-back path for platforms with no ordinary Git change flow.
+
+Until those adapters land, the rows below for non-Git platforms describe mirror-mode reads
+and proposals only. Deployment stays with the platform's own release process.
+
 ## Adoption surfaces
 
 | Estate | Adoption surface | Safe first use |
