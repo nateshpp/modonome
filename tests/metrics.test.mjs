@@ -68,7 +68,7 @@ test("report shows no-activity message when metrics.jsonl is absent", () => {
   }
 });
 
-test("report ignores 'type' field — only 'event' field drives counts", () => {
+test("report ignores 'type' field: only 'event' field drives counts", () => {
   const dir = tmp();
   const stateDir = join(dir, ".modonome");
   mkdirSync(stateDir, { recursive: true });
@@ -84,7 +84,7 @@ test("report ignores 'type' field — only 'event' field drives counts", () => {
   try {
     assert.strictEqual(result.status, 0);
     const out = result.stdout;
-    // Counts must remain zero — "type" field must not drive any counter.
+    // Counts must remain zero. The "type" field must not drive any counter.
     assert.match(out, /Items attempted:\s+0/, "items_attempted must be 0 when only 'type' field present");
     assert.match(out, /Merges landed:\s+0/, "merges must be 0 when only 'type' field present");
     assert.match(out, /Lines changed:\s+0/, "lines_changed must be 0 when only 'type' field present");
