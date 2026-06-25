@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Modonome - Governed autonomy for any repo</title>
+  <meta name="description" content="The autonomous engineering loop that arms only on your command, sends every change through an independent checker, and keeps your tests at full strength. Off by default. No central service. MIT licensed." />
+  <link rel="canonical" href="https://modonome.com/" />
+
+  <!-- Open Graph / social -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://modonome.com/" />
+  <meta property="og:title" content="Modonome - Governed autonomy for any repo" />
+  <meta property="og:description" content="An off-by-default autonomous engineer that adopts your repo's rules, writes small reviewable PRs, and proves in CI that it cannot merge low-quality work. AgentProof 16/16." />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Inline SVG favicon, no external request -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0e14'/%3E%3Cpath d='M12 24 L16 8 L20 24 Z' fill='none' stroke='%235eead4' stroke-width='2' stroke-linejoin='round'/%3E%3Cline x1='10' y1='24' x2='22' y2='24' stroke='%235eead4' stroke-width='2' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='15' r='1.8' fill='%235eead4'/%3E%3C/svg%3E" />
+
+  <style>
+    :root {
+      --bg: #0b0e14;
+      --surface: #12161f;
+      --surface-2: #171c28;
+      --border: #232a38;
+      --text: #e6e9ef;
+      --muted: #97a1b4;
+      --accent: #5eead4;
+      --accent-dim: #2dd4bf;
+      --green: #6ee7a8;
+      --radius: 14px;
+      --maxw: 1080px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: radial-gradient(1200px 600px at 50% -10%, #141a26 0%, var(--bg) 55%);
+      color: var(--text);
+      font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; }
+
+    /* Header */
+    header {
+      position: sticky; top: 0; z-index: 10;
+      backdrop-filter: blur(8px);
+      background: rgba(11, 14, 20, 0.72);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav { display: flex; align-items: center; gap: 18px; height: 62px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: 0.2px; }
+    .brand svg { display: block; }
+    .nav .spacer { flex: 1; }
+    .nav a.navlink { color: var(--muted); font-size: 14px; }
+    .nav a.navlink:hover { color: var(--text); text-decoration: none; }
+    @media (max-width: 720px) { .nav a.navlink { display: none; } }
+
+    .btn {
+      display: inline-block; padding: 10px 16px; border-radius: 10px;
+      font-weight: 600; font-size: 14px; border: 1px solid var(--border);
+      color: var(--text); background: var(--surface-2);
+    }
+    .btn:hover { text-decoration: none; border-color: var(--accent-dim); }
+    .btn.primary { background: var(--accent); color: #052e2b; border-color: var(--accent); }
+    .btn.primary:hover { background: var(--accent-dim); }
+
+    /* Hero */
+    .hero { padding: 88px 0 56px; text-align: center; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 12px; border: 1px solid var(--border); border-radius: 999px;
+      color: var(--muted); font-size: 13px; background: var(--surface);
+    }
+    .pill b { color: var(--green); font-weight: 700; }
+    h1 {
+      font-size: clamp(32px, 6vw, 56px); line-height: 1.08; margin: 22px 0 10px;
+      letter-spacing: -0.02em;
+    }
+    .lede { font-size: clamp(17px, 2.4vw, 21px); color: var(--muted); max-width: 760px; margin: 0 auto; }
+    .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
+
+    .terminal {
+      max-width: 640px; margin: 36px auto 0; text-align: left;
+      background: #0a0c11; border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .terminal .bar { display: flex; gap: 7px; padding: 12px 14px; border-bottom: 1px solid var(--border); }
+    .terminal .bar i { width: 11px; height: 11px; border-radius: 50%; background: #2a3142; display: inline-block; }
+    .terminal pre { margin: 0; padding: 18px 18px; font-size: 13.5px; line-height: 1.7; overflow-x: auto; }
+    .terminal .c-prompt { color: var(--accent); }
+    .terminal .c-comment { color: #5f6b80; }
+    .terminal .c-ok { color: var(--green); }
+
+    /* Sections */
+    section { padding: 56px 0; border-top: 1px solid var(--border); }
+    .eyebrow { color: var(--accent-dim); font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+    h2 { font-size: clamp(24px, 3.4vw, 34px); margin: 10px 0 14px; letter-spacing: -0.01em; }
+    .section-lede { color: var(--muted); max-width: 720px; }
+
+    .grid { display: grid; gap: 16px; margin-top: 30px; }
+    .cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .cols-2 { grid-template-columns: repeat(2, 1fr); }
+    @media (max-width: 860px) { .cols-3, .cols-2 { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 22px 20px;
+    }
+    .card h3 { margin: 0 0 8px; font-size: 17px; }
+    .card p { margin: 0; color: var(--muted); font-size: 14.5px; }
+    .card .ico { width: 34px; height: 34px; border-radius: 9px; background: var(--surface-2); border: 1px solid var(--border);
+      display: grid; place-items: center; margin-bottom: 14px; color: var(--accent); }
+
+    ol.steps { counter-reset: step; list-style: none; padding: 0; margin: 30px 0 0; display: grid; gap: 12px; }
+    ol.steps li {
+      counter-increment: step; position: relative; padding: 16px 18px 16px 58px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    }
+    ol.steps li::before {
+      content: counter(step); position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+      width: 28px; height: 28px; border-radius: 8px; background: var(--surface-2); border: 1px solid var(--border);
+      color: var(--accent); font-weight: 700; font-size: 13px; display: grid; place-items: center;
+    }
+    ol.steps li b { color: var(--text); }
+    ol.steps li span { color: var(--muted); }
+
+    .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 30px; }
+    @media (max-width: 860px) { .stat-row { grid-template-columns: repeat(2, 1fr); } }
+    .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; }
+    .stat .n { font-size: 26px; font-weight: 800; color: var(--text); }
+    .stat .l { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+    table.cost { width: 100%; border-collapse: collapse; margin-top: 26px; font-size: 14.5px; }
+    table.cost th, table.cost td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--border); }
+    table.cost th { color: var(--muted); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; }
+    table.cost td.amt { color: var(--green); white-space: nowrap; }
+
+    .cta-final { text-align: center; }
+    .cta-final .terminal { margin-top: 28px; }
+
+    footer { border-top: 1px solid var(--border); padding: 40px 0 60px; color: var(--muted); font-size: 14px; }
+    .foot-links { display: flex; flex-wrap: wrap; gap: 16px 22px; margin: 18px 0; }
+    .foot-links a { color: var(--muted); }
+    .foot-links a:hover { color: var(--text); text-decoration: none; }
+    .foot-bottom { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 18px; border-top: 1px solid var(--border); }
+    .badge-mit { border: 1px solid var(--border); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="/" aria-label="Modonome home">
+        <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true">
+          <rect width="32" height="32" rx="7" fill="#12161f" stroke="#232a38"></rect>
+          <path d="M12 24 L16 8 L20 24 Z" fill="none" stroke="#5eead4" stroke-width="2" stroke-linejoin="round"></path>
+          <line x1="10" y1="24" x2="22" y2="24" stroke="#5eead4" stroke-width="2" stroke-linecap="round"></line>
+          <circle cx="16" cy="15" r="1.8" fill="#5eead4"></circle>
+        </svg>
+        Modonome
+      </a>
+      <span class="spacer"></span>
+      <a class="navlink" href="#how">How it works</a>
+      <a class="navlink" href="#safe">Why it is safe</a>
+      <a class="navlink" href="#features">Features</a>
+      <a class="navlink" href="#cost">Cost</a>
+      <a class="navlink" href="https://github.com/nateshpp/modonome">GitHub</a>
+      <a class="btn primary" href="#start">Try it</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" style="border-top: none;">
+      <div class="wrap">
+        <span class="pill">AgentProof <b>16/16</b> &nbsp;|&nbsp; MIT &nbsp;|&nbsp; v0.1 alpha</span>
+        <h1>Governed autonomy for any repo</h1>
+        <p class="lede">
+          The autonomous engineering loop that arms only on your command, sends every change
+          through an independent checker, and keeps your tests at full strength. Off by default.
+          It runs without a central service.
+        </p>
+        <div class="cta-row">
+          <a class="btn primary" href="#start">Try it in 60 seconds</a>
+          <a class="btn" href="https://github.com/nateshpp/modonome">View on GitHub</a>
+        </div>
+
+        <div class="terminal" aria-label="Example command">
+          <div class="bar"><i></i><i></i><i></i></div>
+          <pre class="mono"><span class="c-comment"># read-only. writes nothing.</span>
+<span class="c-prompt">$</span> npx modonome dry-run .
+
+  detecting stack and gates...
+  proposing bounded work items...
+  <span class="c-ok">7 items queued</span>  ·  <span class="c-ok">0 files changed</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROBLEM -->
+    <section id="problem">
+      <div class="wrap">
+        <p class="eyebrow">The problem</p>
+        <h2>Autonomous agents weaken gates to go green</h2>
+        <p class="section-lede">
+          Coding agents have a predictable failure mode. Told to make tests pass, they remove
+          assertions, add skips, and loosen type checks. Modonome blocks that structurally. The
+          anti-gaming ratchet runs in CI from a base-branch copy the agent's run does not control,
+          and it rejects any diff that weakens a gate.
+        </p>
+      </div>
+    </section>
+
+    <!-- HOW -->
+    <section id="how">
+      <div class="wrap">
+        <p class="eyebrow">How it works</p>
+        <h2>Adopt, propose, make, check, gate, merge, learn</h2>
+        <p class="section-lede">Maker, checker, and merge authority are structurally separate. A human owner stays in control of every lever.</p>
+        <ol class="steps">
+          <li><b>Adopt.</b> <span>Read the host repo's instructions, CI, code owners, gates, and conventions, then defer to them.</span></li>
+          <li><b>Dry-run.</b> <span>Propose bounded work as a queue, read-only. It writes nothing until you arm it.</span></li>
+          <li><b>Make.</b> <span>A maker implements one tightly scoped packet, with a failing test as the fence.</span></li>
+          <li><b>Check.</b> <span>An independent checker, separate from the maker, runs the gates and reviews the diff.</span></li>
+          <li><b>Gate.</b> <span>Deterministic gates and the anti-gaming ratchet run in CI, outside the agent's reach.</span></li>
+          <li><b>Owner.</b> <span>Protected paths (CI, secrets, schemas, migrations, auth) wait for a human decision.</span></li>
+          <li><b>Merge.</b> <span>A separate merge authority lands the change only when every gate is green.</span></li>
+          <li><b>Learn.</b> <span>Real corrections become staged lessons that an owner promotes into durable rules.</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- SAFE -->
+    <section id="safe">
+      <div class="wrap">
+        <p class="eyebrow">Why it is safe to run</p>
+        <h2>The controls live in CI, not in the prompt</h2>
+        <p class="section-lede">
+          A prompt can be overridden by a cleverer prompt. A CI gate that runs outside the agent's
+          write scope holds. The arming levers live in environment variables, outside the agent's
+          read scope. With <span class="mono">MODONOME_ARMED</span> unset, autonomy is forced off no
+          matter what any config file says.
+        </p>
+        <div class="stat-row">
+          <div class="stat"><div class="n">16/16</div><div class="l">AgentProof scenarios passed</div></div>
+          <div class="stat"><div class="n">Off</div><div class="l">by default until you arm it</div></div>
+          <div class="stat"><div class="n">0</div><div class="l">central services or telemetry</div></div>
+          <div class="stat"><div class="n">MIT</div><div class="l">open source, no lock-in</div></div>
+        </div>
+        <p class="section-lede" style="margin-top:24px;">
+          AgentProof proves it with adversarial scenarios: assertion removal, skip injection, type
+          escape, coverage removal, unsafe config combinations, identity collapse, raw code leakage,
+          drift, protected-path bypass, Java and .NET ratchet coverage, and prompt injection inertness.
+          Run it yourself with <span class="mono">node agentproof/runner.mjs</span>.
+        </p>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features">
+      <div class="wrap">
+        <p class="eyebrow">What you get</p>
+        <h2>Structural controls, not promises</h2>
+        <div class="grid cols-3">
+          <div class="card">
+            <div class="ico mono">{ }</div>
+            <h3>Anti-gaming ratchet</h3>
+            <p>Rejects diffs that remove assertions, drop coverage, add skips, or loosen type safety. Runs from a trusted base-branch copy.</p>
+          </div>
+          <div class="card">
+            <div class="ico mono">II</div>
+            <h3>Independent checker</h3>
+            <p>The role that verifies a change is structurally separate from the role that wrote it, and from the one that merges it.</p>
+          </div>
+          <div class="card">
+            <div class="ico mono">&#9211;</div>
+            <h3>Off by default</h3>
+            <p>Autonomy and auto-merge stay off until an owner arms them through CI or environment, never through a file the engine can rewrite.</p>
+          </div>
+          <div class="card">
+            <div class="ico mono">&#9745;</div>
+            <h3>Bounded work items</h3>
+            <p>Tier 1 tests and docs, Tier 2 scripts and schemas. Small, dated, capped, and test-fenced. Each PR stays reviewable.</p>
+          </div>
+          <div class="card">
+            <div class="ico mono">&#9888;</div>
+            <h3>Protected paths</h3>
+            <p>CI, secrets, schemas, migrations, lockfiles, and auth always wait for owner review through your existing CODEOWNERS.</p>
+          </div>
+          <div class="card">
+            <div class="ico mono">&#8635;</div>
+            <h3>Learns with a human in the loop</h3>
+            <p>Gate failures and reversions become staged lessons. An owner promotes durable ones into canonical rules and new gates.</p>
+          </div>
+          <div class="card">
+            <div class="ico mono">&#9783;</div>
+            <h3>Stack detection</h3>
+            <p>Detects Node, Python, Java, and .NET and their gates on adoption. Enterprise mirror mode is on the roadmap for non-Git estates.</p>
+          </div>
+          <div class="card">
+            <div class="ico mono">&#8942;</div>
+            <h3>Adopts your repo</h3>
+            <p>Uses your CI, code owners, and branch rules on day one. It adds no new platform and no new service.</p>
+          </div>
+          <div class="card">
+            <div class="ico mono">$</div>
+            <h3>Zero tool cost</h3>
+            <p>MIT, no telemetry, no service call. Your only cost is the LLM API you choose, and local or already-paid models come first.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COST -->
+    <section id="cost">
+      <div class="wrap">
+        <p class="eyebrow">Cost model</p>
+        <h2>You pay for the model, nothing else</h2>
+        <p class="section-lede">
+          The tool itself is zero-cost. Run it through the Claude Code CLI on a Pro or Teams
+          subscription and the cost is zero beyond your subscription.
+        </p>
+        <table class="cost">
+          <thead>
+            <tr><th>Run type</th><th>Turns</th><th>Approximate API cost</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Dry-run sweep (read-only)</td><td>2 to 4</td><td class="amt">$0.01 to $0.05</td></tr>
+            <tr><td>Tier 1 work item (docs, tests)</td><td>6 to 10</td><td class="amt">$0.05 to $0.20</td></tr>
+            <tr><td>Tier 2 work item (scripts, schemas)</td><td>10 to 20</td><td class="amt">$0.20 to $1.00</td></tr>
+            <tr><td>Full autonomous cycle (5 items)</td><td>40 to 60</td><td class="amt">$0.50 to $2.00</td></tr>
+          </tbody>
+        </table>
+        <p class="section-lede" style="margin-top:16px; font-size:13.5px;">
+          Figures assume Claude Sonnet pricing at June 2026 rates. Haiku runs Tier 1 items at
+          roughly one-fifth the cost.
+        </p>
+      </div>
+    </section>
+
+    <!-- START / CTA -->
+    <section id="start" class="cta-final">
+      <div class="wrap">
+        <p class="eyebrow">Try it in 60 seconds</p>
+        <h2>Read-only. It writes nothing.</h2>
+        <p class="section-lede" style="margin: 0 auto;">
+          Point it at a repo. It detects your stack and gates and prints the work it would propose.
+          When you are ready, scaffold the local state files, still disabled and dry-run.
+        </p>
+        <div class="terminal" style="margin-left:auto; margin-right:auto;">
+          <div class="bar"><i></i><i></i><i></i></div>
+          <pre class="mono"><span class="c-prompt">$</span> npx modonome dry-run .
+<span class="c-prompt">$</span> npx modonome scaffold .            <span class="c-comment"># preview the state files</span>
+<span class="c-prompt">$</span> npx modonome scaffold . --write    <span class="c-comment"># apply them (still off)</span></pre>
+        </div>
+        <div class="cta-row" style="margin-top:28px;">
+          <a class="btn primary" href="https://github.com/nateshpp/modonome">Get started on GitHub</a>
+          <a class="btn" href="https://github.com/nateshpp/modonome/blob/main/QUICKSTART.md">Read the quickstart</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <a class="brand" href="/" aria-label="Modonome home">
+        <svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true">
+          <rect width="32" height="32" rx="7" fill="#12161f" stroke="#232a38"></rect>
+          <path d="M12 24 L16 8 L20 24 Z" fill="none" stroke="#5eead4" stroke-width="2" stroke-linejoin="round"></path>
+          <line x1="10" y1="24" x2="22" y2="24" stroke="#5eead4" stroke-width="2" stroke-linecap="round"></line>
+        </svg>
+        Modonome
+      </a>
+      <div class="foot-links">
+        <a href="https://github.com/nateshpp/modonome/blob/main/QUICKSTART.md">Quickstart</a>
+        <a href="https://github.com/nateshpp/modonome/blob/main/ADOPTION-GUIDE.md">Adoption guide</a>
+        <a href="https://github.com/nateshpp/modonome/blob/main/ENTERPRISE.md">Enterprise</a>
+        <a href="https://github.com/nateshpp/modonome/blob/main/SECURITY.md">Security</a>
+        <a href="https://github.com/nateshpp/modonome/blob/main/GOVERNANCE.md">Governance</a>
+        <a href="https://github.com/nateshpp/modonome/blob/main/GOVERNED-AUTONOMY-SPEC.md">Specification</a>
+        <a href="https://github.com/nateshpp/modonome/blob/main/agentproof/README.md">AgentProof</a>
+        <a href="https://www.npmjs.com/package/modonome">npm</a>
+      </div>
+      <div class="foot-bottom">
+        <span>Governed autonomy for any repo. Off by default, independently checked, gated before merge.</span>
+        <span class="badge-mit">MIT licensed</span>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
