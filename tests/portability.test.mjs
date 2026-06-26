@@ -11,7 +11,7 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -140,7 +140,7 @@ test("prompt-injection-host: guard-ratchet is unaffected by host source files", 
   // Use a clean diff — the ratchet must still pass, proving host content did not
   // corrupt its logic.
   const cleanDiff = join(root, "fixtures", "ratchet-diffs", "clean");
-  const { readdirSync } = await import("node:fs");
+
   const cleanFiles = readdirSync(cleanDiff).map((f) => join(cleanDiff, f));
   assert.ok(cleanFiles.length > 0, "need at least one clean diff fixture");
 
@@ -186,7 +186,7 @@ test("shadowing-attack: Modonome guard-ratchet is invoked by absolute path and r
   // The real ratchet is invoked via its absolute path from Modonome's scripts/.
   // It must reject a gaming diff regardless of cwd.
   const gamingDiff = join(root, "fixtures", "ratchet-diffs", "gaming");
-  const { readdirSync } = await import("node:fs");
+
   const gamingFiles = readdirSync(gamingDiff).map((f) => join(gamingDiff, f));
   assert.ok(gamingFiles.length > 0, "need at least one gaming diff fixture");
 
@@ -207,7 +207,7 @@ test("shadowing-attack: Modonome validate-config rejects unsafe config regardles
   // An unsafe config (autonomy_enabled=true but empty trusted_author_allowlist) must
   // be rejected by the real validate-config even when run from the shadowing-attack dir.
   const unsafeConfig = join(root, "fixtures", "config", "invalid");
-  const { readdirSync } = await import("node:fs");
+
   const invalidFiles = readdirSync(unsafeConfig).map((f) => join(unsafeConfig, f));
   assert.ok(invalidFiles.length > 0, "need at least one invalid config fixture");
 
@@ -261,7 +261,7 @@ test("env-pollution: validate-config reads config file, not env vars for safety 
 
 test("env-pollution: guard-ratchet rejects gaming diffs even with hostile env vars", () => {
   const gamingDiff = join(root, "fixtures", "ratchet-diffs", "gaming");
-  const { readdirSync } = await import("node:fs");
+
   const gamingFiles = readdirSync(gamingDiff).map((f) => join(gamingDiff, f));
   const hostileEnv = {
     MODONOME_AUTONOMY: "true",
