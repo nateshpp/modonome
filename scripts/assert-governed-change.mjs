@@ -9,7 +9,7 @@
 // Usage:
 //   node scripts/assert-governed-change.mjs <baseRef>
 import { spawnSync } from "node:child_process";
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
@@ -117,9 +117,7 @@ function loadCurrentWorkItem() {
   if (!existsSync(wiDir)) return null;
 
   // Load the most recent work item (last by modification time)
-  const files = require("node:fs")
-    .readdirSync(wiDir)
-    .filter((f) => f.endsWith(".json"));
+  const files = readdirSync(wiDir).filter((f) => f.endsWith(".json"));
 
   if (files.length === 0) return null;
 
