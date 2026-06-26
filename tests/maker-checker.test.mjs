@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
-import { validateWorkItem } from "../scripts/validate-work-item.mjs";
+import { validateWorkItem, governanceErrors } from "../scripts/validate-work-item.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "..");
@@ -51,6 +51,47 @@ test("checker-engagement gate passes for an engaged checker", () => {
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
+});
+
+test("merge_ready item with maker_id but no checker_id is rejected", () => {
+  const errs = validateWorkItem({
+    schema_version: 1, id: "x", state: "merge_ready",
+    maker_id: "agent-a",
+  });
+  assert.ok(errs.some((e) => /checker_id.*required/i.test(e)), errs.join("; "));
+});
+
+test("checking item with no maker_id is rejected", () => {
+  const errs = validateWorkItem({
+    schema_version: 1, id: "x", state: "checking",
+    checker_id: "agent-b",
+  });
+  assert.ok(errs.some((e) => /maker_id.*required/i.test(e)), errs.join("; "));
+});
+
+test("maker_id === checker_id is rejected", () => {
+  const errs = validateWorkItem({
+    schema_version: 1, id: "x", state: "merge_ready",
+    maker_id: "agent-a", checker_id: "agent-a",
+  });
+  assert.ok(errs.some((e) => /maker.*checker.*same identity/i.test(e)), errs.join("; "));
+});
+
+test("identical maker_model/checker_model is allowed when require_distinct_maker_checker_model is false", () => {
+  const errs = governanceErrors(
+    { schema_version: 1, id: "x", state: "merge_ready", maker_id: "agent-a", checker_id: "agent-b", maker_model: "claude-sonnet-4-6", checker_model: "claude-sonnet-4-6" },
+    { require_distinct_maker_checker_model: false }
+  );
+  assert.ok(!errs.some((e) => /maker_model.*checker_model/i.test(e)), "expected no model-distinctness error; got: " + errs.join("; "));
+});
+
+test("identical maker_model/checker_model is rejected with default config", () => {
+  const errs = governanceErrors({
+    schema_version: 1, id: "x", state: "merge_ready",
+    maker_id: "agent-a", checker_id: "agent-b",
+    maker_model: "claude-sonnet-4-6", checker_model: "claude-sonnet-4-6",
+  });
+  assert.ok(errs.some((e) => /maker_model.*checker_model/i.test(e)), errs.join("; "));
 });
 
 test("checker-engagement gate fails on a ghosting checker (teeth)", () => {

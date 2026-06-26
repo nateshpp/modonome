@@ -40,6 +40,8 @@ jobs:
         with:
           node-version: '20'
       - name: Guard against same model for both roles
+        # Workflow-level fast-fail on identical models. The validator-level check is
+        # governed by require_distinct_maker_checker_model in .modonome/config.yaml.
         run: |
           if [ "$MAKER_MODEL" = "$CHECKER_MODEL" ]; then
             echo "MAKER_MODEL and CHECKER_MODEL must differ (require_distinct_maker_checker_model)." >&2
@@ -102,5 +104,11 @@ jobs:
           4. If you request changes, push them to '$RUN_BRANCH' and set state back to rework.
              Otherwise set state to merge_ready.
           5. Do not merge. The owner merges after review. Print a one-paragraph review."
+      - name: Assert checker wrote metrics
+        run: |
+          if [ ! -s .modonome/metrics.jsonl ]; then
+            echo "FAIL: checker session did not append to .modonome/metrics.jsonl" >&2
+            exit 1
+          fi
       - name: Enforce separation of duties on the result
         run: node scripts/check-work-items.mjs

@@ -11,18 +11,33 @@ import { dirname, join } from "node:path";
 import { parseFlatYaml } from "./lib/yaml-lite.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
-const root = join(here, "..");
+
+// optional --root <dir> flag allows tests to point at a temp directory.
+let root = join(here, "..");
+{
+  const rootIdx = process.argv.indexOf("--root");
+  if (rootIdx !== -1 && process.argv[rootIdx + 1]) {
+    root = process.argv[rootIdx + 1];
+  }
+}
 const problems = [];
 
 // Capability flags that expand the engine's authority and trust boundary.
 const CAPABILITY_FLAGS = ["repo_network_enabled", "market_scan_enabled", "envisioner_enabled"];
 
 // A promotion ADR must demonstrate evidence-based readiness, not faith.
-const REQUIRED_ADR_SECTIONS = ["observation window", "evidence", "rollback"];
+// Sections must appear as Markdown headings; mere substring presence is insufficient.
+const REQUIRED_ADR_SECTIONS = ["observation window", "evidence", "rollback", "promotion"];
 
 function configDefaults(rel) {
   const path = join(root, rel);
   return existsSync(path) ? parseFlatYaml(readFileSync(path, "utf8")) : {};
+}
+
+// Check that a section appears as a Markdown heading (h1-h6), so a one-line
+// ADR with the section words buried in prose cannot game the gate.
+function hasHeading(text, section) {
+  return new RegExp(`^#{1,6}\\s+${section}`, "im").test(text);
 }
 
 function findPromotionAdr(flag) {
@@ -30,8 +45,7 @@ function findPromotionAdr(flag) {
   if (!existsSync(adrDir)) return null;
   for (const f of readdirSync(adrDir).filter((f) => f.endsWith(".md"))) {
     const text = readFileSync(join(adrDir, f), "utf8");
-    const lower = text.toLowerCase();
-    if (text.includes(flag) && lower.includes("promotion") && REQUIRED_ADR_SECTIONS.every((s) => lower.includes(s))) {
+    if (text.includes(flag) && REQUIRED_ADR_SECTIONS.every((s) => hasHeading(text, s))) {
       return f;
     }
   }

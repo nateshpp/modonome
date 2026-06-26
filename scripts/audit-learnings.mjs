@@ -17,7 +17,14 @@ const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "..");
 const query = (process.argv[2] || "").toLowerCase();
 
-const learnings = readPromotedLearnings(root);
+// surface a clean error if LEARNINGS.md is missing rather than crashing.
+let learnings;
+try {
+  learnings = readPromotedLearnings(root);
+} catch (e) {
+  console.error(`audit-learnings: ${e.message}`);
+  process.exit(1);
+}
 
 function matches(l) {
   if (!query) return true;

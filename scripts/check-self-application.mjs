@@ -13,7 +13,7 @@ import { validate } from "./lib/jsonschema.mjs";
 import { parseFlatYaml } from "./lib/yaml-lite.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
-const root = join(here, "..");
+const root = process.env.MODONOME_ROOT ? process.env.MODONOME_ROOT : join(here, "..");
 const problems = [];
 const notes = [];
 
@@ -25,6 +25,9 @@ function read(rel) {
 //    project advertises but does not run in its own CI is the core self-application
 //    failure this script exists to prevent.
 const ci = existsSync(join(root, ".github/workflows/ci.yml")) ? read(".github/workflows/ci.yml") : "";
+// Strip YAML comment lines (including indented ones) so a commented-out step cannot
+// satisfy a needle check. This covers both "# node --test" and "  # node --test".
+const activeCI = ci.split("\n").filter((l) => !l.trimStart().startsWith("#")).join("\n");
 const REQUIRED_GATES = [
   { name: "drift guard", needle: "check-drift.mjs" },
   { name: "style check", needle: "check-style.mjs" },
@@ -38,13 +41,16 @@ const REQUIRED_GATES = [
   { name: "checker engagement", needle: "check-checker-engagement.mjs" },
 ];
 for (const g of REQUIRED_GATES) {
-  if (!ci.includes(g.needle)) problems.push(`ci.yml does not run the ${g.name} gate (${g.needle}).`);
+  if (!activeCI.includes(g.needle)) problems.push(`ci.yml does not run the ${g.name} gate (${g.needle}).`);
 }
 
 // 2. The ratchet and style linter must be loaded from the base branch on a PR, so
 //    a PR cannot weaken the gate that judges it. This is the trust-isolation claim.
-if (!/git checkout "origin\/\$\{\{ github\.base_ref \}\}" -- scripts\/guard-ratchet\.mjs/.test(ci)) {
+if (!/git checkout "origin\/\$\{\{ github\.base_ref \}\}" -- scripts\/guard-ratchet\.mjs/.test(activeCI)) {
   problems.push("ci.yml does not load guard-ratchet.mjs from the base branch before running it.");
+}
+if (!/git checkout "origin\/\$\{\{ github\.base_ref \}\}" -- scripts\/check-style\.mjs/.test(activeCI)) {
+  problems.push("ci.yml does not load check-style.mjs from the base branch before running it.");
 }
 
 // 3. Shipped defaults must be safe (off by default). The template is what new

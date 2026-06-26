@@ -8,9 +8,14 @@ import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { validateWorkItem } from "./validate-work-item.mjs";
+import { parseFlatYaml } from "./lib/yaml-lite.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "..");
+
+const configPath = join(root, ".modonome", "config.yaml");
+const config = existsSync(configPath) ? parseFlatYaml(readFileSync(configPath, "utf8")) : {};
+
 const dir = join(root, ".modonome", "work-items");
 const problems = [];
 
@@ -23,7 +28,7 @@ for (const f of files) {
     problems.push(`${f}: not valid JSON (${e.message}).`);
     continue;
   }
-  for (const e of validateWorkItem(item)) problems.push(`${f}: ${e}`);
+  for (const e of validateWorkItem(item, config)) problems.push(`${f}: ${e}`);
 }
 
 console.log("Work item validation (ADR-006)");

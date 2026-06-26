@@ -26,9 +26,13 @@ without telemetry, gaming is invisible until a problem surfaces in production.
 ## Decision
 
 1. **Capture checker metrics** in the run transcript and in `.modonome/metrics.jsonl`:
+
+   Implemented:
    - `checker_requested_changes`: boolean, true if checker requested changes before approval
-   - `checker_modified_diff`: boolean, true if checker's changes changed the final diff
    - `checker_questions_raised`: count of distinct findings or concerns
+
+   Deferred (requires pipeline instrumentation):
+   - `checker_modified_diff`: boolean, true if checker's changes changed the final diff
    - `checker_approval_after_changes`: latency from maker's diff to checker's "approved"
 
 2. **Gate for checker ghosting:** Implemented as `scripts/check-checker-engagement.mjs`, a
@@ -57,6 +61,10 @@ telemetry yet, the gate passes; it activates once the loop writes the fields abo
 - The tool has data to recommend (to users) how to select checker models or when to require
   a human checker instead of an agent.
 - Telemetry overhead is minimal (a few booleans per run, one counter).
+- The partial implementation (checker_requested_changes and checker_questions_raised only)
+  catches passive-approval ghosting but not diff-mutation ghosting. The deferred fields
+  (checker_modified_diff and checker_approval_after_changes) require deeper pipeline
+  instrumentation and are tracked as a follow-on task.
 
 ## Related
 

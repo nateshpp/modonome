@@ -60,7 +60,6 @@ if (!jsonMode) {
 
 for (const file of scenarios) {
   const title = SCENARIO_TITLES[file] || file;
-  const id = file.replace(".mjs", "").toUpperCase().replace(/-/g, " ").slice(0, 5);
   const label = file.slice(0, 5).toUpperCase();
 
   const result = spawnSync("node", [join(scenarioDir, file)], { encoding: "utf8", timeout: 30000 });

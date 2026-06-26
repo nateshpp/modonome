@@ -29,6 +29,12 @@ try {
   process.exit(1);
 }
 
+// an absent or empty Promoted block cannot certify traceability.
+if (learnings.length === 0) {
+  console.error("FAIL: no promoted learnings found; Promoted block is absent or empty. Gate cannot certify an empty record.");
+  process.exit(1);
+}
+
 const seen = new Set();
 for (const l of learnings) {
   const tag = l.id || JSON.stringify(l).slice(0, 40);
@@ -45,7 +51,13 @@ for (const l of learnings) {
   }
 
   for (const f of ["observation_date", "promotion_date"]) {
-    if (l[f] && !DATE_RE.test(l[f])) problems.push(`${tag}: ${f} "${l[f]}" is not YYYY-MM-DD.`);
+    if (l[f] && !DATE_RE.test(l[f])) {
+      problems.push(`${tag}: ${f} "${l[f]}" is not YYYY-MM-DD.`);
+    } else if (l[f] && DATE_RE.test(l[f]) && isNaN(Date.parse(l[f]))) {
+      // reject calendar-invalid dates like 2026-99-99 that match the regex but
+      // are not real calendar dates.
+      problems.push(`${tag}: ${f} "${l[f]}" is not a valid calendar date.`);
+    }
   }
   if (DATE_RE.test(l.observation_date || "") && DATE_RE.test(l.promotion_date || "")) {
     const obs = Date.parse(l.observation_date);
@@ -57,18 +69,28 @@ for (const l of learnings) {
     }
   }
 
-  // The gate the learning claims to have added must exist on disk.
+  // the gate the learning claims to have added must exist on disk and must
+  // live under a recognized gate directory (scripts/, tests/, or .github/).
   if (l.gate_location) {
     const path = String(l.gate_location).split(":")[0];
-    if (!existsSync(join(root, path))) {
+    const GATE_DIRS = ["scripts/", "tests/", ".github/"];
+    const underGateDir = GATE_DIRS.some((dir) => path.startsWith(dir));
+    if (!underGateDir) {
+      problems.push(`${tag}: gate_location "${path}" must be under scripts/, tests/, or .github/ (got: "${path}").`);
+    } else if (!existsSync(join(root, path))) {
       problems.push(`${tag}: gate_location "${path}" does not exist.`);
     }
   }
 
-  // The correction signal, when it names a repo path, must resolve.
-  if (l.correction_signal_id && String(l.correction_signal_id).includes("/")) {
-    if (!existsSync(join(root, String(l.correction_signal_id)))) {
-      problems.push(`${tag}: correction_signal_id "${l.correction_signal_id}" looks like a path but does not exist.`);
+  // correction_signal_id must be a repo-relative path (containing "/") that
+  // resolves to an existing file. Non-path identifiers are rejected so the audit
+  // trail is self-contained in committed documents (no external resolution).
+  if (l.correction_signal_id) {
+    const sigId = String(l.correction_signal_id);
+    if (!sigId.includes("/")) {
+      problems.push(`${tag}: correction_signal_id "${sigId}" is not a repo-relative path. All references must be committed documents so the audit trail is self-contained (e.g. docs/CLAIMS-AUDIT-2026-06-25.md).`);
+    } else if (!existsSync(join(root, sigId))) {
+      problems.push(`${tag}: correction_signal_id "${sigId}" looks like a path but does not exist.`);
     }
   }
 }

@@ -41,6 +41,7 @@ const gates = [
 const ap = spawnSync("node", [join(root, "agentproof/runner.mjs"), "--json"], { encoding: "utf8", cwd: root, timeout: 60000 });
 let apScore = "unavailable";
 try { apScore = JSON.parse(ap.stdout).score; } catch { /* leave unavailable */ }
+const apLevel = ap.status === 0 ? "HARDENED" : (apScore === "unavailable" ? "unavailable" : "UNHARDENED");
 
 const wiDir = join(root, ".modonome", "work-items");
 const byState = {};
@@ -75,7 +76,7 @@ lines.push("");
 lines.push("| Gate | Result |");
 lines.push("|---|---|");
 for (const [name, ok] of gates) lines.push(`| ${name} | ${mark(ok)} |`);
-lines.push(`| AgentProof | ${apScore} HARDENED |`);
+lines.push(`| AgentProof | ${apScore} ${apLevel} |`);
 lines.push("");
 lines.push("## Work queue");
 lines.push("");
@@ -85,6 +86,11 @@ if (Object.keys(byState).length === 0) {
   for (const [s, n] of Object.entries(byState).sort()) lines.push(`- ${s}: ${n}`);
 }
 lines.push("");
+// Note: per-run dry-run transcripts live in the gitignored .modonome/runs/
+// directory and carry per-invocation timestamps. They are deliberately excluded
+// here so this committed file stays reproducible from committed repo state.
+// Dry-run and armed-mode sweep detail belongs in a point-in-time release
+// transcript, not in the continuously-regenerated evidence file (see ADR-025).
 lines.push("## Promoted learnings (traceable)");
 lines.push("");
 if (learnings.length === 0) {
