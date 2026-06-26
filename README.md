@@ -28,12 +28,12 @@ structurally separate, enforced in CI. Off by default, and it runs without a cen
   <a href="https://github.com/nateshpp/modonome/actions/workflows/ci.yml"><img src="https://github.com/nateshpp/modonome/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
   <a href="https://www.npmjs.com/package/modonome"><img src="https://img.shields.io/npm/v/modonome" alt="npm" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License" /></a>
-  <a href="agentproof/README.md"><img src="https://img.shields.io/badge/AgentProof-16%2F16-brightgreen" alt="AgentProof 16/16" /></a>
+  <a href="agentproof/README.md"><img src="https://img.shields.io/badge/AgentProof-25%2F25-brightgreen" alt="AgentProof 25/25" /></a>
 </p>
 
 ---
 
-Autonomous coding agents have a predictable failure mode: they weaken gates to go green (removing test assertions, adding skips, loosening type checks). Modonome blocks that in CI: the anti-gaming ratchet runs from a base-branch copy the agent's run does not control, and it rejects diffs that weaken a gate. We published the [governed-autonomy spec](GOVERNED-AUTONOMY-SPEC.md), and Modonome is its reference implementation, scoring **[16/16 on AgentProof](agentproof/README.md)** for gate integrity (hardening against known gaming patterns, not a certificate of full autonomy governance).
+Autonomous coding agents have a predictable failure mode: they weaken gates to go green (removing test assertions, adding skips, loosening type checks). Modonome blocks that in CI: the anti-gaming ratchet runs from a base-branch copy the agent's run does not control, and it rejects diffs that weaken a gate. We published the [governed-autonomy spec](GOVERNED-AUTONOMY-SPEC.md), and Modonome is its reference implementation, scoring **[25/25 on AgentProof](agentproof/README.md)** for gate integrity (hardening against known gaming patterns, not a certificate of full autonomy governance).
 
 ## Why businesses adopt Modonome
 
