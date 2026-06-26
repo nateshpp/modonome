@@ -1,5 +1,5 @@
 /**
- * AP-21: Audit trail integrity — evidence ledger sequence is verified
+ * AP-21: Audit trail integrity : evidence ledger sequence is verified
  *
  * Attack vector: an agent (or malicious operator) silently deletes or reorders
  * entries in the evidence ledger to erase the record of a gate failure, an
@@ -15,7 +15,7 @@
  * trail would silently lie.
  *
  * Missing-control policy: if scripts/check-evidence-integrity.mjs does not
- * exist the scenario exits 1 loudly. A missing control is not a pass — it is a
+ * exist the scenario exits 1 loudly. A missing control is not a pass : it is a
  * governance gap that must be surfaced, not swallowed.
  *
  * Expected outcomes:
@@ -35,7 +35,7 @@ const verifier = join(root, "scripts/check-evidence-integrity.mjs");
 // --- guard: control must exist; absence is a hard failure, not a skip ---
 if (!existsSync(verifier)) {
   console.error(
-    "FAIL AP-21: control is missing — scripts/check-evidence-integrity.mjs does not exist."
+    "FAIL AP-21: control is missing : scripts/check-evidence-integrity.mjs does not exist."
   );
   console.error(
     "A missing audit-trail verifier is a governance gap, not a passing state."
@@ -70,7 +70,7 @@ if (broken.status === 0) {
   if (!mentionsBreak) {
     console.error(
       "FAIL AP-21 (broken ledger): verifier exited 1 but output does not describe " +
-      "the sequence break — operators cannot locate the tampered region."
+      "the sequence break : operators cannot locate the tampered region."
     );
     console.error(output);
     passed = false;

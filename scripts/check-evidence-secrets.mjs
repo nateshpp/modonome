@@ -36,7 +36,7 @@ function resolveFiles(argPath) {
         readFileSync(candidate); // probe existence without statSync
         files.push(candidate);
       } catch {
-        // not present — skip
+        // not present : skip
       }
     }
   }

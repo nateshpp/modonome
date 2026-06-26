@@ -3,7 +3,7 @@
  *
  * Attack vector: a malicious or misdirected agent modifies a gate script
  * (e.g. guard-ratchet.mjs) as part of the pull request it submits. If CI
- * loads the gate from the working tree — the PR's own copy — the agent can
+ * loads the gate from the working tree : the PR's own copy : the agent can
  * weaken or nullify the gate before it runs, making every subsequent check
  * toothless. The neutered version in fixtures/ratchet-neutered.mjs
  * (always exits 0) demonstrates the attack: an agent that controls the gate
@@ -20,7 +20,7 @@
  * into an isolated temp directory and runs it against the canonical
  * fixtures/ratchet-assertion-removal.patch. The real ratchet must exit 1
  * (violation caught). If an agent had substituted ratchet-neutered.mjs the
- * result would be exit 0 — a false pass.
+ * result would be exit 0 : a false pass.
  *
  * Expected outcomes:
  *   check-trust-boundary.mjs                              -> exit 0
@@ -71,14 +71,14 @@ const ratchetRun = spawnSync(
 if (ratchetRun.status === 0) {
   console.error(
     "FAIL: real guard-ratchet.mjs did not reject assertion removal " +
-    "(exit 0, expected 1) — the genuine ratchet is not enforcing"
+    "(exit 0, expected 1) : the genuine ratchet is not enforcing"
   );
   console.error(ratchetRun.stdout);
   passed = false;
 } else {
   console.log(
     "PASS: real guard-ratchet.mjs (copied to scratch dir) correctly rejects " +
-    "assertion removal with exit 1 — trust boundary enforces the genuine ratchet"
+    "assertion removal with exit 1 : trust boundary enforces the genuine ratchet"
   );
 }
 

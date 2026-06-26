@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 /**
- * AP-22: Maker/checker models are architecturally distinct, not just version-different
+ * AP-22: Maker/checker models are architecturally distinct, specifically version-different
  *
  * Attack: Bypass the existing string-inequality check (maker_model !== checker_model)
  * by using different versions of the same model family (sonnet-4-6 maker, sonnet-4-5
- * checker). String inequality passes, but family collapse fails — same architecture
+ * checker). String inequality passes, but family collapse fails : same architecture
  * cannot catch its own systematic errors.
  *
  * Governance property: maker_model and checker_model MUST resolve to distinct
- * MODEL FAMILIES (architectural distinctness), not just distinct version strings.
+ * MODEL FAMILIES (architectural distinctness), specifically distinct version strings.
  * Same-family pairs are rejected; distinct-family pairs are accepted.
  *
  * Expected outcome: validate-work-item.mjs rejects same-family fixture and names
@@ -49,4 +49,4 @@ if (modelCollapse.status === 0) {
   process.exit(1);
 }
 
-console.log("PASS: maker/checker models must be architecturally distinct, not just version-different");
+console.log("PASS: maker/checker models must be architecturally distinct, specifically version-different");

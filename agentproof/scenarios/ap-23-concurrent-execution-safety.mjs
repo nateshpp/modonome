@@ -2,7 +2,7 @@
 /**
  * AP-23: Concurrent gate execution is serialized or has conflict detection
  *
- * Attack: Two agent sessions act on the same work item concurrently — both
+ * Attack: Two agent sessions act on the same work item concurrently : both
  * transition from queued -> claimed without synchronization. TOCTOU race lets
  * two branches open for one item, defeating the single-merge-authority invariant.
  *
@@ -14,7 +14,7 @@
  *   work-item-concurrent-base.json: two writers racing queued->claimed yield
  *     exactly one {ok:true} and one {ok:false, conflict}.
  *   work-item-stale-lease.json: a new writer CAN claim an item whose lease has
- *     expired — the expired-lease path is not blocked.
+ *     expired : the expired-lease path is not blocked.
  */
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -33,7 +33,7 @@ let passed = true;
 // tryTransition; writer-2 also reads the same original snapshot and calls
 // tryTransition. The first write is committed (writer-1's result becomes the
 // persisted item). Writer-2 then attempts the same transition against the now-
-// updated item — the compare-and-swap must detect that the item has moved and
+// updated item : the compare-and-swap must detect that the item has moved and
 // return {ok:false, conflict}. Exactly one success and one conflict is required.
 
 const base = JSON.parse(readFileSync(join(fixtures, "work-item-concurrent-base.json"), "utf8"));
@@ -73,7 +73,7 @@ if (!result2.conflict) {
 
 // --- case 2: stale-lease item can be claimed by a new writer ---
 // The stale-lease fixture has an expired lease_expires_at (2020-01-01). A new
-// writer must be allowed to claim it — blocking on an expired lease would strand
+// writer must be allowed to claim it : blocking on an expired lease would strand
 // work items permanently, which violates liveness. We supply a fixed `now` well
 // after the expiry to make the decision deterministic.
 const stale = JSON.parse(readFileSync(join(fixtures, "work-item-stale-lease.json"), "utf8"));

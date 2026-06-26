@@ -4,7 +4,7 @@
  *
  * Attack: Evidence/learning capture reads a run log containing API keys, bearer
  * tokens, emails, or private IPs and commits it to RELEASE-EVIDENCE.md or a
- * promoted learning — leaking credentials into the public repo. validate-knowledge-packet.mjs
+ * promoted learning : leaking credentials into the public repo. validate-knowledge-packet.mjs
  * already screens packets (AP-08), but the broader evidence/learning capture path is unprotected.
  *
  * Governance property: Any text destined for committed evidence/learning MUST pass

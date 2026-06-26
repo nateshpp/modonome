@@ -2,8 +2,8 @@
 // Compare-and-swap a work item from one state to another under a lease.
 // The swap is the concurrency primitive that lets two writers race for the
 // same item without a real lock: a writer reads the item, proposes a
-// transition, and tryTransition decides — deterministically, from the item's
-// own fields — whether that writer is allowed to win. It succeeds only when
+// transition, and tryTransition decides : deterministically, from the item's
+// own fields : whether that writer is allowed to win. It succeeds only when
 // the item is still in the expected fromState AND the writer holds the lease
 // (no live lease, the lease is already theirs, or the lease has expired).
 // A foreign live lease or a state that has already moved is a conflict, and
