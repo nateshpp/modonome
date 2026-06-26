@@ -7,13 +7,23 @@ from `origin/main` and merged via PR + auto-merge. On a fresh container, read
 `git log origin/main` and the open PRs; this file is the human-readable index.
 
 ## Base
-- `origin/main` = `f61da51` (Wave 1 merged). Cut every NEW wave branch from latest `origin/main`.
+- `origin/main` = `6944aa9` (Wave 1 and Wave 2 merged). Cut every NEW wave branch from latest `origin/main`.
 
 ## Waves
-- Wave 1: WS-0, WS-H, WS-A, WS-E  -> PR #14 MERGED into main (f61da51). DONE.
-- Wave 2: WS-B -> WS-C            -> modonome/wave-2 (cut from origin/main f61da51). NEXT.
-- Wave 3: WS-D, WS-F             -> modonome/wave-3
+- Wave 1: WS-0, WS-H, WS-A, WS-E  -> PR #14 MERGED into main. DONE.
+- Wave 2: WS-B, WS-C              -> PR #15 MERGED (squash) into main (6944aa9). DONE.
+- Wave 3: WS-D, WS-F             -> modonome/wave-3 (cut from origin/main 6944aa9). NEXT.
 - Wave 4: WS-G                   -> modonome/wave-4
+
+## Stale remote branches (cannot delete from this env)
+- modonome/wave-1 and modonome/wave-2 are merged but still on the remote. git push --delete
+  is refused by the agent proxy (403/hung-up), the GitHub MCP has no delete-branch tool, and
+  api.github.com is blocked. Owner: enable "auto-delete head branches" and delete these two.
+
+## Merge note
+- The repo "Allow auto-merge" setting reads as off, so enable_pr_auto_merge fails each wave.
+  Per owner direction, PRs are landed by merge (squash) once CI is green and the independent
+  checker has signed off. Wave 2 was squash-merged on owner instruction.
 
 ## Workstream status
 - [x] WS-0  guardrails + run-blocker fixes        (wave-1, merged)
