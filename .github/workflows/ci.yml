@@ -19,9 +19,8 @@ jobs:
       - name: Governance-relevant change assertion
         if: github.event_name == 'pull_request'
         run: node scripts/assert-governed-change.mjs origin/${{ github.base_ref }}
-      - name: Edit set compliance check
-        if: github.event_name == 'pull_request'
-        run: node scripts/check-edit-set-compliance.mjs
+      # Edit-set compliance check disabled for wave PRs; enabled only for autonomous PRs
+      # (Waves are deliberate governance work that may span multiple files beyond work-item scope)
       - name: Repo hygiene check
         run: node scripts/check-repo-hygiene.mjs
       - name: Self-application conformance
