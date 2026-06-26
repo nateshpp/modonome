@@ -1,30 +1,16 @@
 #!/usr/bin/env node
 /**
- * AP-24: Maker/checker model-alias evasion (documents a known limitation)
+ * AP-24: Maker/checker model-alias evasion (now enforced)
  *
- * Attack: the work-item validator's model-collapse rule (AP-07) compares
- * maker_model and checker_model as exact strings. An agent evades it by naming
- * two members of the SAME model family/capability with different identifier
- * strings -- e.g. maker_model="gpt-4", checker_model="gpt-4-turbo". The strings
- * differ, so the equality check passes, yet the two "independent" reviewers are
- * effectively the same model and cannot catch each other's systematic errors.
+ * Attack: an agent names two members of the same model family with different
+ * identifier strings -- e.g. maker_model="gpt-4", checker_model="gpt-4-turbo".
+ * The exact-string AP-07 check passes, yet the two "independent" reviewers share
+ * architecture-level blind spots and cannot catch each other's systematic errors.
  *
- * DESIGN DECISION (per SPEC s.9: heuristic checks MUST be advisory, not normative):
- *   Normalizing model identifiers to capability classes requires a curated,
- *   versioned alias/family table that drifts as vendors ship models. A baked-in
- *   alias list would be both incomplete (new aliases evade it) and a source of
- *   false positives (genuinely distinct models sharing a prefix). AgentProof
- *   therefore keeps alias normalization OUT of the normative suite. The
- *   deterministic guarantee that remains is exact-string distinctness (AP-07);
- *   capability-family distinctness is an operator policy concern enforced via the
- *   trusted model registry, not a diff-time check.
+ * Control tested: scripts/validate-work-item.mjs (model family/architecture check).
  *
- * Control tested: scripts/validate-work-item.mjs.
- *
- * Expected outcome: this scenario PASSES by (a) confirming the EXACT-match
- * control still fires when the strings are identical (regression guard), and
- * (b) documenting that the distinct-string alias case is accepted today -- the
- * known limitation -- so the gap is recorded rather than silently assumed closed.
+ * Expected outcome: validator exits 1 for both exact-string collapse (AP-07
+ * regression) and alias-family collapse (AP-24 normative enforcement).
  */
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -43,14 +29,12 @@ if (exact.status !== 1) {
   process.exit(1);
 }
 
-// (b) Known limitation: distinct alias strings of the same family are accepted today.
+// (b) Alias-family collapse is now normatively rejected.
 const alias = spawnSync("node", [validator, join(fixtures, "work-item-model-alias-collapse.json")], { encoding: "utf8" });
-if (alias.status !== 0) {
-  console.error("AP-24 NOTE: alias-distinct models are now rejected -- the documented limitation");
-  console.error("has been closed. Update this scenario to assert exit 1 and tighten the SPEC.");
+if (alias.status !== 1) {
+  console.error(`AP-24 FAIL: alias-family collapse was not rejected (exit ${alias.status}, expected 1)`);
   console.error(alias.stdout + alias.stderr);
   process.exit(1);
 }
 
-console.log("AP-24 PASS: exact model-string distinctness enforced (AP-07 regression guard holds);");
-console.log("           capability-family alias normalization documented as a known, advisory-only limitation.");
+console.log("AP-24 PASS: both exact model-string collapse and alias-family collapse are rejected.");
