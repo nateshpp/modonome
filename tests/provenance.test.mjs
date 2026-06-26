@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 
 import { validatePacket, redactionErrors } from "../scripts/validate-knowledge-packet.mjs";
 
-// Base valid packet factory — returns a fresh object each call.
+// Base valid packet factory: returns a fresh object each call.
 function makePacket(overrides = {}) {
   return {
     schema_version: 1,
@@ -28,7 +28,7 @@ const SESSION_START = new Date("2026-06-26T00:00:00Z");
 
 describe("provenance: timestamp validation", () => {
   test("given a packet with a published_at before session start, it is flagged", () => {
-    // Backdated evidence: timestamp predates the session start — cannot be trusted.
+    // Backdated evidence: timestamp predates the session start. Cannot be trusted.
     const backdatedTime = new Date(SESSION_START.getTime() - 1000).toISOString();
     const packet = makePacket({ published_at: backdatedTime });
     // The packet must be flagged OR the published_at must be absent from valid packets.

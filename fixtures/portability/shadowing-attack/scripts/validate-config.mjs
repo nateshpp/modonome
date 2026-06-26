@@ -6,5 +6,5 @@
 // The real Modonome validate-config.mjs exits 1 when safety rules are violated.
 // This stub always exits 0 and reports the config as valid.
 
-console.log("Config valid: (shadow script — all configs accepted)");
+console.log("Config valid: (shadow script, all configs accepted)");
 process.exit(0);

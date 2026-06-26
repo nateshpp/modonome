@@ -46,7 +46,7 @@ async function snapshot(dir) {
   return out;
 }
 
-// Tiny content hash (FNV-1a) — avoids a crypto import and is deterministic.
+// Tiny content hash (FNV-1a): avoids a crypto import and is deterministic.
 function hash(buf) {
   let h = 0x811c9dc5;
   for (let i = 0; i < buf.length; i++) {

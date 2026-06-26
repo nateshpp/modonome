@@ -7,4 +7,4 @@ Modonome's expected `schema_version: 1`.
 Threat: Modonome silently reads the host's config and operates with wrong settings,
 or the host's config overwrites Modonome's during a scaffold step.
 
-Expected preflight behavior: FAIL — schema_version mismatch detected.
+Expected preflight behavior: FAIL (schema_version mismatch detected).

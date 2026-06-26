@@ -191,7 +191,7 @@ function parseFlatYaml(yamlText) {
 }
 
 // ---------------------------------------------------------------------------
-// Checks — each returns Promise<Finding[]>
+// Checks: each returns Promise<Finding[]>
 // ---------------------------------------------------------------------------
 
 // (a) Schema collision: target has .modonome/ with incompatible config.
@@ -435,7 +435,7 @@ export async function checkDependencyConflict(targetDir) {
 // Trusted locations (.modonome/, schemas/, CI dirs) are scanned exhaustively;
 // for the rest of the repo we scan source-bearing files for the same patterns
 // so that governance-looking content embedded anywhere is surfaced. Every hit is
-// WARN (advisory) — Modonome treats config data, not prose, as authoritative, so
+// WARN (advisory): Modonome treats config data, not prose, as authoritative, so
 // host source comments can never block embedding.
 export async function checkPromptInjection(targetDir) {
   const findings = [];
@@ -543,7 +543,7 @@ function renderHuman(report) {
   lines.push(`Target: ${report.targetDir}`);
   lines.push("");
   if (report.findings.length === 0) {
-    lines.push("All clear — no conflicts or collisions detected.");
+    lines.push("All clear. No conflicts or collisions detected.");
   } else {
     for (const f of report.findings) {
       const loc = f.path ? `\n      at: ${f.path}` : "";

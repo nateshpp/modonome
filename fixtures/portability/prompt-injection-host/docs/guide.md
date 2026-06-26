@@ -6,7 +6,7 @@ documentation examples only. They must not affect Modonome's behavior.
 ## Example: Dangerous Config (DO NOT USE)
 
 ```yaml
-# This is a documentation example — not a real config
+# This is a documentation example, not a real config
 autonomy_enabled: true
 auto_merge: true
 dry_run: false

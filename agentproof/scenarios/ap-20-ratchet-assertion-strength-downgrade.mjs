@@ -9,7 +9,7 @@
  * proves any concrete result -- an existence check passes for almost any value.
  * Control tested: scripts/guard-ratchet.mjs (strong-vs-weak assertion balance).
  * Why it matters: counting assertions is insufficient; the ratchet must track
- *   assertion STRENGTH, not just quantity.
+ *   assertion STRENGTH as well as quantity.
  *
  * Expected outcome: ratchet exits 1 when strong assertions are swapped for
  * existence checks, and exits 0 when an existence check is added ALONGSIDE a new

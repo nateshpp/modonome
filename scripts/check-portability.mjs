@@ -6,9 +6,9 @@
  *
  * Runs a battery of checks against a fixture (or real host repo) directory
  * and reports:
- *   SAFE  — no conflicts found
- *   WARN  — potential issues that may cause problems
- *   FAIL  — definite conflicts that will break Modonome
+ *   SAFE  - no conflicts found
+ *   WARN  - potential issues that may cause problems
+ *   FAIL  - definite conflicts that will break Modonome
  *
  * Exit codes: 0 for SAFE or WARN, 1 for FAIL.
  */
@@ -87,7 +87,7 @@ if (existsSync(modonomeConfigPath)) {
       if (val !== "true" && val !== "false") {
         fail(
           "SCHEMA_TYPE_MISMATCH",
-          `.modonome/config.yaml has ${field}: ${fieldMatch[1]} — must be boolean true or false`
+          `.modonome/config.yaml has ${field}: ${fieldMatch[1]} (must be boolean true or false)`
         );
       }
     }
@@ -109,7 +109,7 @@ if (existsSync(modonomeConfigPath)) {
     if (!KNOWN_KEYS.has(key)) {
       warn(
         "SCHEMA_UNKNOWN_KEY",
-        `.modonome/config.yaml contains unknown key "${key}" — may be a foreign config`
+        `.modonome/config.yaml contains unknown key "${key}" (may be a foreign config)`
       );
     }
   }
@@ -217,7 +217,7 @@ if (existsSync(hostScriptsDir)) {
       } else {
         warn(
           "SCRIPT_SHADOW_WARN",
-          `scripts/${script} exists in host repo at the same path as Modonome's script — verify it is not a shadow`
+          `scripts/${script} exists in host repo at the same path as Modonome's script. Verify it is not a shadow.`
         );
       }
     }

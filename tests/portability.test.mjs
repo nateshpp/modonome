@@ -3,11 +3,11 @@
  *
  * Each fixture in fixtures/portability/ simulates a "hostile repo" scenario
  * where Modonome is embedded in a host that creates one of the known risks:
- *   1. schema-collision   — host already has a .modonome/config.yaml with wrong schema
- *   2. ci-job-conflict    — host CI defines the same job names as Modonome
- *   3. prompt-injection   — host source files contain governance instruction patterns
- *   4. shadowing-attack   — host scripts/ shadows Modonome's scripts at identical paths
- *   5. env-pollution      — host exports env vars that could affect Modonome's behavior
+ *   1. schema-collision   - host already has a .modonome/config.yaml with wrong schema
+ *   2. ci-job-conflict    - host CI defines the same job names as Modonome
+ *   3. prompt-injection   - host source files contain governance instruction patterns
+ *   4. shadowing-attack   - host scripts/ shadows Modonome's scripts at identical paths
+ *   5. env-pollution      - host exports env vars that could affect Modonome's behavior
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -122,7 +122,7 @@ test("prompt-injection-host: fixture contains real injection patterns", () => {
 
 test("prompt-injection-host: Modonome's validate-config is unaffected by host source files", () => {
   // Modonome's validate-config reads only the config file path given to it.
-  // Run it against the legitimate Modonome template config — it must still pass
+  // Run it against the legitimate Modonome template config. It must still pass
   // even when the cwd is the prompt-injection fixture directory.
   const templateConfig = join(root, "templates", ".modonome", "config.yaml");
   const r = spawnSync(
@@ -137,7 +137,7 @@ test("prompt-injection-host: Modonome's validate-config is unaffected by host so
 });
 
 test("prompt-injection-host: guard-ratchet is unaffected by host source files", () => {
-  // Use a clean diff — the ratchet must still pass, proving host content did not
+  // Use a clean diff; the ratchet must still pass, proving host content did not
   // corrupt its logic.
   const cleanDiff = join(root, "fixtures", "ratchet-diffs", "clean");
 
@@ -159,7 +159,7 @@ test("prompt-injection-host: guard-ratchet is unaffected by host source files", 
 
 test("prompt-injection-host: preflight check reports WARN", () => {
   const r = runPortabilityCheck(join(fx, "prompt-injection-host"));
-  // Injection content is present but Modonome's config is absent — WARN not FAIL
+  // Injection content is present but Modonome's config is absent (WARN not FAIL).
   assert.match(r.stdout, /WARN|FAIL/i, "output must contain WARN or FAIL");
 });
 

@@ -20,7 +20,7 @@ function buildLargeDiff(lines) {
   chunks.push("--- a/src/app.test.ts");
   chunks.push("+++ b/src/app.test.ts");
   for (let i = 0; i < lines; i++) {
-    chunks.push(`+// generated line ${i} — no assertions removed`);
+    chunks.push(`+// generated line ${i} - no assertions removed`);
   }
   return chunks.join("\n") + "\n";
 }
@@ -107,7 +107,7 @@ describe("performance: work item validation", () => {
       allowed_edit_set: ["src/foo.ts"],
       gates: ["npm test"],
       maker_id: "alice",
-      checker_id: "alice", // same — violates separation of duties
+      checker_id: "alice", // same; violates separation of duties
     };
     const start = Date.now();
     const errors = validateWorkItem(item);

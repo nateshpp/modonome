@@ -68,7 +68,7 @@ test("prompt-injection-host: exits 2 (WARN), host content does not block", () =>
   const { code, report } = runPreflight("prompt-injection-host");
   assert.equal(code, 2, "host content must be advisory (exit 2), not fatal");
   assert.ok(ids(report).includes("prompt-injection"), "must report prompt-injection");
-  // No ERROR findings — host source content can never block embedding.
+  // No ERROR findings: host source content can never block embedding.
   assert.equal(findingsBySeverity(report, "ERROR").length, 0);
   for (const f of report.findings.filter((x) => x.id === "prompt-injection")) {
     assert.equal(f.severity, "WARN");
