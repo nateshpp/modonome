@@ -34,6 +34,8 @@ const REQUIRED_GATES = [
   { name: "AgentProof", needle: "agentproof/runner.mjs" },
   { name: "learning traceability", needle: "check-learning-traceability.mjs" },
   { name: "capability promotion readiness", needle: "check-promotion-readiness.mjs" },
+  { name: "work item validation", needle: "check-work-items.mjs" },
+  { name: "checker engagement", needle: "check-checker-engagement.mjs" },
 ];
 for (const g of REQUIRED_GATES) {
   if (!ci.includes(g.needle)) problems.push(`ci.yml does not run the ${g.name} gate (${g.needle}).`);

@@ -31,13 +31,18 @@ without telemetry, gaming is invisible until a problem surfaces in production.
    - `checker_questions_raised`: count of distinct findings or concerns
    - `checker_approval_after_changes`: latency from maker's diff to checker's "approved"
 
-2. **Ratchet for checker ghosting:** In `guard-ratchet.mjs`, add a check:
-   - If the same checker approves 10+ consecutive runs with `checker_requested_changes` = false
-     and `checker_questions_raised` = 0, fail the next PR with a warning:
+2. **Gate for checker ghosting:** Implemented as `scripts/check-checker-engagement.mjs`, a
+   CI gate (kept out of `guard-ratchet.mjs`, which stays diff-only and base-branch-isolated):
+   - If the same checker approves `MODONOME_GHOST_THRESHOLD` (default 10) consecutive runs with
+     `checker_requested_changes` = false and `checker_questions_raised` = 0, the gate fails:
      "Checker has approved N consecutive runs with no engagement. Reset by asking for changes
      on the next run, or escalate to a different checker."
-   - This prevents silent rubber-stamping without breaking the model (it's a warning, not a
-     block, and it can be reset by actual engagement).
+   - The counter resets on real engagement (a requested change or a raised question), so the
+     contract stays usable; a checker that engages clears the pattern.
+
+**Status of implementation:** `scripts/check-checker-engagement.mjs`, wired into
+`.github/workflows/ci.yml`, covered by `tests/maker-checker.test.mjs`. With no checker
+telemetry yet, the gate passes; it activates once the loop writes the fields above.
 
 3. **Telemetry is published** in the control panel (Milestone 3) so an owner can see checker
    engagement trends and detect patterns.
