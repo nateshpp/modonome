@@ -18,15 +18,15 @@ adopter repo. The factory reads each target repo's in-repo agent org
 
 ## Architecture
 
-- `gateway/` — an OpenAI-compatible proxy in front of LM Studio. Serializes concurrent
+- `gateway/`. an OpenAI-compatible proxy in front of LM Studio. Serializes concurrent
   requests from many repos onto scarce local GPU (a global semaphore), and routes by
   model name so it can host more than one local family. Shared infra.
-- `fleet_runner/` — the engine. `tools.py` shells out to a target repo's modonome
+- `fleet_runner/`. the engine. `tools.py` shells out to a target repo's modonome
   scripts (the single source of truth for gates and state); `crew.py` runs the
   maker-then-checker loop for one work item; `agents.py`/`llms.py` build the local maker
   and the claude-CLI checker; `registry.py` binds repos to common workers;
   `scheduler.py` organizes work across repos under a global concurrency cap.
-- `fleets/registry.yaml` — the self-organizing list of managed repos. Phase A registers
+- `fleets/registry.yaml`. the self-organizing list of managed repos. Phase A registers
   modonome alone; adding a repo is config-only.
 
 ## Zero metered API by construction
@@ -83,11 +83,11 @@ preserves maker is not merger.
 
 ## Evolution surfaces (this repo keeps getting better)
 
-- `DECISIONS.md` — architecture decisions and their rationale.
-- `LEARNINGS.md` — what we learned wiring the factory to modonome.
-- `STATUS.md` — what is built, live, and pending.
-- `ROADMAP.md` — Phase A and Phase B.
-- `AGENTS.md` — how to work on this repo.
+- `DECISIONS.md`. architecture decisions and their rationale.
+- `LEARNINGS.md`. what we learned wiring the factory to modonome.
+- `STATUS.md`. what is built, live, and pending.
+- `ROADMAP.md`. Phase A and Phase B.
+- `AGENTS.md`. how to work on this repo.
 
 Read these first; write progress back to them. Same discipline modonome applies to a
 governed repo, applied to the factory itself.
