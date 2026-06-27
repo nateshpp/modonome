@@ -2,6 +2,7 @@
 
 **Status:** Proposed
 **Date:** 2026-06-24
+**Milestone:** 6 (Self-governance hardening)
 
 ## Context
 
