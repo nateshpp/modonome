@@ -31,7 +31,7 @@ be added here once the owner arms the loop on this repo.
 
 - done: 18
 - merge_ready: 2
-- queued: 1
+- queued: 3
 
 ## Sample-app captures
 
