@@ -6,6 +6,7 @@
 <title>Modonome - Governed autonomy for any repo</title>
 <meta name="description" content="The autonomous engineering loop that arms only on your command, sends every change through an independent checker, and keeps your tests at full strength. Off by default. No central service. MIT licensed.">
 <link rel="canonical" href="https://modonome.com/">
+<link rel="sitemap" type="application/xml" href="/sitemap.xml">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://modonome.com/">
 <meta property="og:title" content="Modonome - Governed autonomy for any repo">
@@ -18,7 +19,7 @@
   "@type": "SoftwareApplication",
   "name": "Modonome",
   "applicationCategory": "DeveloperApplication",
-  "description": "Governed autonomy framework for software engineering agents. Includes AgentProof — the adversarial benchmark for agent gate-integrity, scoring 25/25 HARDENED against known gaming patterns including assertion removal, skip injection, type escape, coverage removal, identity collapse, prompt injection, and resource exhaustion.",
+  "description": "Governed autonomy framework for software engineering agents. Includes AgentProof, the adversarial benchmark for agent gate-integrity, scoring 25/25 HARDENED against known gaming patterns including assertion removal, skip injection, type escape, coverage removal, identity collapse, prompt injection, and resource exhaustion.",
   "url": "https://modonome.com",
   "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
   "license": "https://opensource.org/licenses/MIT",
@@ -38,9 +39,9 @@
 </head>
 <body>
 <noscript>
-<h1>Modonome — Governed Autonomy for Any Repo</h1>
+<h1>Modonome: Governed Autonomy for Any Repo</h1>
 <p>The autonomous engineering loop that arms only on your command, sends every change through an independent checker, and keeps your tests at full strength. Off by default. No central service. MIT licensed.</p>
-<h2>AgentProof — 25/25 HARDENED</h2>
+<h2>AgentProof: 25/25 HARDENED</h2>
 <p>AgentProof is the adversarial benchmark for agent gate-integrity. It proves through 25 executable scenarios that an implementation's gates hold under attack. Modonome scores 25/25 HARDENED.</p>
 <p>Scenarios covered: assertion removal (JS/TS, Java, .NET, Python), test skip injection, broad type escape, coverage threshold removal, unsafe config combinations, identity collapse (maker/checker same session or same model family), raw code leakage, schema/prompt/template drift, protected-path escalation, prompt injection inertness, state machine acyclicity, deterministic gate ordering, trust boundary (base-branch code loading), audit trail append-only integrity, model diversity enforcement, concurrent mutation serialization, gate DAG acyclicity, evidence secret screening, resource cap enforcement.</p>
 <p><a href="https://github.com/nateshpp/modonome">GitHub</a> · <a href="https://github.com/nateshpp/modonome/blob/main/agentproof/README.md">AgentProof</a> · <a href="https://github.com/nateshpp/modonome/blob/main/QUICKSTART.md">Quickstart</a></p>
@@ -638,7 +639,7 @@ class Component extends DCLogic {
       netGeo: null, netActive: -1, netPhase: 'idle', netSeq: 0, netShared: 128, activeSection: 'top',
       live: null, syncStatus: 'cached' };
     this.repoBase = { tests: 248, coverage: '81%', deps: 3, debt: 12 };
-    this.engineBase = { lessons: 2, rules: 0, gates: 8, queue: 0, version: '1', armed: false };
+    this.engineBase = { lessons: 2, rules: 0, gates: 8, queue: 1, version: '1', armed: false };
     this.STAGES = [
       {title:'Maker', sub:'builds one small change', scope:'AGENT'},
       {title:'Checker', sub:'reviews it independently', scope:'AGENT'},
