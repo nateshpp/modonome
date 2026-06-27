@@ -4,14 +4,14 @@
 **Current mode:** Dry-run  
 **Autonomy enabled:** false  
 
-## Phase A — Local Agentic Orchestration (dry-run verified 2026-06-27)
+## Phase A: Local Agentic Orchestration (dry-run verified 2026-06-27)
 
 The maker → checker loop is verified end-to-end in dry-run mode using fully local models:
 
 - **Maker:** `qwen2.5.1-coder-7b-instruct` via fleet gateway at `127.0.0.1:8080`
 - **Checker:** `mistralai/mistral-7b-instruct-v0.3` via same gateway
 - **Gateway:** OpenAI-compatible proxy (Uvicorn/FastAPI) with global semaphore and forced non-streaming
-- **Dry run:** rehearsal-5 completed — queued → making → checking → merge_ready (parked)
+- **Dry run:** rehearsal-5 completed. State transition: queued → making → checking → merge_ready (parked)
 - **Diff:** 42 lines, within cap; gates green; checker advisory only (no requested changes)
 
 Go-live checklist (owner sign-off required before arming):
