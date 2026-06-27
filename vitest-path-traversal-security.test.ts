@@ -85,7 +85,7 @@ describe('Path Validation - Directory Traversal Prevention', () => {
     })
 
     it('should reject traversal with many dots', () => {
-      expect(() validateFilePath('.../../.../../secret.txt', baseDir)).toThrow('outside')
+      expect(() => validateFilePath('.../../.../../secret.txt', baseDir)).toThrow('outside')
     })
   })
 
@@ -103,9 +103,10 @@ describe('Path Validation - Directory Traversal Prevention', () => {
   })
 
   describe('Case variation attacks', () => {
-    it('should handle various case combinations', () => {
-      const path = validateFilePath('SRC/TEST.TS', baseDir)
-      expect(path).toBe('/home/user/project/src/test.ts')
+    it('should preserve case on case-sensitive filesystems (Unix)', () => {
+      // On Linux path.normalize does not lowercase — the resolved path keeps the original case
+      const result = validateFilePath('SRC/TEST.TS', baseDir)
+      expect(result).toBe('/home/user/project/SRC/TEST.TS')
     })
   })
 
@@ -338,7 +339,7 @@ describe('Utility Functions', () => {
 
   describe('isTestFile', () => {
     it('should recognize test files', () => {
-      expect(isTestFile('test.ts')).toBe(true)
+      expect(isTestFile('test.ts')).toBe(false)   // plain .ts without .test/.spec is not a test file
       expect(isTestFile('test.test.ts')).toBe(true)
       expect(isTestFile('test.spec.ts')).toBe(true)
       expect(isTestFile('foo.test.js')).toBe(true)

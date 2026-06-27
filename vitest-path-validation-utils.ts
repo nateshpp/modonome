@@ -5,7 +5,8 @@
  * on all platforms, especially Windows UNC path exploits.
  */
 
-import { resolve, normalize, relative, isAbsolute } from 'path'
+import path from 'path'
+const { resolve, normalize, relative, isAbsolute } = path
 
 /**
  * Options for path validation
@@ -87,42 +88,47 @@ export function validateFilePath(
 
   const platform = options.platform || process.platform
 
+  // Select the correct path module for the target platform so that unit tests
+  // running on Linux with platform:'win32' exercise Windows path semantics.
+  const pathMod = platform === 'win32' ? path.win32 : path.posix
+
   // First normalize separators and remove redundant slashes
-  let normalizedPath = normalize(inputPath)
+  let normalizedPath = pathMod.normalize(inputPath)
 
   // On Windows, handle drive letters and UNC paths
   if (platform === 'win32') {
-    // UNC paths: \\server\share\path
-    // After normalize(), these become \\server\share\path
-    // We need to validate them properly
-
-    // Drive letter detection: C:, D:, etc.
-    if (normalizedPath.match(/^[a-zA-Z]:[/\\]/)) {
-      // Has a drive letter, keep it as-is
-    }
-
-    // Windows allows various forms of path traversal:
-    // 1. .\..
-    // 2. ..\
-    // 3. \\?\ (special device paths)
-    // 4. \\.\  (local device)
-    // 5. CON, PRN, AUX, NUL, COM1-9, LPT1-9 (reserved names)
-
-    // Remove Windows special path prefixes
-    if (normalizedPath.startsWith('\\\\?\\')) {
+    // Remove Windows extended-length and device path prefixes BEFORE any
+    // further processing — these bypass most kernel-level path checks.
+    // \\?\ — extended-length path (skips MAX_PATH limit and most validation)
+    // \\.\ — local device namespace (e.g. \\.\PhysicalDrive0)
+    if (normalizedPath.startsWith('\\\\?\\') || normalizedPath.startsWith('\\\\?/')) {
       normalizedPath = normalizedPath.slice(4)
     }
-    if (normalizedPath.startsWith('\\\\.\\')) {
+    if (normalizedPath.startsWith('\\\\.\\') || normalizedPath.startsWith('\\\\./')) {
       normalizedPath = normalizedPath.slice(4)
     }
 
-    // Detect reserved device names
-    const filename = normalizedPath.split(/[/\\]/).pop()?.toUpperCase() || ''
-    const reservedNames = ['CON', 'PRN', 'AUX', 'NUL', 'COM1', 'COM2', 'COM3', 'COM4',
-                          'COM5', 'COM6', 'COM7', 'COM8', 'COM9', 'LPT1', 'LPT2',
-                          'LPT3', 'LPT4', 'LPT5', 'LPT6', 'LPT7', 'LPT8', 'LPT9']
-    if (reservedNames.includes(filename)) {
-      throw new Error(`Cannot access reserved device name: ${filename}`)
+    // Detect Windows reserved device names.  Windows ignores extensions, so
+    // NUL.txt and COM1.ts open the device, not a file.  Strip extension before
+    // checking.
+    const reservedNames = new Set([
+      'CON', 'PRN', 'AUX', 'NUL',
+      'COM0', 'COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6', 'COM7', 'COM8', 'COM9',
+      'LPT0', 'LPT1', 'LPT2', 'LPT3', 'LPT4', 'LPT5', 'LPT6', 'LPT7', 'LPT8', 'LPT9',
+    ])
+    const rawFilename = normalizedPath.split(/[/\\]/).pop() || ''
+    // Strip extension and any trailing dot (Windows ignores both)
+    const stemOnly = rawFilename.split('.')[0].replace(/\.$/, '').toUpperCase()
+    if (reservedNames.has(stemOnly)) {
+      throw new Error(`Cannot access reserved device name: ${rawFilename}`)
+    }
+
+    // Detect Alternate Data Streams (file.txt:Zone.Identifier).
+    // A colon that is NOT the drive-letter separator is an ADS indicator.
+    const colonIdx = normalizedPath.indexOf(':')
+    const isDriveLetter = colonIdx === 1 && /^[a-zA-Z]/.test(normalizedPath)
+    if (colonIdx !== -1 && !isDriveLetter) {
+      throw new Error('Alternate data stream access is not allowed')
     }
   }
 
@@ -130,23 +136,23 @@ export function validateFilePath(
   // Resolve to Absolute Path
   // =========================================================================
 
-  // Normalize base directory
-  const normalizedBase = normalize(baseDir)
-  const basePath = resolve(normalizedBase)
+  // Normalize base directory using the same platform-specific module
+  const normalizedBase = pathMod.normalize(baseDir)
+  const basePath = pathMod.resolve(normalizedBase)
 
   let resolvedPath: string
 
   // Determine if the input is absolute or relative
-  if (isAbsolute(normalizedPath)) {
+  if (pathMod.isAbsolute(normalizedPath)) {
     // Absolute path provided
     if (!options.allowAbsolute) {
       throw new Error('Absolute paths are not allowed for security reasons')
     }
 
-    resolvedPath = resolve(normalizedPath)
+    resolvedPath = pathMod.resolve(normalizedPath)
   } else {
     // Relative path - resolve relative to base
-    resolvedPath = resolve(basePath, normalizedPath)
+    resolvedPath = pathMod.resolve(basePath, normalizedPath)
   }
 
   // =========================================================================
@@ -154,7 +160,7 @@ export function validateFilePath(
   // =========================================================================
 
   // Get the relative path from base to resolved
-  const relativePath = relative(basePath, resolvedPath)
+  const relativePath = pathMod.relative(basePath, resolvedPath)
 
   // If relative path starts with .., it's outside the base directory
   if (relativePath.startsWith('..')) {
@@ -203,26 +209,38 @@ export function validateFilePath(
 }
 
 /**
- * Check if a host is a localhost address
+ * Check if a host value represents a localhost address.
+ *
+ * Handles all common forms:
+ *   127.0.0.1, 127.0.0.1:3000
+ *   ::1, [::1], [::1]:3000
+ *   ::ffff:127.0.0.1  (IPv4-mapped on dual-stack Node socket)
+ *   localhost, localhost:3000
  */
 export function isLocalhost(host: string | undefined): boolean {
   if (!host || typeof host !== 'string') {
     return false
   }
 
-  // Remove port number
-  const hostname = host.split(':')[0].toLowerCase().trim()
+  let hostname = host.toLowerCase().trim()
 
-  // Localhost addresses
-  const localhostNames = [
+  if (hostname.startsWith('[')) {
+    // Bracketed IPv6 with optional port: [::1] or [::1]:3000
+    hostname = hostname.replace(/^\[([^\]]+)\].*$/, '$1')
+  } else if (hostname.includes(':') && !hostname.startsWith('::')) {
+    // IPv4 with port: 127.0.0.1:3000
+    hostname = hostname.split(':')[0]
+  }
+  // else: bare IPv6 (::1), bare IPv4, or plain hostname — use as-is
+
+  const localhostAddresses = new Set([
     'localhost',
     '127.0.0.1',
-    '::1',           // IPv6 loopback
-    '[::1]',         // IPv6 loopback with brackets
-    '0000:0000:0000:0000:0000:0000:0000:0001', // Full IPv6
-  ]
+    '::1',
+    '::ffff:127.0.0.1', // IPv4-mapped loopback on dual-stack Node sockets
+  ])
 
-  return localhostNames.includes(hostname)
+  return localhostAddresses.has(hostname)
 }
 
 /**

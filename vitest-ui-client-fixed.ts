@@ -187,7 +187,8 @@ export class VitestAPIClient {
   async query<T = any>(method: string, args: any[] = []): Promise<T> {
     return new Promise((resolve, reject) => {
       const messageId = this.generateMessageId()
-      const sensitiveOperations = ['saveTestFile', 'rerun', 'updateConfig']
+      // Must stay in sync with SENSITIVE_METHODS on the server
+      const sensitiveOperations = ['saveTestFile', 'rerun', 'updateConfig', 'updateSettings', 'deleteFile', 'createFile']
 
       // Build the message
       const message: VitestMessage = {

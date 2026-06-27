@@ -11,7 +11,7 @@
 
 import ws from 'ws'
 import { IncomingMessage } from 'http'
-import { randomBytes } from 'crypto'
+import { randomBytes, timingSafeEqual, createHash } from 'crypto'
 
 // ============================================================================
 // Types
@@ -59,9 +59,14 @@ function isOriginAllowed(
     const url = new URL(origin)
     const hostname = url.hostname
 
-    // Whitelist localhost and IPv6 ::1
+    // Whitelist localhost and IPv6 loopback.
+    // WHATWG URL parses http://[::1] with brackets in hostname, so check both forms.
     const isLocalhost =
-      hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1'
+      hostname === 'localhost' ||
+      hostname === '127.0.0.1' ||
+      hostname === '::1' ||
+      hostname === '[::1]' ||
+      hostname === '::ffff:127.0.0.1'
 
     if (isLocalhost) {
       return true
@@ -75,20 +80,16 @@ function isOriginAllowed(
 }
 
 /**
- * Constant-time string comparison to prevent timing attacks
- * Prevents attackers from using timing differences to guess tokens
+ * Constant-time string comparison to prevent timing attacks.
+ *
+ * Both values are SHA-256 hashed before comparison so timingSafeEqual always
+ * receives equal-length buffers, preventing the early-exit length leak that a
+ * plain XOR loop would expose.
  */
 function constantTimeCompare(a: string, b: string): boolean {
-  if (a.length !== b.length) {
-    return false
-  }
-
-  let result = 0
-  for (let i = 0; i < a.length; i++) {
-    result |= a.charCodeAt(i) ^ b.charCodeAt(i)
-  }
-
-  return result === 0
+  const ha = createHash('sha256').update(a).digest()
+  const hb = createHash('sha256').update(b).digest()
+  return timingSafeEqual(ha, hb)
 }
 
 /**
@@ -332,16 +333,15 @@ function handleGetFiles(message: VitestMessage, ws: ws.WebSocket): void {
  */
 export function createTokenEndpoint(token: string) {
   return (req: any, res: any) => {
-    const hostname = req.hostname || req.socket.remoteAddress
+    // Always use the TCP socket's remote address — never req.hostname, which is
+    // derived from the Host header and can be spoofed by a remote attacker
+    // sending `Host: localhost` to a server bound on 0.0.0.0.
+    const remoteAddr: string = req.socket?.remoteAddress || ''
 
-    // Only serve to localhost/127.0.0.1
     const isLocal =
-      hostname === 'localhost' ||
-      hostname === '127.0.0.1' ||
-      hostname === '::1' ||
-      hostname === '[::1]' ||
-      req.socket.remoteAddress === '127.0.0.1' ||
-      req.socket.remoteAddress === '::1'
+      remoteAddr === '127.0.0.1' ||
+      remoteAddr === '::1' ||
+      remoteAddr === '::ffff:127.0.0.1' // IPv4-mapped on dual-stack Node socket
 
     if (!isLocal) {
       res.status(403).json({ error: 'Forbidden: Token endpoint only available on localhost' })
