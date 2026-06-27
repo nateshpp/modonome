@@ -21,6 +21,22 @@ Every decision defaults to hold when unanswered.
     standard with an open stdio runner protocol. See ADR-003 and WI-012.
   resolved: 2026-06-24
 
+- id: phase-a-checker-model
+  question: Use claude CLI (subscription) or a local model as the Phase A checker?
+  decision: Local Mistral 7B via gateway. Claude CLI had persistent ECONNRESET errors
+    in the Mac mini environment; Mistral 7B is zero-cost, zero-metered, and passes
+    require_distinct_maker_checker_model (different family from Qwen maker). The claude
+    CLI remains the preferred checker for production once network issues are resolved.
+  resolved: 2026-06-27
+
+- id: phase-a-gateway-streaming
+  question: Should the fleet gateway support streaming responses?
+  decision: Disabled for now. Streaming errors inside an async generator cannot be
+    caught by FastAPI after StreamingResponse is returned, causing silent 502s. All
+    responses are buffered (stream=False forced at the proxy). Streaming can be
+    re-enabled in Phase B once the error-handling path is hardened.
+  resolved: 2026-06-27
+
 ## Open
 
 - id: dry-run-git-integration

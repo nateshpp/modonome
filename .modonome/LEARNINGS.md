@@ -17,7 +17,17 @@ Staged format:
 
 ## Staged
 
-(none queued)
+- [2026-06-27] (signal: incident) Use 127.0.0.1 instead of localhost for LM Studio and gateway URLs when Pi-hole or network-level DNS blocking is active — localhost may resolve through a DNS blocker and return an HTML error page instead of the API. evidence: Phase A go-live hardening on Mac mini.
+
+- [2026-06-27] (signal: incident) Force non-streaming (stream=False) in the gateway proxy — httpx exceptions raised inside an async generator after StreamingResponse is returned cannot be caught by FastAPI and silently become 502s with empty detail. evidence: Phase A gateway debugging; fix: rewrite body["stream"]=False before proxying.
+
+- [2026-06-27] (signal: incident) Gateway backend timeout must exceed worst-case model generation time — 120s is too short for a 7B model generating a full CrewAI agent prompt (2000+ tokens); use 600s. evidence: Phase A; symptom was "Backend connection failed" while LM Studio showed successful completion.
+
+- [2026-06-27] (signal: incident) The fleet checker adapter must route on cfg.checker.mode (openai vs claude_cli) — hardcoding ClaudeCliLLM ignores the configured mode and fails when checker is a local gateway model. evidence: Phase A; fix: make_checker_llm() dispatches on mode.
+
+- [2026-06-27] (signal: incident) Pass --fleet-config as an absolute path to factory-run-one — FleetConfig.load() resolves fleet.config.yaml relative to CWD, so running from a different directory silently falls back to defaults (checker mode reverts to claude_cli). evidence: Phase A rehearsal-5 required --fleet-config /Users/nateshpp/agent-factory/fleet.config.yaml.
+
+- [2026-06-27] (signal: incident) LiteLLM/CrewAI LLM timeout must be set explicitly — CrewAI's LLM() default timeout is too short for a 7B model under a full agent prompt; set timeout=600 in make_maker_llm(). evidence: Phase A; symptom was litellm.Timeout on the first real maker call.
 
 ## Promoted
 
