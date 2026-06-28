@@ -158,6 +158,22 @@ these is true:
 
 Audit files are never deleted regardless.
 
+## Creation is propose-before-write
+
+A file written to the working tree during a session is not automatically a repo
+artifact. Common failure mode: one user message asks for a code change and a personal
+artifact (a marketing plan, an offline summary, a session writeup) in the same breath.
+An agent that writes both to disk leaves unintended files staged for commit.
+
+Default behavior for agents: document production is a chat response. Write a new file
+to the repo only on an explicit instruction to commit or add to the codebase. Surface
+everything else inline.
+
+The session scratchpad (per-session, not tracked by git) is the right destination for
+artifacts the user wants to keep as files but not commit.
+
+When the intended destination is unclear, ask before writing.
+
 ## PR checklist for Markdown changes
 
 - [ ] New file is in the correct directory per the content table.
