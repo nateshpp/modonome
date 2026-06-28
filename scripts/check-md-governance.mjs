@@ -127,7 +127,9 @@ for (const file of linkFiles) {
   while ((m = mdLink.exec(text)) !== null) checkTarget(fileDir, m[1], file);
   while ((m = htmlHref.exec(text)) !== null) checkTarget(fileDir, m[1], file);
   // Advisory: absolute self-links to in-repo blobs break on forks.
-  if (/https:\/\/github\.com\/[^/]+\/modonome\/blob\//.test(text)) {
+  // Require a delimiter before the URL so the pattern cannot match a URL embedded
+  // inside an arbitrary hostname (e.g. evil.com/https://github.com/...).
+  if (/(?:^|[\s"'(])https:\/\/github\.com\/[^/]+\/modonome\/blob\//m.test(text)) {
     warnings.push(`[self-link] ${relative(root, file)} hardcodes a github.com blob URL to an in-repo file.`);
   }
 }
