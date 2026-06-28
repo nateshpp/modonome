@@ -34,11 +34,11 @@ window.__MODONOME_REPO = {
 
   // ---- The eight-step loop ----
   loop: [
-    { num: ‘01’, actor: ‘Modonome’, ac: ‘#5dd4ab’, title: ‘Adopt’, body: ‘Modonome reads your repo’s instructions, CI, code owners, and gates, then defers to them. Runs once, on day one.’, kind: ‘agent’, kindIcon: ‘◈’, kindColor: ‘#5dd4ab’, kindLabel: ‘Agent’ },
+    { num: ‘01’, actor: ‘Modonome’, ac: ‘#5dd4ab’, title: ‘Adopt’, body: ‘Modonome reads your repo\’s instructions, CI, code owners, and gates, then defers to them. Runs once, on day one.’, kind: ‘agent’, kindIcon: ‘◈’, kindColor: ‘#5dd4ab’, kindLabel: ‘Agent’ },
     { num: ‘02’, actor: ‘Modonome’, ac: ‘#5dd4ab’, title: ‘Dry run’, body: ‘It proposes a queue of small, well-scoped work and writes nothing. You review what it would do before anything changes.’, kind: ‘agent’, kindIcon: ‘◈’, kindColor: ‘#5dd4ab’, kindLabel: ‘Agent’ },
     { num: ‘03’, actor: ‘Maker’, ac: ‘#5dd4ab’, title: ‘Make’, body: ‘A maker role builds one tightly scoped change and pins it with a failing test as the fence.’, kind: ‘agent’, kindIcon: ‘◈’, kindColor: ‘#5dd4ab’, kindLabel: ‘Agent’ },
     { num: ‘04’, actor: ‘Checker’, ac: ‘#5dd4ab’, title: ‘Check’, body: ‘A separate checker role, never the maker, reviews the diff and runs the gates.’, kind: ‘agent’, kindIcon: ‘◈’, kindColor: ‘#5dd4ab’, kindLabel: ‘Agent’ },
-    { num: ‘05’, actor: ‘Your CI’, ac: ‘#7cc4ff’, title: ‘Gate’, body: ‘Deterministic gates and the anti-gaming ratchet run in your CI, outside the agent’s reach.’, kind: ‘ci’, kindIcon: ‘⚙’, kindColor: ‘#7cc4ff’, kindLabel: ‘CI’ },
+    { num: ‘05’, actor: ‘Your CI’, ac: ‘#7cc4ff’, title: ‘Gate’, body: ‘Deterministic gates and the anti-gaming ratchet run in your CI, outside the agent\’s reach.’, kind: ‘ci’, kindIcon: ‘⚙’, kindColor: ‘#7cc4ff’, kindLabel: ‘CI’ },
     { num: ‘06’, actor: ‘You · owner’, ac: ‘#f5b14a’, title: ‘Owner’, body: ‘Protected paths and new claims pause for a human owner to approve through CODEOWNERS.’, kind: ‘human’, kindIcon: ‘◉’, kindColor: ‘#f5b14a’, kindLabel: ‘Human’ },
     { num: ‘07’, actor: ‘Merge role’, ac: ‘#5dd4ab’, title: ‘Merge’, body: ‘A separate merge authority, never the author, lands the change once every gate is green.’, kind: ‘agent’, kindIcon: ‘◈’, kindColor: ‘#5dd4ab’, kindLabel: ‘Agent’ },
     { num: ‘08’, actor: ‘Modonome → you’, ac: ‘#f5b14a’, title: ‘Learn’, body: ‘Real corrections become staged lessons; an owner promotes the durable ones into lasting rules.’, kind: ‘human’, kindIcon: ‘◉’, kindColor: ‘#f5b14a’, kindLabel: ‘Human’ },
