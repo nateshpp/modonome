@@ -34,14 +34,14 @@ window.__MODONOME_REPO = {
 
   // ---- The eight-step loop ----
   loop: [
-    { num: ‘01’, actor: ‘Modonome’, ac: ‘#5dd4ab’, title: ‘Adopt’, body: ‘Modonome reads your repo\’s instructions, CI, code owners, and gates, then defers to them. Runs once, on day one.’, kind: ‘agent’, kindIcon: ‘◈’, kindColor: ‘#5dd4ab’, kindLabel: ‘Agent’ },
-    { num: ‘02’, actor: ‘Modonome’, ac: ‘#5dd4ab’, title: ‘Dry run’, body: ‘It proposes a queue of small, well-scoped work and writes nothing. You review what it would do before anything changes.’, kind: ‘agent’, kindIcon: ‘◈’, kindColor: ‘#5dd4ab’, kindLabel: ‘Agent’ },
-    { num: ‘03’, actor: ‘Maker’, ac: ‘#5dd4ab’, title: ‘Make’, body: ‘A maker role builds one tightly scoped change and pins it with a failing test as the fence.’, kind: ‘agent’, kindIcon: ‘◈’, kindColor: ‘#5dd4ab’, kindLabel: ‘Agent’ },
-    { num: ‘04’, actor: ‘Checker’, ac: ‘#5dd4ab’, title: ‘Check’, body: ‘A separate checker role, never the maker, reviews the diff and runs the gates.’, kind: ‘agent’, kindIcon: ‘◈’, kindColor: ‘#5dd4ab’, kindLabel: ‘Agent’ },
-    { num: ‘05’, actor: ‘Your CI’, ac: ‘#7cc4ff’, title: ‘Gate’, body: ‘Deterministic gates and the anti-gaming ratchet run in your CI, outside the agent\’s reach.’, kind: ‘ci’, kindIcon: ‘⚙’, kindColor: ‘#7cc4ff’, kindLabel: ‘CI’ },
-    { num: ‘06’, actor: ‘You · owner’, ac: ‘#f5b14a’, title: ‘Owner’, body: ‘Protected paths and new claims pause for a human owner to approve through CODEOWNERS.’, kind: ‘human’, kindIcon: ‘◉’, kindColor: ‘#f5b14a’, kindLabel: ‘Human’ },
-    { num: ‘07’, actor: ‘Merge role’, ac: ‘#5dd4ab’, title: ‘Merge’, body: ‘A separate merge authority, never the author, lands the change once every gate is green.’, kind: ‘agent’, kindIcon: ‘◈’, kindColor: ‘#5dd4ab’, kindLabel: ‘Agent’ },
-    { num: ‘08’, actor: ‘Modonome → you’, ac: ‘#f5b14a’, title: ‘Learn’, body: ‘Real corrections become staged lessons; an owner promotes the durable ones into lasting rules.’, kind: ‘human’, kindIcon: ‘◉’, kindColor: ‘#f5b14a’, kindLabel: ‘Human’ },
+    { num: '01', actor: 'Modonome', ac: '#5dd4ab', title: 'Adopt', body: 'Modonome reads your repo\'s instructions, CI, code owners, and gates, then defers to them. Runs once, on day one.', kind: 'agent', kindIcon: '◈', kindColor: '#5dd4ab', kindLabel: 'Agent' },
+    { num: '02', actor: 'Modonome', ac: '#5dd4ab', title: 'Dry run', body: 'It proposes a queue of small, well-scoped work and writes nothing. You review what it would do before anything changes.', kind: 'agent', kindIcon: '◈', kindColor: '#5dd4ab', kindLabel: 'Agent' },
+    { num: '03', actor: 'Maker', ac: '#5dd4ab', title: 'Make', body: 'A maker role builds one tightly scoped change and pins it with a failing test as the fence.', kind: 'agent', kindIcon: '◈', kindColor: '#5dd4ab', kindLabel: 'Agent' },
+    { num: '04', actor: 'Checker', ac: '#5dd4ab', title: 'Check', body: 'A separate checker role, never the maker, reviews the diff and runs the gates.', kind: 'agent', kindIcon: '◈', kindColor: '#5dd4ab', kindLabel: 'Agent' },
+    { num: '05', actor: 'Your CI', ac: '#7cc4ff', title: 'Gate', body: 'Deterministic gates and the anti-gaming ratchet run in your CI, outside the agent\'s reach.', kind: 'ci', kindIcon: '⚙', kindColor: '#7cc4ff', kindLabel: 'CI' },
+    { num: '06', actor: 'You · owner', ac: '#f5b14a', title: 'Owner', body: 'Protected paths and new claims pause for a human owner to approve through CODEOWNERS.', kind: 'human', kindIcon: '◉', kindColor: '#f5b14a', kindLabel: 'Human' },
+    { num: '07', actor: 'Merge role', ac: '#5dd4ab', title: 'Merge', body: 'A separate merge authority, never the author, lands the change once every gate is green.', kind: 'agent', kindIcon: '◈', kindColor: '#5dd4ab', kindLabel: 'Agent' },
+    { num: '08', actor: 'Modonome → you', ac: '#f5b14a', title: 'Learn', body: 'Real corrections become staged lessons; an owner promotes the durable ones into lasting rules.', kind: 'human', kindIcon: '◉', kindColor: '#f5b14a', kindLabel: 'Human' },
   ],
 
   // ---- Capabilities ----
@@ -71,7 +71,7 @@ window.__MODONOME_REPO = {
       { label: 'A diff that says “disable governance”', stop: 5, kind: 'pass', tag: 'INERT', title: 'Instruction ignored. Merged on the real signal.', detail: 'The ratchet reads every diff line as data, never as instructions. An embedded “disable governance” note has no effect, and the merge proceeds on the real test signal. AgentProof AP-15.' },
     ]},
     { label: 'Held by the ratchet, code in your CI', items: [
-      { label: 'Delete a test’s assert() calls', stop: 3, kind: 'block', tag: 'HELD', title: 'Held at the ratchet.', detail: 'The anti-gaming ratchet runs in CI as code the agent never touches. It spots the removed expect()/assert calls and holds the merge until the tests are whole again. AgentProof AP-01.' },
+      { label: 'Delete a test's assert() calls', stop: 3, kind: 'block', tag: 'HELD', title: 'Held at the ratchet.', detail: 'The anti-gaming ratchet runs in CI as code the agent never touches. It spots the removed expect()/assert calls and holds the merge until the tests are whole again. AgentProof AP-01.' },
       { label: 'Add .skip to a failing test', stop: 3, kind: 'block', tag: 'HELD', title: 'Held at the ratchet.', detail: 'A skipped test reports nothing useful. The ratchet flags skip injection across JavaScript, Python, Java, and .NET suites alike. AgentProof AP-02, AP-12, AP-14, AP-16.' },
       { label: 'Cast a type to “any” to clear an error', stop: 3, kind: 'block', tag: 'HELD', title: 'Held at the ratchet.', detail: 'Type safety is a deterministic gate. The ratchet rejects broad casts to any in production source, so the original error stays visible and gets a real fix. AgentProof AP-03.' },
       { label: 'Delete the coverage threshold', stop: 3, kind: 'block', tag: 'HELD', title: 'Held at the ratchet.', detail: 'A quiet move: the suite stays in place while the floor slips away. The ratchet guards coverageThreshold and fail_under and holds the merge. AgentProof AP-04.' },
