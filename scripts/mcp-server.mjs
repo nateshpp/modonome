@@ -22,6 +22,7 @@ import { tmpdir } from "node:os";
 import { join, dirname, resolve, extname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
+import { randomBytes } from "node:crypto";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "..");
@@ -128,7 +129,7 @@ async function toolRatchet(args) {
     }
     diffPath = resolved;
   } else if (args.diff) {
-    tempFile = join(tmpdir(), `modonome-ratchet-${process.pid}-${Math.floor(Math.random() * 1e9)}.patch`);
+    tempFile = join(tmpdir(), `modonome-ratchet-${process.pid}-${randomBytes(8).toString("hex")}.patch`);
     writeFileSync(tempFile, args.diff, "utf8");
     diffPath = tempFile;
   } else {
@@ -157,7 +158,7 @@ async function toolRatchet(args) {
 
 async function toolValidateConfig(args) {
   const ext = (args.format || "yaml") === "json" ? ".json" : ".yaml";
-  const tempFile = join(tmpdir(), `modonome-config-${process.pid}-${Math.floor(Math.random() * 1e9)}${ext}`);
+  const tempFile = join(tmpdir(), `modonome-config-${process.pid}-${randomBytes(8).toString("hex")}${ext}`);
   writeFileSync(tempFile, args.content, "utf8");
 
   try {
@@ -180,7 +181,7 @@ async function toolValidateConfig(args) {
 }
 
 async function toolValidateWorkItem(args) {
-  const tempFile = join(tmpdir(), `modonome-item-${process.pid}-${Math.floor(Math.random() * 1e9)}.json`);
+  const tempFile = join(tmpdir(), `modonome-item-${process.pid}-${randomBytes(8).toString("hex")}.json`);
   writeFileSync(tempFile, JSON.stringify(args.item, null, 2), "utf8");
 
   try {
