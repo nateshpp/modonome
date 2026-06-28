@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Install git hooks for this repo. Run automatically via npm prepare.
 // Safe to re-run: overwrites existing hooks.
-import { writeFileSync, chmodSync, existsSync, mkdirSync } from "node:fs";
+import { writeFileSync, chmodSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
