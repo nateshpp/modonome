@@ -24,9 +24,11 @@ jobs:
 
       # Mandatory Base-Branch Checkouts matching check-self-application.mjs criteria
       - name: Load guard-ratchet.mjs from the base branch
+        if: github.event_name == 'pull_request'
         run: git checkout "origin/${{ github.base_ref }}" -- scripts/guard-ratchet.mjs
 
       - name: Load check-style.mjs from the base branch
+        if: github.event_name == 'pull_request'
         run: git checkout "origin/${{ github.base_ref }}" -- scripts/check-style.mjs
 
       # Governance-relevant change assertion matching tests/ws-d-governed-change.test.mjs criteria
