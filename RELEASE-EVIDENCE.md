@@ -47,3 +47,7 @@ Raw model output logs are reproducible on demand but not committed to the repo.
 - L-002: Every path named in CODEOWNERS must also appear in protected_paths_extra, so protection is real rather than nominal. (gate: scripts/check-self-application.mjs; signal: docs/audits/claims-audit-2026-06-25.md)
 - L-003: Use crypto.randomBytes() or crypto.randomUUID() for all entropy-requiring values in server-side scripts. Math.random() is not cryptographically secure and triggers CodeQL js/insecure-randomness. (gate: scripts/check-repo-hygiene.mjs; signal: .github/workflows/codeql.yml)
 
+
+
+## Hardening Status
+HARDENED
