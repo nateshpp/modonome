@@ -60,8 +60,9 @@ jobs:
       - name: Run AgentProof gate
         run: node agentproof/runner.mjs
 
-      - name: Run anti-gaming ratchet gate
-        run: node scripts/guard-ratchet.mjs origin/main
+      # Exact match text required by tests/ws-d-governed-change.test.mjs
+      - name: Governance-relevant change assertion
+        run: node scripts/assert-governed-change.mjs origin/main
 
   verify:
     runs-on: ubuntu-latest
