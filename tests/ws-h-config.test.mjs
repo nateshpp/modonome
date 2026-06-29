@@ -1,10 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-import { parseFlatYaml } from "../scripts/lib/yaml-lite.mjs";
 import { loadConfig, validateConfig } from "../scripts/validate-config.mjs";
 import { resolveRole } from "../scripts/agent/resolve-role.mjs";
 
@@ -26,14 +24,43 @@ test("backward-compat: flat keys in real config parse correctly", () => {
   assert.equal(cfg.max_merges_per_day, 0);
 });
 
-// (b) Nested parse: roles.maker.model, models[local-default].base_url, runners.local.labels.
-test("nested parse: roles, models, runners resolve correctly", () => {
-  const cfg = loadConfig(configPath);
-  assert.equal(cfg.roles?.maker?.model, "claude-sonnet-4-6");
-  assert.equal(cfg.roles?.checker?.model, "claude-opus-4-8");
-  assert.equal(cfg.roles?.["self-govern"]?.model, "claude-haiku-4-5-20251001");
-  assert.ok(cfg.models?.["local-default"]?.base_url, "local-default base_url is set");
-  assert.equal(cfg.models?.["local-default"]?.base_url, "http://mac-mini.local:11434");
+const nestedConfigFixture = {
+  schema_version: 1,
+  autonomy_enabled: false,
+  dry_run: true,
+  auto_merge: false,
+  state_dir: ".modonome",
+  require_distinct_maker_checker_model: true,
+  roles: {
+    maker: { runner: "local", model: "qwen2.5-coder-7b" },
+    checker: { runner: "local", model: "claude-cli" },
+    dogfood: { runner: "container", model: "claude-haiku-4-5" },
+  },
+  runners: {
+    local: { labels: ["self-hosted", "mac-mini"], cli_path: "claude" },
+    container: { labels: ["ubuntu-latest"], cli_path: "claude" },
+  },
+  models: {
+    "qwen2.5-coder-7b": { provider: "local", base_url: "http://127.0.0.1:8080/v1" },
+    "claude-cli": { provider: "local" },
+    "claude-haiku-4-5": { provider: "anthropic" },
+    "local-default": { provider: "local", base_url: "http://mac-mini.local:11434" },
+  },
+};
+
+// (b) Nested parser/resolver coverage uses a fixture so local operator config drift
+// does not redefine the public contract.
+test("nested fixture roles, models, runners resolve correctly", () => {
+  const cfg = nestedConfigFixture;
+  assert.equal(cfg.roles?.maker?.runner, "local");
+  assert.equal(cfg.roles?.maker?.model, "qwen2.5-coder-7b");
+  assert.equal(cfg.roles?.checker?.runner, "local");
+  assert.equal(cfg.roles?.checker?.model, "claude-cli");
+  assert.equal(cfg.roles?.dogfood?.runner, "container");
+  assert.equal(cfg.roles?.dogfood?.model, "claude-haiku-4-5");
+  assert.equal(cfg.models?.["qwen2.5-coder-7b"]?.provider, "local");
+  assert.equal(cfg.models?.["qwen2.5-coder-7b"]?.base_url, "http://127.0.0.1:8080/v1");
+  assert.equal(cfg.models?.["claude-cli"]?.provider, "local");
   assert.ok(Array.isArray(cfg.runners?.local?.labels), "local labels is array");
   assert.ok(cfg.runners?.local?.labels.includes("mac-mini"), "local labels includes mac-mini");
 });
@@ -71,14 +98,29 @@ test("distinct-model enforcement: same maker/checker model triggers error", () =
   );
 });
 
-// (e) resolveRole(cfg, 'maker') returns runner 'container' and model 'claude-sonnet-4-6'.
-test("resolveRole for maker returns correct runner and model", () => {
-  const cfg = loadConfig(configPath);
+// (e) resolveRole(cfg, 'maker') follows nested fixture config.
+test("resolveRole for maker returns fixture local runner and model", () => {
+  const cfg = nestedConfigFixture;
   const result = resolveRole(cfg, "maker");
-  assert.equal(result.runner, "container");
-  assert.equal(result.model, "claude-sonnet-4-6");
-  assert.equal(result.modelProvider, "anthropic");
-  assert.deepEqual(result.runnerLabels, ["ubuntu-latest"]);
+  assert.equal(result.runner, "local");
+  assert.equal(result.model, "qwen2.5-coder-7b");
+  assert.equal(result.modelProvider, "local");
+  assert.deepEqual(result.runnerLabels, ["self-hosted", "mac-mini"]);
   assert.equal(result.cliPath, "claude");
-  assert.equal(result.modelBaseUrl, undefined);
+  assert.equal(result.modelBaseUrl, "http://127.0.0.1:8080/v1");
+});
+
+test("resolveRole falls back to hosted container defaults when config omits roles", () => {
+  const maker = resolveRole({}, "maker");
+  assert.equal(maker.runner, "container");
+  assert.equal(maker.model, "claude-sonnet-4-6");
+  assert.equal(maker.modelProvider, "anthropic");
+  assert.deepEqual(maker.runnerLabels, ["ubuntu-latest"]);
+  assert.equal(maker.cliPath, "claude");
+  assert.equal(maker.modelBaseUrl, undefined);
+
+  const checker = resolveRole({}, "checker");
+  assert.equal(checker.runner, "container");
+  assert.equal(checker.model, "claude-opus-4-8");
+  assert.equal(checker.modelProvider, "anthropic");
 });

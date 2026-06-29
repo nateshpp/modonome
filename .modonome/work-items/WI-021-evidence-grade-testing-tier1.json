@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "id": "WI-021-evidence-grade-testing-tier1",
+  "state": "claimed",
+  "owner": "maintainer-session",
+  "attempts": 0,
+  "max_attempts": 3,
+  "touches_protected_path": false,
+  "allowed_edit_set": [
+    ".modonome/STATUS.md",
+    ".modonome/work-items/WI-021-evidence-grade-testing-tier1.json",
+    "docs/TESTING.md",
+    "docs/public-claims.json",
+    "fixtures/dry-run/",
+    "RELEASE-EVIDENCE.md",
+    "tests/ws-h-config.test.mjs",
+    "tests/host-adoption.test.mjs",
+    "tests/public-claims.test.mjs"
+  ],
+  "gates": [
+    "node --test tests/ws-h-config.test.mjs tests/host-adoption.test.mjs tests/public-claims.test.mjs",
+    "node --test tests/*.test.mjs",
+    "node scripts/check-style.mjs ."
+  ],
+  "queued_at": "2026-06-28T00:00:00Z"
+}

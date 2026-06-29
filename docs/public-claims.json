@@ -1,0 +1,226 @@
+{
+  "schema_version": 1,
+  "claims": [
+    {
+      "id": "agentproof-gate-integrity",
+      "status": "shipped-tested",
+      "claim": "AgentProof reports 25/25 HARDENED for gate integrity.",
+      "limitation": "AgentProof covers known gate-integrity attacks. It does not certify full live autonomy governance.",
+      "gate": "node agentproof/runner.mjs --json",
+      "evidence": [
+        "agentproof/README.md",
+        "agentproof/SPEC.md",
+        "RELEASE-EVIDENCE.md"
+      ],
+      "surfaces": [
+        {
+          "path": "README.md",
+          "needle": "not a certificate of full autonomy governance"
+        },
+        {
+          "path": "README.md",
+          "needle": "25/25 on AgentProof"
+        },
+        {
+          "path": "README.md",
+          "needle": "25/25 HARDENED adversarial benchmark"
+        },
+        {
+          "path": "QUICKSTART.md",
+          "needle": "not full autonomy governance"
+        },
+        {
+          "path": "QUICKSTART.md",
+          "needle": "Score: 25/25"
+        },
+        {
+          "path": "QUICKSTART.md",
+          "needle": "Level: HARDENED"
+        },
+        {
+          "path": "RELEASE-EVIDENCE.md",
+          "needle": "| AgentProof | 25/25 HARDENED |"
+        },
+        {
+          "path": "site/index.html",
+          "needle": "AgentProof: 25/25 HARDENED"
+        }
+      ]
+    },
+    {
+      "id": "safe-defaults",
+      "status": "shipped-tested",
+      "claim": "Modonome starts disabled, dry-run, and off by default.",
+      "limitation": "Armed behavior requires operator environment state outside the repo.",
+      "gate": "node --test tests/arming.test.mjs tests/config.test.mjs",
+      "evidence": [
+        "templates/.modonome/config.yaml",
+        "tests/arming.test.mjs",
+        "tests/config.test.mjs"
+      ],
+      "surfaces": [
+        {
+          "path": "README.md",
+          "needle": "Autonomy stays off until you arm it"
+        },
+        {
+          "path": "QUICKSTART.md",
+          "needle": "It starts disabled and in dry-run"
+        },
+        {
+          "path": "ADOPTION-GUIDE.md",
+          "needle": "Start read-only"
+        },
+        {
+          "path": "site/index.html",
+          "needle": "Off by default"
+        }
+      ]
+    },
+    {
+      "id": "private-local-operation",
+      "status": "shipped-tested",
+      "claim": "Modonome runs inside the repo without a central service or telemetry.",
+      "limitation": "Model providers and host CI may have their own telemetry or network behavior.",
+      "gate": "node --test tests/dependency.test.mjs tests/embedding-safety.test.mjs",
+      "evidence": [
+        "README.md",
+        "ADOPTION-GUIDE.md",
+        "tests/dependency.test.mjs",
+        "tests/embedding-safety.test.mjs"
+      ],
+      "surfaces": [
+        {
+          "path": "README.md",
+          "needle": "without a central service"
+        },
+        {
+          "path": "README.md",
+          "needle": "no central service call"
+        },
+        {
+          "path": "README.md",
+          "needle": "no telemetry, no service"
+        },
+        {
+          "path": "ADOPTION-GUIDE.md",
+          "needle": "central service"
+        },
+        {
+          "path": "site/index.html",
+          "needle": "No central service"
+        },
+        {
+          "path": "site/index.html",
+          "needle": "Private by design"
+        },
+        {
+          "path": "site/index.html",
+          "needle": "No telemetry"
+        }
+      ]
+    },
+    {
+      "id": "guard-v01-shipped",
+      "status": "shipped-tested",
+      "claim": "Modonome Guard v0.1 is the shipped guardrail layer.",
+      "limitation": "Guard covers deterministic gates and CLI flows, while live autonomy remains roadmap-scoped.",
+      "gate": "npm run verify",
+      "evidence": [
+        "package.json",
+        "README.md",
+        "tests"
+      ],
+      "surfaces": [
+        {
+          "path": "README.md",
+          "needle": "Modonome Guard (v0.1, shipped today)"
+        }
+      ]
+    },
+    {
+      "id": "live-armed-autonomy-roadmap",
+      "status": "roadmap",
+      "claim": "Live armed autonomy on a production repository is not claimed as shipped.",
+      "limitation": "The repo currently documents this as v0.2 roadmap work.",
+      "gate": "",
+      "evidence": [
+        "README.md",
+        "ROADMAP.md"
+      ],
+      "surfaces": [
+        {
+          "path": "README.md",
+          "needle": "It has not yet run in armed mode on a live production repository"
+        },
+        {
+          "path": "README.md",
+          "needle": "Live armed autonomy run"
+        },
+        {
+          "path": "QUICKSTART.md",
+          "needle": "Armed mode is a deliberate, owner-only step"
+        },
+        {
+          "path": "RELEASE-EVIDENCE.md",
+          "needle": "The engine has not run in armed mode on this repository"
+        }
+      ]
+    },
+    {
+      "id": "knowledge-network-design",
+      "status": "design-only",
+      "claim": "Cross-repo knowledge network support is documented as design work.",
+      "limitation": "Transport, signing, and import enforcement are not shipped in v0.1.",
+      "gate": "",
+      "evidence": [
+        "docs/knowledge-network-architecture.md",
+        "README.md"
+      ],
+      "surfaces": [
+        {
+          "path": "README.md",
+          "needle": "Cross-repo knowledge network (transport, signing, import) | Design only"
+        },
+        {
+          "path": "site/index.html",
+          "needle": "roadmap direction"
+        },
+        {
+          "path": "site/index.html",
+          "needle": "governed knowledge network"
+        },
+        {
+          "path": "site/index.html",
+          "needle": "patterns shared"
+        }
+      ]
+    },
+    {
+      "id": "agentproof-standard-aspiration",
+      "status": "roadmap",
+      "claim": "AgentProof is intended for standards-body discussion, not represented as an accepted standard.",
+      "limitation": "Any standards-body adoption remains future work.",
+      "gate": "",
+      "evidence": [
+        "README.md",
+        "agentproof/SPEC.md",
+        "site/index.html"
+      ],
+      "surfaces": [
+        {
+          "path": "site/index.html",
+          "needle": "governed autonomy standard"
+        },
+        {
+          "path": "site/index.html",
+          "needle": "Shape the standard"
+        },
+        {
+          "path": "site/index.html",
+          "needle": "We intend to propose AgentProof"
+        }
+      ]
+    }
+  ]
+}

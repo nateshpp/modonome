@@ -29,14 +29,16 @@ be added here once the owner arms the loop on this repo.
 
 ## Work queue
 
+- claimed: 1
 - done: 18
+- merge_ready: 2
 - queued: 1
 
 ## Sample-app captures
 
-Maker and checker cycles recorded on the sample apps. Events are captured in
-metrics.jsonl per run directory. The maker and checker use distinct models.
-Raw model output logs are reproducible on demand but not committed to the repo.
+Real maker and checker runs recorded on the sample apps. Each is captured output,
+read from the committed metrics, not hand-authored. The maker and checker use distinct
+models, and the run directory holds the verbatim logs.
 
 - examples/demo-app/runs/2026-06-26T11-46-00Z: maker claude-haiku-4-5, checker claude-sonnet-4-6; checker approved and raised 1 question(s).
 
@@ -44,4 +46,3 @@ Raw model output logs are reproducible on demand but not committed to the repo.
 
 - L-001: Shipped sample telemetry must conform to its schema and must never be presented as real measured data. (gate: scripts/check-self-application.mjs; signal: docs/CLAIMS-AUDIT-2026-06-25.md)
 - L-002: Every path named in CODEOWNERS must also appear in protected_paths_extra, so protection is real rather than nominal. (gate: scripts/check-self-application.mjs; signal: docs/CLAIMS-AUDIT-2026-06-25.md)
-
