@@ -29,6 +29,7 @@ be added here once the owner arms the loop on this repo.
 
 ## Work queue
 
+- claimed: 1
 - done: 18
 - merge_ready: 2
 - queued: 1
@@ -45,4 +46,3 @@ models, and the run directory holds the verbatim logs.
 
 - L-001: Shipped sample telemetry must conform to its schema and must never be presented as real measured data. (gate: scripts/check-self-application.mjs; signal: docs/CLAIMS-AUDIT-2026-06-25.md)
 - L-002: Every path named in CODEOWNERS must also appear in protected_paths_extra, so protection is real rather than nominal. (gate: scripts/check-self-application.mjs; signal: docs/CLAIMS-AUDIT-2026-06-25.md)
-

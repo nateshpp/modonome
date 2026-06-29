@@ -1,0 +1,7 @@
+{
+  "name": "fixture-autonomy",
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}
