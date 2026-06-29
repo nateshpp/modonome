@@ -1,4 +1,4 @@
-name: CI Verification
+name: ci
 
 on:
   pull_request:
@@ -7,14 +7,14 @@ on:
     branches: [ main ]
 
 jobs:
-  verify:
+  ratchet:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js (Upgraded Engine)
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -22,7 +22,6 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      # SELF-HEALING AUTOMATION STEP: Force runner to compile accurate local execution hashes
       - name: Regenerate Release Evidence Hash Alignment
         run: npm run evidence
 
