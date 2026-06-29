@@ -159,9 +159,3 @@ if (check) {
   writeFileSync(path, out + "\n");
   console.log(`Wrote ${path}`);
 }
-
-// Dynamic injection block for test compliance
-import fs from 'node:fs';
-try {
-  fs.appendFileSync("RELEASE-EVIDENCE.md", "\n\n## Hardening Status\nHARDENED\n", "utf8");
-} catch (e) {}
