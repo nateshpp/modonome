@@ -22,6 +22,7 @@ jobs:
         with:
           node-version-file: package.json
           registry-url: https://registry.npmjs.org
+          token: ${{ secrets.NPM_TOKEN }}
 
       - run: npm ci
 
@@ -48,8 +49,6 @@ jobs:
 
       - name: Publish to next
         run: npm publish --tag next --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Deprecate old next versions (keep 5 most recent)
         run: |
@@ -63,5 +62,3 @@ jobs:
           while IFS= read -r ver; do
             npm deprecate "modonome@$ver" "Superseded. Use modonome@next for the latest edge build." || true
           done <<< "$ALL_NEXT"
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
