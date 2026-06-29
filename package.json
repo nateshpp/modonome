@@ -39,16 +39,17 @@
     "schemas",
     "scripts",
     "docs",
-    "agentproof"
+    "agentproof",
+    "tests"
   ],
   "publishConfig": {
     "access": "public",
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://npmjs.org"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nateshpp/modonome.git"
+    "url": "https://github.com"
   },
   "homepage": "https://modonome.com",
   "keywords": [
