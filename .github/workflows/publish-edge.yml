@@ -19,15 +19,20 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Stripping registry-url prevents writing placeholder tokens that break OIDC handshakes
       - name: Setup Node.js Environment
         uses: actions/setup-node@v6
         with:
           node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      # OIDC trusted publishing requires npm 11.5.0 or newer; Node 22 ships an older npm
+      - name: Upgrade npm for trusted publishing
+        run: npm install -g npm@latest
 
       - name: Install Secure Dependencies
         run: npm ci
 
+      # Auth resolves OIDC trusted publishing first; NODE_AUTH_TOKEN is the fallback when set
       - name: Publish to next
         run: npm publish --tag next --provenance
         env:
