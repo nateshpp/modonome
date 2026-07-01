@@ -20,7 +20,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join, basename, resolve } from "node:path";
 import { loadConfig } from "../validate-config.mjs";
 import { resolveRole } from "./resolve-role.mjs";
-import { renderPrompt } from "./render-prompt.mjs";
+import { renderPrompt, snapshotContext } from "./render-prompt.mjs";
 import { readPromotedLearnings } from "../lib/learnings.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -122,7 +122,7 @@ function invokeRole(plan, role, env) {
   const promotedLearnings = learnings.length === 0
     ? "(none yet)"
     : learnings.map(l => `- ${l.id}: ${l.lesson} (gate: ${l.gate_location})`).join("\n");
-  const prompt = renderPrompt(role, {
+  const prompt = snapshotContext() + renderPrompt(role, {
     ...env,
     [idKey]: r.id,
     [modelKey]: r.model,

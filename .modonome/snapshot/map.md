@@ -2,8 +2,8 @@
 
 Modonome snapshot. Read this before reading the repo. Tier 0 (signature.json) is the fingerprint: if merkle_root matches your last read, nothing changed. Tier 1 (map.json / map.md) lists modules, public API signatures, import edges, and attention ranking. Cite anchors (F: for files, S: for symbols); each resolves to a path and line so you can act without re-reading the whole repo.
 
-Merkle root: sha256:722641053563545d8e431e8dd7056152572cab1d3e861c7ee0a00387f90b3c99
-Files: 462  Bytes: 1395365  Map tokens: 35977/120000
+Merkle root: sha256:21662c95ab674f9e63c0650d88a2833655c12b708d6ef4eeb1ff8b51144117a9
+Files: 462  Bytes: 1398850  Map tokens: 36092/120000
 
 ## Modules
 
@@ -121,7 +121,7 @@ Files: 462  Bytes: 1395365  Map tokens: 35977/120000
 - prompts/modules/roles.md [F:8f62475ebe]: Agent roles
 - prompts/modules/snapshot.md [F:c324fab0cc]: Repo snapshot
 - prompts/modules/state-machine.md [F:9a28b4e90e]: Durable state machine
-- scripts/agent/render-prompt.mjs [F:fd660a117b]: Substitute every ${VAR} from env. Throw if a referenced variable is unset, so a missing identity or branch fails loudly instead of rendering an empty value into
+- scripts/agent/render-prompt.mjs [F:fd660a117b]: Build a compact repository-snapshot context block from the committed Tier 0 signature, so every rendered role prompt starts pre-oriented and an agent can read t
 - scripts/agent/resolve-role.mjs [F:304ce7b89d]: Resolve runner and model settings for a named role. * * @param {object} cfg - Parsed config object (output of parseFlatYaml or loadConfig). * @param {string} ro
 - scripts/agent/run-cycle.mjs [F:ddeb486c49]: Resolve and validate a full cycle plan without calling any model. Pure: it reads the passed config and runId and throws on any policy violation. This is the tes
 - scripts/audit-learnings.mjs [F:c9493b5275]: !/usr/bin/env node
@@ -611,7 +611,8 @@ Files: 462  Bytes: 1395365  Map tokens: 35977/120000
 - S:bc1fd2c5b3 function adrNumbers `function adrNumbers(dir)` L139 : 4. ADR number uniqueness across docs/adr and docs/research.
 - S:24c6a3dc6c function parseFrontMatter `function parseFrontMatter(text)` L172 : Front-matter parsing for canonical uniqueness and advisory presence.
 ### scripts/agent/render-prompt.mjs [F:fd660a117b]
-- S:2b5847c683 function renderPrompt `export function renderPrompt(role, env = process.env)` L22 : Substitute every ${VAR} from env. Throw if a referenced variable is unset, so a missing identity or branch fails loudly instead of rendering an empty value into a model prompt.
+- S:22e3bba95f function snapshotContext `export function snapshotContext(root = process.cwd())` L23 : Build a compact repository-snapshot context block from the committed Tier 0 signature, so every rendered role prompt starts pre-oriented and an agent can read the map instead of scanning the whole tre
+- S:2b5847c683 function renderPrompt `export function renderPrompt(role, env = process.env)` L58 : Substitute every ${VAR} from env. Throw if a referenced variable is unset, so a missing identity or branch fails loudly instead of rendering an empty value into a model prompt.
 ### tests/portability.test.mjs [F:fd6ebce602]
 - S:cf03857559 function runValidateConfig `function runValidateConfig(configPath, opts = {})` L28 : Run validate-config.mjs against a given config path.
 - S:5daa909048 function runGuardRatchet `function runGuardRatchet(diffPath, opts = {})` L37 : Run guard-ratchet.mjs with a --diff fixture.
