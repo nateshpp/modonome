@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { DecisionCard, LearningCard, AuditTimeline, Card, EmptyState, Toast } from "@modonome/design-system";
-import type { PanelState } from "../state/types";
+import type { PanelState, WriteActions } from "../state/types";
 import { useConfirm } from "../lib/confirm";
 
 /**
@@ -8,11 +8,16 @@ import { useConfirm } from "../lib/confirm";
  * explicit question before the engine proceeds; the learning queue shows the lessons
  * the engine has staged from repeated friction and the permanent gates those lessons
  * became once an owner promoted them. Nothing here becomes a binding rule without
- * that owner-gated step.
+ * that owner-gated step. Pruning a staged learning is a plain deletion, so it writes to
+ * the real LEARNINGS.md when the panel is connected to live, writable state. Promoting
+ * a learning or resolving a decision both require the operator to author real content
+ * (a gate description, an actual answer) that this screen does not yet collect, so
+ * those two stay local acknowledgments; do them by editing LEARNINGS.md or DECISIONS.md
+ * directly, which is also what keeps those records honest instead of auto-filled.
  */
-export function LearningsScreen({ state }: { state: PanelState }) {
+export function LearningsScreen({ state, write }: { state: PanelState; write: WriteActions }) {
   const confirm = useConfirm();
-  const [notice, setNotice] = useState<string | null>(null);
+  const [notice, setNotice] = useState<{ tone: "info" | "blocked"; text: string } | null>(null);
 
   const staged = state.learnings.filter((l) => l.status === "staged");
   const promoted = state.learnings.filter((l) => l.status === "promoted");
@@ -21,18 +26,18 @@ export function LearningsScreen({ state }: { state: PanelState }) {
     const ok = await confirm({
       title: "Resolve this decision?",
       confirmLabel: "Resolve",
-      body: `Recording an answer to "${question}" lets the engine proceed on this question instead of holding.`,
+      body: `Recording an answer to "${question}" is an authoring step: edit DECISIONS.md and move this entry to Resolved with the real answer. This just acknowledges the question locally.`,
     });
-    if (ok) setNotice("Decision resolved.");
+    if (ok) setNotice({ tone: "info", text: "Acknowledged locally. Record the real answer in DECISIONS.md." });
   }
 
   async function onPromote(lesson: string) {
     const ok = await confirm({
       title: "Promote this learning?",
       confirmLabel: "Promote",
-      body: `Promoting "${lesson}" turns it into a binding rule enforced by a new gate. Every future change must satisfy it.`,
+      body: `Promoting "${lesson}" is an authoring step: it needs a real gate description, not a placeholder. Edit LEARNINGS.md's Promoted block once the gate exists. This just acknowledges locally.`,
     });
-    if (ok) setNotice("Learning promoted. A gate has been added to enforce it.");
+    if (ok) setNotice({ tone: "info", text: "Acknowledged locally. Add the real gate entry to LEARNINGS.md." });
   }
 
   async function onPrune(lesson: string) {
@@ -40,9 +45,21 @@ export function LearningsScreen({ state }: { state: PanelState }) {
       title: "Prune this learning?",
       tone: "danger",
       confirmLabel: "Prune learning",
-      body: `Pruning "${lesson}" discards it. It will not become a gate and the evidence behind it is dropped.`,
+      body: write.writable
+        ? `Pruning "${lesson}" removes it from the real LEARNINGS.md. It will not become a gate and the evidence behind it is dropped.`
+        : `The panel is read-only, so this only acknowledges locally; the entry stays in LEARNINGS.md.`,
     });
-    if (ok) setNotice("Learning pruned.");
+    if (!ok) return;
+    if (!write.writable) {
+      setNotice({ tone: "info", text: "Acknowledged locally. Connect live, writable state to actually prune it." });
+      return;
+    }
+    try {
+      await write.onPruneLearning(lesson);
+      setNotice({ tone: "info", text: "Learning pruned from LEARNINGS.md." });
+    } catch (err) {
+      setNotice({ tone: "blocked", text: `Prune failed: ${err instanceof Error ? err.message : String(err)}` });
+    }
   }
 
   return (
@@ -58,7 +75,12 @@ export function LearningsScreen({ state }: { state: PanelState }) {
       </div>
 
       {notice ? (
-        <Toast tone="info" title="Acknowledged" message={notice} onDismiss={() => setNotice(null)} />
+        <Toast
+          tone={notice.tone === "blocked" ? "blocked" : "info"}
+          title={notice.tone === "blocked" ? "Prune failed" : "Acknowledged"}
+          message={notice.text}
+          onDismiss={() => setNotice(null)}
+        />
       ) : null}
 
       <div className="section">

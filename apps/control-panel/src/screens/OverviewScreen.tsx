@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   MetricTile,
   SafetyStrip,
@@ -8,6 +9,8 @@ import {
   Button,
   Sparkline,
   Icon,
+  IconButton,
+  Input,
   formatUsd,
 } from "@modonome/design-system";
 import type { PanelState } from "../state/types";
@@ -19,14 +22,21 @@ import type { PanelState } from "../state/types";
 export function OverviewScreen({
   state,
   onNavigate,
+  hostDir,
+  onConnectHostDir,
+  onRefresh,
 }: {
   state: PanelState;
   onNavigate: (id: string) => void;
+  hostDir: string;
+  onConnectHostDir: (dir: string) => void;
+  onRefresh: () => void;
 }) {
-  const { subject, config, arming, queue, cost, audit, agentProofScore, costTrend } = state;
+  const { subject, config, arming, queue, cost, audit, agentProofScore, costTrend, source } = state;
   const active = queue.filter((i) => i.state !== "done").length;
   const escalated = queue.filter((i) => i.state === "escalated").length;
   const blocking = arming.checklist.filter((c) => !c.ok).length;
+  const [draftDir, setDraftDir] = useState(hostDir);
 
   return (
     <div className="page">
@@ -41,6 +51,51 @@ export function OverviewScreen({
           </Button>
         </div>
       </div>
+
+      {source.kind === "live" ? (
+        <div className="data-source-banner data-source-banner--live">
+          <Icon name="check-circle" size={18} />
+          <span className="data-source-banner__text">
+            <strong>Live.</strong> Reading real state from <code className="mdn-mono">{subject.dir}</code>.{" "}
+            {source.writable
+              ? "Write mode is on: actions here edit the real files."
+              : "Read-only: start the dev server with MODONOME_PANEL_WRITE=1 to allow edits."}
+          </span>
+          <IconButton icon="refresh" label="Refresh panel data" size="sm" onClick={onRefresh} />
+        </div>
+      ) : (
+        <div className="data-source-banner data-source-banner--demo">
+          <Icon name="info" size={18} />
+          <span className="data-source-banner__text">
+            <strong>Demo data.</strong>{" "}
+            {subject.mode === "host"
+              ? "Point the panel at a real repo's path below to read its actual .modonome state."
+              : "The local API did not respond, so this is a fixed snapshot instead of the live repo."}
+            {source.error ? ` (${source.error})` : ""}
+          </span>
+          {subject.mode === "host" ? (
+            <form
+              className="hostdir-form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                onConnectHostDir(draftDir.trim());
+              }}
+            >
+              <Input
+                label="Repo path"
+                placeholder="/path/to/a/repo/with/.modonome"
+                value={draftDir}
+                onChange={(e) => setDraftDir(e.target.value)}
+              />
+              <Button type="submit" size="sm" variant="primary">
+                Connect
+              </Button>
+            </form>
+          ) : (
+            <IconButton icon="refresh" label="Retry" size="sm" onClick={onRefresh} />
+          )}
+        </div>
+      )}
 
       {subject.requiredOwnerAction ? (
         <div className="owner-action">

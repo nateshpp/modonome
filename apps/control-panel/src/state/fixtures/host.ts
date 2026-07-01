@@ -172,6 +172,7 @@ const queue: WorkItemVM[] = [
 ];
 
 export const hostState: PanelState = {
+  source: { kind: "demo", writable: false },
   subject: {
     mode: "host",
     repo: "acme/payments",

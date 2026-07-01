@@ -4,6 +4,9 @@ import { relativeTime } from "../../lib/format";
 /** The kind of event recorded in the audit trail. */
 export type AuditEventKind =
   | "dry_run"
+  | "report"
+  | "maker_run"
+  | "checker_review"
   | "pr_opened"
   | "gate_passed"
   | "gate_failed"
@@ -41,6 +44,9 @@ type NodeTone = "ok" | "info" | "attention" | "blocked" | "neutral";
 
 const KIND_META: Record<AuditEventKind, { icon: IconName; tone: NodeTone; label: string }> = {
   dry_run: { icon: "play", tone: "info", label: "Dry run" },
+  report: { icon: "activity", tone: "neutral", label: "Report run" },
+  maker_run: { icon: "user", tone: "neutral", label: "Maker run" },
+  checker_review: { icon: "users", tone: "info", label: "Checker review" },
   pr_opened: { icon: "branch", tone: "info", label: "PR opened" },
   gate_passed: { icon: "check-circle", tone: "ok", label: "Gate passed" },
   gate_failed: { icon: "ban", tone: "blocked", label: "Gate failed" },

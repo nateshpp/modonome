@@ -1,30 +1,60 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   ActivationLadder,
   ArmingStateBadge,
+  Button,
   Card,
   NumberField,
   Toggle,
   Slider,
   Toast,
 } from "@modonome/design-system";
-import type { PanelState } from "../state/types";
+import type { PanelState, WriteActions } from "../state/types";
 import { useConfirm } from "../lib/confirm";
+import { diffConfig } from "../state/configDiff";
 
 /**
  * The control screen. The activation ladder shows the path from disabled to armed with
  * the full prerequisite checklist, and the editors below tune the caps, budget, and
  * governance requirements. Every arming action confirms first, and arming the engine
  * from the panel is deliberately gated behind the CI secret, which the panel can only
- * report on.
+ * report on. Edits to caps, budget, and mode toggles are a local draft until "Save
+ * configuration" writes them to the real config.yaml; that action is only enabled when
+ * the panel is connected to live, writable state.
  */
-export function ArmingScreen({ state }: { state: PanelState }) {
+export function ArmingScreen({ state, write }: { state: PanelState; write: WriteActions }) {
   const confirm = useConfirm();
   const [config, setConfig] = useState(state.config);
-  const [notice, setNotice] = useState<string | null>(null);
+  const [notice, setNotice] = useState<{ tone: "info" | "blocked"; text: string } | null>(null);
+  const [saving, setSaving] = useState(false);
 
   function set<K extends keyof typeof config>(key: K, value: (typeof config)[K]) {
     setConfig((c) => ({ ...c, [key]: value }));
+  }
+
+  const patch = useMemo(() => diffConfig(state.config, config), [state.config, config]);
+  const dirty = Object.keys(patch).length > 0;
+
+  async function onSave() {
+    const ok = await confirm({
+      title: "Save configuration changes?",
+      confirmLabel: "Save changes",
+      body: `Writes ${Object.keys(patch).length} changed value(s) to config.yaml in ${state.subject.dir ?? "the repo"}.`,
+    });
+    if (!ok) return;
+    setSaving(true);
+    try {
+      await write.onSaveConfig(patch);
+      setNotice({ tone: "info", text: "Configuration saved to config.yaml." });
+    } catch (err) {
+      setNotice({ tone: "blocked", text: `Save failed: ${err instanceof Error ? err.message : String(err)}` });
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function onDiscard() {
+    setConfig(state.config);
   }
 
   async function onArm() {
@@ -34,7 +64,7 @@ export function ArmingScreen({ state }: { state: PanelState }) {
       confirmLabel: "Arm engine",
       body: "Armed mode lets modonome open and merge changes once every gate passes. The MODONOME_ARMED CI secret must also be set. You can return to dry-run at any time.",
     });
-    if (ok) setNotice("Arming acknowledged. Set MODONOME_ARMED in CI to complete arming.");
+    if (ok) setNotice({ tone: "info", text: "Arming acknowledged. Set MODONOME_ARMED in CI to complete arming." });
   }
 
   async function onDisarm() {
@@ -44,7 +74,7 @@ export function ArmingScreen({ state }: { state: PanelState }) {
       confirmLabel: "Return to dry-run",
       body: "The engine will keep proposing changes but stop merging. In-flight work is unaffected.",
     });
-    if (ok) setNotice("The engine has been returned to dry-run.");
+    if (ok) setNotice({ tone: "info", text: "The engine has been returned to dry-run." });
   }
 
   async function onDryRun() {
@@ -53,7 +83,7 @@ export function ArmingScreen({ state }: { state: PanelState }) {
       confirmLabel: "Run sweep",
       body: "A dry-run reads the repo and prints the proposed work. It changes nothing.",
     });
-    if (ok) setNotice("Dry-run sweep queued.");
+    if (ok) setNotice({ tone: "info", text: "Dry-run sweep queued." });
   }
 
   return (
@@ -66,11 +96,39 @@ export function ArmingScreen({ state }: { state: PanelState }) {
             requirements that bound what it can do.
           </p>
         </div>
-        <ArmingStateBadge mode={state.arming.mode} envArmed={state.arming.envArmed} size="lg" />
+        <div className="page-head__actions">
+          {dirty ? (
+            <Button variant="ghost" onClick={onDiscard} disabled={saving}>
+              Discard changes
+            </Button>
+          ) : null}
+          <Button
+            variant="primary"
+            iconLeft="check"
+            onClick={onSave}
+            loading={saving}
+            disabled={!write.writable || !dirty || saving}
+          >
+            Save configuration
+          </Button>
+          <ArmingStateBadge mode={state.arming.mode} envArmed={state.arming.envArmed} size="lg" />
+        </div>
       </div>
 
+      {!write.writable ? (
+        <p className="mdn-faint">
+          Read-only: changes below stay local until the panel is connected to live, writable state
+          (start the dev server with <code className="mdn-mono">MODONOME_PANEL_WRITE=1</code>).
+        </p>
+      ) : null}
+
       {notice ? (
-        <Toast tone="info" title="Acknowledged" message={notice} onDismiss={() => setNotice(null)} />
+        <Toast
+          tone={notice.tone === "blocked" ? "blocked" : "info"}
+          title={notice.tone === "blocked" ? "Save failed" : "Acknowledged"}
+          message={notice.text}
+          onDismiss={() => setNotice(null)}
+        />
       ) : null}
 
       <Card title="Activation ladder" help="Arming is only allowed when every prerequisite holds. Owner-only items are set in CI, not here.">

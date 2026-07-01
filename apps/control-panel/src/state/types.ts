@@ -29,6 +29,8 @@ export interface Subject {
   description: string;
   lastSweep: string;
   requiredOwnerAction?: string;
+  /** Absolute path to the .modonome directory this state was read from, when live. */
+  dir?: string;
 }
 
 /** The engine configuration (schemas/config.schema.json), the levers the panel edits. */
@@ -106,7 +108,7 @@ export interface LeaseVM {
   stale: boolean;
 }
 
-export type GateStatus = "pass" | "fail" | "flaky" | "running";
+export type GateStatus = "pass" | "fail" | "flaky" | "running" | "pending";
 
 export interface GateVM {
   name: string;
@@ -155,6 +157,9 @@ export interface DecisionVM {
 
 export type AuditKind =
   | "dry_run"
+  | "report"
+  | "maker_run"
+  | "checker_review"
   | "pr_opened"
   | "gate_passed"
   | "gate_failed"
@@ -184,7 +189,18 @@ export interface TrendPoint {
   value: number;
 }
 
+/** Where a loaded PanelState actually came from, so the UI never presents demo data as real. */
+export interface PanelSource {
+  /** "live" reads the real .modonome directory named in subject.dir. "demo" is bundled fixture data. */
+  kind: "live" | "demo";
+  /** True when the server-side dev API accepted write requests for this session. */
+  writable: boolean;
+  /** Set when a live read was attempted and failed, explaining the fall back to demo data. */
+  error?: string;
+}
+
 export interface PanelState {
+  source: PanelSource;
   subject: Subject;
   config: ModonomeConfig;
   arming: ArmingStatus;
@@ -199,4 +215,18 @@ export interface PanelState {
   costTrend: TrendPoint[];
   qualityTrend: TrendPoint[];
   agentProofScore: number;
+}
+
+/**
+ * The write side of the panel, threaded down from App to the screens that mutate real
+ * state. Every call here hits a real file on disk when `writable` is true; screens must
+ * still confirm before calling one of these, exactly as they do today for the
+ * fixture-only local notices. `writable` is false whenever the panel is showing demo
+ * data or the dev server was started without MODONOME_PANEL_WRITE=1.
+ */
+export interface WriteActions {
+  writable: boolean;
+  onSaveConfig: (patch: Partial<ModonomeConfig>) => Promise<void>;
+  onReleaseLease: (itemId: string) => Promise<void>;
+  onPruneLearning: (lesson: string) => Promise<void>;
 }

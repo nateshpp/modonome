@@ -5,11 +5,6 @@
   width: 100%;
 }
 
-.mdn-gatepanel__title {
-  margin: 0;
-  font-size: var(--mdn-text-base);
-}
-
 .mdn-gatepanel__list {
   list-style: none;
   margin: 0;
@@ -60,6 +55,9 @@
 }
 .mdn-gatepanel__icon--running {
   color: var(--mdn-info);
+}
+.mdn-gatepanel__icon--pending {
+  color: var(--mdn-faint);
 }
 
 .mdn-gatepanel__name {

@@ -106,6 +106,41 @@ body {
   font-size: var(--mdn-text-md);
 }
 
+.data-source-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--mdn-space-3);
+  padding: var(--mdn-space-3) var(--mdn-space-4);
+  border-radius: var(--mdn-radius-md);
+  font-size: var(--mdn-text-md);
+  flex-wrap: wrap;
+}
+.data-source-banner__text {
+  color: var(--mdn-text-2);
+  flex: 1 1 260px;
+}
+.data-source-banner__text strong {
+  color: var(--mdn-heading);
+}
+.data-source-banner--live {
+  background: var(--mdn-primary-soft);
+  border: 1px solid var(--mdn-border-teal);
+  color: var(--mdn-primary);
+}
+.data-source-banner--demo {
+  background: var(--mdn-info-soft);
+  border: 1px solid rgba(124, 196, 255, 0.28);
+  color: var(--mdn-info);
+}
+.hostdir-form {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--mdn-space-2);
+}
+.hostdir-form .mdn-input-field {
+  min-width: 260px;
+}
+
 .stack-lg {
   display: flex;
   flex-direction: column;

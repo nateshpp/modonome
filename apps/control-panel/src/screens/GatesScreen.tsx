@@ -18,9 +18,9 @@ export function GatesScreen({ state }: { state: PanelState }) {
       title: "Approve this protected-path change?",
       tone: "danger",
       confirmLabel: "Approve change",
-      body: `Approving ${path} is an owner responsibility. This clears the path to merge without further review.`,
+      body: `Approving ${path} is an owner responsibility, normally recorded as a review on the pull request itself. Modonome does not yet durably record protected-path approvals anywhere the panel can read or write, so this only acknowledges locally.`,
     });
-    if (ok) setNotice(`Change to ${path} approved.`);
+    if (ok) setNotice(`Acknowledged locally: change to ${path} approved. Approve it on the pull request too.`);
   }
 
   return (

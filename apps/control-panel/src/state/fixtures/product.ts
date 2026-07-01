@@ -79,6 +79,7 @@ const queue: WorkItemVM[] = rawItems.map(([id, state, extra]) => ({
 }));
 
 export const productState: PanelState = {
+  source: { kind: "demo", writable: false },
   subject: {
     mode: "product",
     repo: "enumind/modonome",

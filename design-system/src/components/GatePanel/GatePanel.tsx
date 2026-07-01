@@ -3,7 +3,7 @@ import { formatDuration } from "../../lib/format";
 import { Icon, type IconName } from "../Icon/Icon";
 import { StatusPill, type StatusPillTone } from "../StatusPill/StatusPill";
 
-export type GateStatus = "pass" | "fail" | "flaky" | "running";
+export type GateStatus = "pass" | "fail" | "flaky" | "running" | "pending";
 
 export interface GateRow {
   /** Human-readable gate name, e.g. "anti-gaming ratchet" or "unit tests". Rendered in mono. */
@@ -23,7 +23,8 @@ export interface GateRow {
 export interface GatePanelProps {
   /** The gates to render, in display order (recommended: required gates first). */
   gates: GateRow[];
-  /** Panel heading. Defaults to "CI gates". */
+  /** Accessible name for the list region. Not rendered visibly; give the panel a
+   * visible heading with a wrapping Card title instead. Defaults to "CI gates". */
   title?: string;
 }
 
@@ -32,6 +33,7 @@ const STATUS_ICON: Record<GateStatus, IconName> = {
   fail: "ban",
   flaky: "alert",
   running: "refresh",
+  pending: "clock",
 };
 
 const STATUS_TONE: Record<GateStatus, StatusPillTone> = {
@@ -39,6 +41,7 @@ const STATUS_TONE: Record<GateStatus, StatusPillTone> = {
   fail: "blocked",
   flaky: "attention",
   running: "info",
+  pending: "neutral",
 };
 
 const STATUS_LABEL: Record<GateStatus, string> = {
@@ -46,6 +49,7 @@ const STATUS_LABEL: Record<GateStatus, string> = {
   fail: "Fail",
   flaky: "Flaky",
   running: "Running",
+  pending: "Pending",
 };
 
 /**
@@ -59,7 +63,6 @@ const STATUS_LABEL: Record<GateStatus, string> = {
 export function GatePanel({ gates, title = "CI gates" }: GatePanelProps) {
   return (
     <section className="mdn-gatepanel" aria-label={title}>
-      <h3 className="mdn-gatepanel__title mdn-heading">{title}</h3>
       <ul className="mdn-gatepanel__list">
         {gates.map((gate) => (
           <li key={gate.name} className={cx("mdn-gatepanel__row", `mdn-gatepanel__row--${gate.status}`)}>
