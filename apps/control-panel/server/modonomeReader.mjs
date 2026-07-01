@@ -77,6 +77,7 @@ function readConfig(modonomeDir) {
     share_repo_identifiers_by_default: Boolean(raw.share_repo_identifiers_by_default),
     roles: raw.roles ?? {},
     models: raw.models ?? {},
+    runners: raw.runners ?? {},
   };
 }
 

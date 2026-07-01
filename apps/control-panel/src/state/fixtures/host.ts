@@ -40,6 +40,10 @@ const config: ModonomeConfig = {
     "claude-sonnet-4-6": { provider: "anthropic" },
     "claude-opus-4-8": { provider: "anthropic" },
   },
+  runners: {
+    local: { labels: ["self-hosted", "gpu-01"], cli_path: "claude" },
+    container: { labels: ["ubuntu-latest"], cli_path: "claude" },
+  },
 };
 
 const queue: WorkItemVM[] = [

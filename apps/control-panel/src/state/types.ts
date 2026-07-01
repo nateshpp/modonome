@@ -61,6 +61,7 @@ export interface ModonomeConfig {
   share_repo_identifiers_by_default: boolean;
   roles: Record<string, { runner: string; model: string }>;
   models: Record<string, { provider: string; base_url?: string }>;
+  runners: Record<string, { labels: string[]; cli_path: string; environment?: string }>;
 }
 
 /** One prerequisite in the armed-mode gate checklist. */

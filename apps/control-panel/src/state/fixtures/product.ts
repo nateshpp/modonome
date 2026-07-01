@@ -41,6 +41,10 @@ const config: ModonomeConfig = {
     "claude-haiku-4-5-20251001": { provider: "anthropic" },
     "local-default": { provider: "local", base_url: "http://mac-mini.local:11434" },
   },
+  runners: {
+    local: { labels: ["self-hosted", "mac-mini"], cli_path: "claude" },
+    container: { labels: ["ubuntu-latest"], cli_path: "claude" },
+  },
 };
 
 function titleFromId(id: string): string {

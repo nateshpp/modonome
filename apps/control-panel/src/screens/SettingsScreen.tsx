@@ -24,6 +24,12 @@ interface ModelRow {
   base_url?: string;
 }
 
+interface RunnerRow {
+  id: string;
+  labels: string[];
+  cli_path: string;
+}
+
 /**
  * The advanced-configuration screen, one conceptual area per tab so nothing forces an
  * operator to scroll past three unrelated subsystems to reach the one they came for.
@@ -113,6 +119,11 @@ export function SettingsScreen({ state, write }: { state: PanelState; write: Wri
     provider: m.provider,
     base_url: m.base_url,
   }));
+  const runnerRows: RunnerRow[] = Object.entries(config.runners ?? {}).map(([id, r]) => ({
+    id,
+    labels: r.labels,
+    cli_path: r.cli_path,
+  }));
   const roleEntries = Object.entries(config.roles);
 
   return (
@@ -179,6 +190,7 @@ export function SettingsScreen({ state, write }: { state: PanelState; write: Wri
                     <div style={{ flex: "1 1 220px", maxWidth: 320 }}>
                       <Select
                         label="Model"
+                        hint="Which model this role calls for its work."
                         options={modelOptions}
                         value={assignment.model}
                         onValueChange={(v) => setRoleModel(role, v)}
@@ -204,6 +216,19 @@ export function SettingsScreen({ state, write }: { state: PanelState; write: Wri
                   },
                 ]}
                 rows={modelRows}
+                getRowKey={(row) => row.id}
+              />
+            </Card>
+          ) : null}
+          {runnerRows.length > 0 ? (
+            <Card title="Runners" help="Where each role's work actually executes: labels the runner must match, and the CLI path the engine invokes there.">
+              <Table<RunnerRow>
+                columns={[
+                  { key: "id", header: "Runner", render: (row) => <span className="mdn-mono">{row.id}</span> },
+                  { key: "labels", header: "Labels", render: (row) => <span className="mdn-mono">{row.labels.join(", ")}</span> },
+                  { key: "cli_path", header: "CLI path", render: (row) => <span className="mdn-mono">{row.cli_path}</span> },
+                ]}
+                rows={runnerRows}
                 getRowKey={(row) => row.id}
               />
             </Card>
