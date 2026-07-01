@@ -82,13 +82,18 @@ test("generic markdown golden and no-throw on garbage", () => {
   assert.doesNotThrow(() => extractFile("weird.xyz", "}{ unbalanced ["));
 });
 
-test("tree-sitter registration is optional and skips cleanly when absent", async (t) => {
-  const ok = await registerTreeSitter(() => {});
-  if (!ok) {
-    t.skip("tree-sitter not installed in this environment (expected in zero-dependency CI)");
-    return;
+test("tree-sitter registration is optional and falls back cleanly", async () => {
+  const registered = [];
+  const ok = await registerTreeSitter((a) => registered.push(a));
+  assert.equal(typeof ok, "boolean");
+  // Either way the heuristic Python adapter must keep working. In a zero-dependency
+  // environment registerTreeSitter returns false and registers nothing; when the
+  // parser is installed it returns true and registers at least one grammar.
+  if (ok) {
+    assert.ok(registered.length > 0, "a grammar was registered when tree-sitter is present");
+  } else {
+    assert.equal(registered.length, 0, "nothing registered when tree-sitter is absent");
   }
-  // When available, a known function must be extractable through the registered adapter.
   const r = extractFile("m.py", "def hello():\n    pass\n");
-  assert.ok(r.symbols.some((s) => s.name === "hello"));
+  assert.ok(r.symbols.some((s) => s.name === "hello"), "heuristic adapter still extracts");
 });

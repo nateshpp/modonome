@@ -88,6 +88,7 @@ models:
   local-default:
     provider: local
     base_url: http://mac-mini.local:11434
+providers: {}
 ```
 
 Safe boot:

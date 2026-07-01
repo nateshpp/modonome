@@ -81,7 +81,10 @@
           "additionalProperties": false,
           "properties": {
             "labels": { "type": "array", "items": { "type": "string" } },
-            "cli_path": { "type": "string", "minLength": 1 }
+            "cli_path": { "type": "string", "minLength": 1 },
+            "environment": { "type": "string", "minLength": 1 },
+            "reachable_providers": { "type": "array", "items": { "type": "string" } },
+            "reachable_endpoints": { "type": "array", "items": { "type": "string" } }
           }
         },
         "container": {
@@ -89,7 +92,10 @@
           "additionalProperties": false,
           "properties": {
             "labels": { "type": "array", "items": { "type": "string" } },
-            "cli_path": { "type": "string", "minLength": 1 }
+            "cli_path": { "type": "string", "minLength": 1 },
+            "environment": { "type": "string", "minLength": 1 },
+            "reachable_providers": { "type": "array", "items": { "type": "string" } },
+            "reachable_endpoints": { "type": "array", "items": { "type": "string" } }
           }
         }
       }
@@ -102,6 +108,21 @@
         "properties": {
           "provider": { "type": "string", "minLength": 1 },
           "base_url": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "providers": {
+      "type": "object",
+      "description": "Optional provider registry override/extension. Merged over the built-in registry in scripts/agent/providers.mjs.",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "transport": { "type": "string", "minLength": 1 },
+          "costClass": { "type": "string", "enum": ["paid", "free", "local"] },
+          "authEnv": { "type": "string", "minLength": 1 },
+          "base_url": { "type": "string", "minLength": 1 },
+          "defaultBaseUrl": { "type": "string", "minLength": 1 }
         }
       }
     }
