@@ -78,6 +78,18 @@ test("check fails (exit 1) when config sets ci_mode fail", () => {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
+test("check is disabled when config sets ci_mode disabled", () => {
+  const dir = makeRepo();
+  try {
+    run(["."], dir);
+    writeFileSync(join(dir, ".modonome", "config.yaml"), "snapshot:\n  ci_mode: disabled\n");
+    writeFileSync(join(dir, "src", "new.js"), "export function added() {}\n");
+    const r = run([".", "--check"], dir);
+    assert.equal(r.status, 0, "disabled mode never blocks");
+    assert.match(r.stdout, /disabled/i);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
 test("verify confirms match and detects drift", () => {
   const dir = makeRepo();
   try {

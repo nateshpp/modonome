@@ -170,7 +170,7 @@ function main(argv) {
     const committed = loadCommittedSignature(root);
     const cfg = readConfig(root);
     const mode = (cfg.snapshot && cfg.snapshot.ci_mode) || "warn";
-    if (mode === "off") { console.log("Snapshot check disabled (snapshot.ci_mode: off)."); process.exit(0); }
+    if (mode === "disabled") { console.log("Snapshot check disabled (snapshot.ci_mode: disabled)."); process.exit(0); }
     const fail = () => {
       const msg = "Snapshot is out of date. Run: node scripts/snapshot.mjs .";
       if (mode === "fail") { console.error(msg); process.exit(1); }

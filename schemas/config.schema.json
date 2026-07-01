@@ -35,7 +35,7 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "ci_mode": { "type": "string", "enum": ["warn", "fail", "off"] },
+        "ci_mode": { "type": "string", "enum": ["warn", "fail", "disabled"] },
         "sign": { "type": "boolean" },
         "parser": { "type": "string" },
         "token_budget": { "type": "integer", "minimum": 0 },
