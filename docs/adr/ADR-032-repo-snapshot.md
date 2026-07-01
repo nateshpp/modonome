@@ -63,6 +63,14 @@ an MCP tool `modonome_snapshot` that returns a tier or a verify report on demand
   than silent.
 - Heuristic extraction is approximate. Signatures are advisory context; anchors always
   resolve to ground truth in the file. The registry leaves an exact-parser upgrade path.
+- Because this tool reads arbitrary, potentially untrusted repositories, every code path that
+  touches repo-controlled input (ignore-file patterns, cached git revisions, walked file
+  names) is hardened against that repo acting maliciously: the ignore-pattern compiler
+  collapses adjacent wildcards to avoid a polynomial ReDoS, git revision values read from the
+  local cache or `--since` are validated before use to avoid git argument injection, and
+  per-file maps keyed by raw paths use `Object.create(null)` to avoid prototype pollution via
+  a file literally named `__proto__`. `scaffold`'s `AGENTS.md` creation uses an atomic
+  exclusive write to avoid a check-then-write race.
 - Regeneration is incremental: a local gitignored cache (`.modonome/cache/`) plus git change
   detection re-reads only changed files, so cost scales with the change, not the repo size,
   while output stays byte-identical to a full rebuild (`--full` forces the latter). Adoption

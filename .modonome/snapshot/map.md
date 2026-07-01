@@ -2,8 +2,8 @@
 
 Modonome snapshot. Read this before reading the repo. Tier 0 (signature.json) is the fingerprint: if merkle_root matches your last read, nothing changed. Tier 1 (map.json / map.md) lists modules, public API signatures, import edges, and attention ranking. Cite anchors (F: for files, S: for symbols); each resolves to a path and line so you can act without re-reading the whole repo.
 
-Merkle root: sha256:eaa055c93e30f13a52f2ebf0e3d147e3d19f1ace5bf4707a59f890ad0a3ad387
-Files: 519  Bytes: 1614493  Map tokens: 48607/120000
+Merkle root: sha256:10b3657e2f25300c56088109af8d300882c51500f28a8b45850b9ae611bc87ba
+Files: 520  Bytes: 1624479  Map tokens: 48899/120000
 
 ## Modules
 
@@ -173,7 +173,7 @@ Files: 519  Bytes: 1614493  Map tokens: 48607/120000
 - scripts/lib/run-gate-capped.mjs [F:b014028f57]: Thin wrapper around spawnSync with a hard timeout and output-size cap.
 - scripts/lib/secret-patterns.mjs [F:68c4da7fe8]: Returns an array of { name } objects for every pattern that matches text.
 - scripts/lib/snapshot-anchors.mjs [F:1cf31c4792]: A short, stable id from a string. Hex keeps it deterministic across platforms.
-- scripts/lib/snapshot-cache.mjs [F:119e3c0fce]: Load the cache for a repo, or null when absent, unreadable, or a different version.
+- scripts/lib/snapshot-cache.mjs [F:119e3c0fce]: A value safe to pass as a git revision argument: a short-to-full hex SHA. Rejects anything else, in particular a leading "-", which git would parse as an option
 - scripts/lib/snapshot-core.mjs [F:dbb9c92ca1]: Detect binary content by scanning a prefix for a null byte.
 - scripts/lib/snapshot-graph.mjs [F:015261eab0]: Normalize a relative import against the importing file's directory, resolving "." and ".." segments. Returns a posix path with no leading "./".
 - scripts/lib/snapshot-redact.mjs [F:4b91a9f65b]: Mask every matching secret in `text`. Returns { text, redactions } where each redaction records the pattern name and how many matches it masked.
@@ -276,12 +276,13 @@ Files: 519  Bytes: 1614493  Map tokens: 48607/120000
 - S:4a08c48993 function fingerprint `export function fingerprint(pubB64)` L54 : Short fingerprint for out-of-band key comparison (ADR-017 enrollment): the first 16 hex characters of sha256 over the raw public key bytes.
 ### scripts/lib/snapshot-cache.mjs [F:119e3c0fce]
 - S:670e55d75a const CACHE_SCHEMA_VERSION `export const CACHE_SCHEMA_VERSION = 1;` L10
-- S:7762c6d861 function cachePath `function cachePath(root)` L12
-- S:59b9039619 function loadCache `export function loadCache(root)` L19 : Load the cache for a repo, or null when absent, unreadable, or a different version.
-- S:ba5f7d1ffe function saveCache `export function saveCache(root, { built_at_head = null, entries = {} })` L32 : Persist the cache. entries is { relPath: { hash, symbols, imports, purposeRaw } }.
-- S:ed24428ce0 function gitHead `export function gitHead(root)` L41 : The current git HEAD sha for the repo, or null when unavailable.
-- S:236237bc1b function unquote `function unquote(p)` L47 : Strip git's optional quoting from a porcelain path.
-- S:93d0a78f18 function changedPaths `export function changedPaths(root, cache)` L56 : The set of paths that changed since the cache was built: uncommitted work (git status) plus commits since cache.built_at_head. Returns null when git is not usable, which forces a full rebuild.
+- S:31032f0509 function isPlausibleRevision `export function isPlausibleRevision(value)` L17 : A value safe to pass as a git revision argument: a short-to-full hex SHA. Rejects anything else, in particular a leading "-", which git would parse as an option (some git options can read or write fil
+- S:7762c6d861 function cachePath `function cachePath(root)` L21
+- S:59b9039619 function loadCache `export function loadCache(root)` L28 : Load the cache for a repo, or null when absent, unreadable, or a different version.
+- S:ba5f7d1ffe function saveCache `export function saveCache(root, { built_at_head = null, entries = {} })` L41 : Persist the cache. entries is { relPath: { hash, symbols, imports, purposeRaw } }.
+- S:ed24428ce0 function gitHead `export function gitHead(root)` L50 : The current git HEAD sha for the repo, or null when unavailable.
+- S:236237bc1b function unquote `function unquote(p)` L56 : Strip git's optional quoting from a porcelain path.
+- S:93d0a78f18 function changedPaths `export function changedPaths(root, cache)` L65 : The set of paths that changed since the cache was built: uncommitted work (git status) plus commits since cache.built_at_head. Returns null when git is not usable, which forces a full rebuild.
 ### scripts/lib/packet-id.mjs [F:12c7a4e461]
 - S:3968554637 const VOLATILE_FIELDS `export const VOLATILE_FIELDS = ['id', 'signature'];` L8
 - S:9f7fa8d585 function packetContent `export function packetContent(packet)` L10
@@ -447,9 +448,9 @@ Files: 519  Bytes: 1614493  Map tokens: 48607/120000
 - S:ed1db0b6bb function reclaimStale `export function reclaimStale(dir = DEFAULT_QUEUE_DIR, now = new Date())` L173 : Revert every claimed record whose lease has expired back to queued, clearing * its owner and expiry. Returns the list of reclaimed records. * * @param {string} [dir] * @param {Date} [now] * @returns {
 ### scripts/scaffold.mjs [F:5e450ff82c]
 - S:ea76c925e2 function enableSnapshot `function enableSnapshot(target, here)` L26 : Turn snapshot consumption on during adoption: generate the first snapshot, install a host pre-commit hook, and drop an AGENTS.md pointer when none exists. Skipped with --no-snapshot. Never overwrites 
-- S:8c6ccd3e8b function listTemplate `function listTemplate(dir, base = "")` L49
-- S:6dcbe228c5 function scaffold `export function scaffold(target, write)` L60
-- S:1856df868b function writeRunLog `function writeRunLog(runsDir, command, payload)` L94
+- S:8c6ccd3e8b function listTemplate `function listTemplate(dir, base = "")` L58
+- S:6dcbe228c5 function scaffold `export function scaffold(target, write)` L69
+- S:1856df868b function writeRunLog `function writeRunLog(runsDir, command, payload)` L103
 ### tests/arming.test.mjs [F:60548316f5]
 - S:5d58defc25 function tmpRepo `function tmpRepo(configBody)` L14
 - S:580f464240 function runStatus `function runStatus(dir, env)` L23
@@ -596,10 +597,11 @@ Files: 519  Bytes: 1614493  Map tokens: 48607/120000
 - S:6584162247 function nowIso `function nowIso() { return new Date().toISOString(); }` L94
 - S:383c03d511 function incrementalInputs `function incrementalInputs(root, argv)` L99 : Resolve incremental build inputs. --full forces a from-scratch rebuild. Otherwise load the cache and ask git what changed; a missing cache or unusable git yields a full rebuild that produces identical
 - S:df5cb6eb12 function recomputeMerkle `function recomputeMerkle(root)` L107 : Recompute file hashes and the Merkle root directly from disk. Used by --verify.
-- S:2a5511d42c function gitDelta `function gitDelta(root, ref)` L113
-- S:2ce7a5bbe7 function positional `function positional(argv)` L133
-- S:ecd0da924a function maybeRegisterParser `async function maybeRegisterParser(root, argv)` L145 : Register the tree-sitter parser when requested via --parser or config, with a graceful fallback to the heuristic default when tree-sitter is not installed.
-- S:68308360b1 function main `async function main(argv)` L153
+- S:8d131c2429 function isSafeGitRevision `function isSafeGitRevision(value)` L118 : A --since ref is free-form git revision syntax (branch, tag, HEAD~N, a SHA), so it cannot be restricted to a fixed pattern the way a cache-internal SHA can. The one property that must hold is that it 
+- S:2a5511d42c function gitDelta `function gitDelta(root, ref)` L122
+- S:2ce7a5bbe7 function positional `function positional(argv)` L143
+- S:ecd0da924a function maybeRegisterParser `async function maybeRegisterParser(root, argv)` L155 : Register the tree-sitter parser when requested via --parser or config, with a graceful fallback to the heuristic default when tree-sitter is not installed.
+- S:68308360b1 function main `async function main(argv)` L163
 ### fixtures/negative-controls/app-syntax-error.js [F:a1411f1423]
 - S:7369c62b84 class OrderServiceBroken `export class OrderServiceBroken` L5
 ### tests/mcp-compliance.test.mjs [F:a167609a41]
@@ -670,9 +672,9 @@ Files: 519  Bytes: 1614493  Map tokens: 48607/120000
 ### scripts/check-style.mjs [F:ca0833ac73]
 - S:ee9b2c90d1 function walk `function walk(dir, out = [])` L21
 ### scripts/lib/snapshot-walk.mjs [F:cb66095cb4]
-- S:7c5c3a31a4 function compilePattern `function compilePattern(pattern)` L32 : Compile one gitignore-style pattern into a tester over a posix relative path. Supported: comments, negation (!), leading / (anchored), trailing / (directory), * (within a segment), ** (across segments
-- S:531cf59eb3 function loadIgnore `export function loadIgnore(root)` L63 : Build an ignore predicate for a repo root. The predicate takes a posix relative path and returns true when the path should be excluded. Later patterns win, so a negation can re-include a path a broad 
-- S:d4e650f5ae function walkRepo `export function walkRepo(root, { ignore = () => false, maxDepth = 12 } = {})` L87 : Walk a repository into a sorted list of files. Symlinks are skipped to avoid cycles and escapes. Returns [{ relPath, absPath, size }] ordered by relPath.
+- S:7c5c3a31a4 function compilePattern `function compilePattern(pattern)` L41 : Compile one gitignore-style pattern into a tester over a posix relative path. Supported: comments, negation (!), leading / (anchored), trailing / (directory), * (within a segment), ** (across segments
+- S:531cf59eb3 function loadIgnore `export function loadIgnore(root)` L86 : Build an ignore predicate for a repo root. The predicate takes a posix relative path and returns true when the path should be excluded. Later patterns win, so a negation can re-include a path a broad 
+- S:d4e650f5ae function walkRepo `export function walkRepo(root, { ignore = () => false, maxDepth = 12 } = {})` L110 : Walk a repository into a sorted list of files. Symlinks are skipped to avoid cycles and escapes. Returns [{ relPath, absPath, size }] ordered by relPath.
 ### scripts/check-licenses.mjs [F:cc361bd05a]
 - S:25117f5b1d function normalizeLicense `function normalizeLicense(raw)` L22
 - S:cb3211f3c2 function checkLicenses `export function checkLicenses(pkg, manifest)` L28 : Core check. Takes the parsed package.json and (optional) adapters manifest and returns a list of human-readable problem strings. Pure: no filesystem or network.
@@ -698,9 +700,9 @@ Files: 519  Bytes: 1614493  Map tokens: 48607/120000
 - S:cbe5a2e179 function firstCommentLine `function firstCommentLine(source)` L44
 - S:05fa5077ed function rawPurpose `function rawPurpose(relPath, symbols, source)` L57 : Derive a module purpose from its symbols and source. Returns the raw (unredacted) string so it can be cached; redaction is applied at map assembly time.
 - S:e9e4290005 function buildSnapshot `export function buildSnapshot(root, opts = {})` L67 : Build the full snapshot for a repository root.
-- S:45b2f146f0 function buildEdgeList `function buildEdgeList(adjacency, pathIdByPath)` L266 : Resolve adjacency into a sorted edge list of dictionary path ids.
-- S:dbf47f93d3 function renderMarkdown `function renderMarkdown({ generatedFor, merkleRoot, files, totalBytes, map })` L280
-- S:890a9e6691 function readGovernance `function readGovernance(root)` L331 : Read a light governance posture from the target config and environment. It never arms anything; it only reports posture so a snapshot can double as a status probe.
+- S:45b2f146f0 function buildEdgeList `function buildEdgeList(adjacency, pathIdByPath)` L274 : Resolve adjacency into a sorted edge list of dictionary path ids.
+- S:dbf47f93d3 function renderMarkdown `function renderMarkdown({ generatedFor, merkleRoot, files, totalBytes, map })` L288
+- S:890a9e6691 function readGovernance `function readGovernance(root)` L339 : Read a light governance posture from the target config and environment. It never arms anything; it only reports posture so a snapshot can double as a status probe.
 ### tests/promoted-learnings.test.mjs [F:ddd82fc886]
 - S:e0832e1baa function withRoot `function withRoot(learningsBody)` L8
 ### scripts/agent/run-cycle.mjs [F:ddeb486c49]
@@ -886,6 +888,9 @@ Files: 519  Bytes: 1614493  Map tokens: 48607/120000
 - scripts/snapshot.mjs -> scripts/lib/snapshot-core.mjs
 - scripts/promote-learning.mjs -> scripts/lib/learnings.mjs
 - scripts/check-evidence-secrets.mjs -> scripts/lib/secret-patterns.mjs
+- tests/snapshot-security.test.mjs -> scripts/lib/snapshot-cache.mjs
+- tests/snapshot-security.test.mjs -> scripts/lib/snapshot-walk.mjs
+- tests/snapshot-security.test.mjs -> scripts/lib/snapshot-core.mjs
 - tests/performance.test.mjs -> scripts/validate-knowledge-packet.mjs
 - tests/performance.test.mjs -> scripts/validate-config.mjs
 - tests/performance.test.mjs -> scripts/validate-work-item.mjs
@@ -934,54 +939,54 @@ Files: 519  Bytes: 1614493  Map tokens: 48607/120000
 
 ## Attention (centrality + pagerank)
 
-1. scripts/lib/yaml-lite.mjs centrality=12 pagerank=0.01317
-2. scripts/lib/jsonschema.mjs centrality=8 pagerank=0.018007
-3. scripts/lib/learnings.mjs centrality=9 pagerank=0.012118
-4. scripts/agent/run-cycle.mjs centrality=14 pagerank=0.004441
-5. scripts/validate-config.mjs centrality=10 pagerank=0.007356
-6. scripts/lib/canonical-json.mjs centrality=8 pagerank=0.008726
-7. scripts/lib/snapshot-core.mjs centrality=12 pagerank=0.002347
-8. scripts/validate-knowledge-packet.mjs centrality=7 pagerank=0.006099
-9. scripts/lib/secret-patterns.mjs centrality=4 pagerank=0.008758
-10. scripts/validate-work-item.mjs centrality=6 pagerank=0.005758
-11. scripts/lib/lang-adapters/index.mjs centrality=8 pagerank=0.002786
-12. scripts/lib/graph.mjs centrality=4 pagerank=0.006884
-13. scripts/snapshot.mjs centrality=8 pagerank=0.001689
-14. scripts/agent/resolve-role.mjs centrality=5 pagerank=0.00434
-15. scripts/agent/providers.mjs centrality=3 pagerank=0.006115
-16. examples/demo-app/src/index.js centrality=6 pagerank=0.001689
-17. scripts/agent/render-prompt.mjs centrality=3 pagerank=0.003981
-18. scripts/verify-packet.mjs centrality=4 pagerank=0.002048
-19. tests/config.test.mjs centrality=4 pagerank=0.001689
-20. tests/packet-signing.test.mjs centrality=4 pagerank=0.001689
-21. tests/providers.test.mjs centrality=4 pagerank=0.001689
-22. scripts/migrate-config.mjs centrality=3 pagerank=0.002766
-23. scripts/lib/branch-name.mjs centrality=2 pagerank=0.003843
-24. scripts/lib/commit-identity.mjs centrality=2 pagerank=0.003843
-25. scripts/lib/run-gate-capped.mjs centrality=2 pagerank=0.003843
-26. scripts/dry-run-sweep.mjs centrality=3 pagerank=0.002407
-27. tests/helpers/mock-openai-server.mjs centrality=2 pagerank=0.003604
-28. examples/demo-app/src/CartService.js centrality=2 pagerank=0.003364
-29. examples/demo-app/src/CheckoutService.js centrality=2 pagerank=0.003364
-30. examples/demo-app/src/InventoryService.js centrality=2 pagerank=0.003364
-31. examples/demo-app/src/NotificationService.js centrality=2 pagerank=0.003364
-32. examples/demo-app/src/OrderService.js centrality=2 pagerank=0.003364
-33. examples/demo-app/src/PaymentProcessor.js centrality=2 pagerank=0.003364
-34. scripts/lib/merkle.mjs centrality=3 pagerank=0.002068
-35. bin/modonome.mjs centrality=2 pagerank=0.003125
-36. tests/chaos.test.mjs centrality=3 pagerank=0.001689
-37. tests/performance.test.mjs centrality=3 pagerank=0.001689
-38. tests/run-cycle-openai.test.mjs centrality=3 pagerank=0.001689
-39. tests/snapshot-incremental.test.mjs centrality=3 pagerank=0.001689
-40. tests/ws-b-harness.test.mjs centrality=3 pagerank=0.001689
-41. tests/ws-h-config.test.mjs centrality=3 pagerank=0.001689
-42. scripts/lib/repo-detect.mjs centrality=2 pagerank=0.002912
-43. scripts/lib/lang-adapters/tree-sitter.mjs centrality=2 pagerank=0.002587
-44. scripts/agent/apply-patch.mjs centrality=2 pagerank=0.002545
-45. scripts/lib/snapshot-cache.mjs centrality=2 pagerank=0.002347
-46. scripts/lib/snapshot-walk.mjs centrality=2 pagerank=0.002068
-47. scripts/agent/action-queue.mjs centrality=2 pagerank=0.002067
-48. scripts/lib/packet-id.mjs centrality=2 pagerank=0.002048
-49. scripts/sign-packet.mjs centrality=2 pagerank=0.002048
-50. scripts/lib/snapshot-graph.mjs centrality=2 pagerank=0.001889
+1. scripts/lib/yaml-lite.mjs centrality=12 pagerank=0.013162
+2. scripts/lib/jsonschema.mjs centrality=8 pagerank=0.017941
+3. scripts/lib/learnings.mjs centrality=9 pagerank=0.012074
+4. scripts/agent/run-cycle.mjs centrality=14 pagerank=0.004425
+5. scripts/validate-config.mjs centrality=10 pagerank=0.007329
+6. scripts/lib/snapshot-core.mjs centrality=13 pagerank=0.002816
+7. scripts/lib/canonical-json.mjs centrality=8 pagerank=0.008769
+8. scripts/validate-knowledge-packet.mjs centrality=7 pagerank=0.006076
+9. scripts/lib/secret-patterns.mjs centrality=4 pagerank=0.008761
+10. scripts/validate-work-item.mjs centrality=6 pagerank=0.005737
+11. scripts/lib/lang-adapters/index.mjs centrality=8 pagerank=0.002817
+12. scripts/lib/graph.mjs centrality=4 pagerank=0.006894
+13. scripts/snapshot.mjs centrality=8 pagerank=0.001683
+14. scripts/agent/resolve-role.mjs centrality=5 pagerank=0.004324
+15. scripts/agent/providers.mjs centrality=3 pagerank=0.006093
+16. examples/demo-app/src/index.js centrality=6 pagerank=0.001683
+17. scripts/agent/render-prompt.mjs centrality=3 pagerank=0.003967
+18. scripts/verify-packet.mjs centrality=4 pagerank=0.002041
+19. tests/config.test.mjs centrality=4 pagerank=0.001683
+20. tests/packet-signing.test.mjs centrality=4 pagerank=0.001683
+21. tests/providers.test.mjs centrality=4 pagerank=0.001683
+22. scripts/lib/snapshot-cache.mjs centrality=3 pagerank=0.002816
+23. scripts/migrate-config.mjs centrality=3 pagerank=0.002756
+24. scripts/lib/snapshot-walk.mjs centrality=3 pagerank=0.002578
+25. scripts/lib/branch-name.mjs centrality=2 pagerank=0.003829
+26. scripts/lib/commit-identity.mjs centrality=2 pagerank=0.003829
+27. scripts/lib/run-gate-capped.mjs centrality=2 pagerank=0.003829
+28. scripts/dry-run-sweep.mjs centrality=3 pagerank=0.002398
+29. tests/helpers/mock-openai-server.mjs centrality=2 pagerank=0.003591
+30. scripts/lib/merkle.mjs centrality=3 pagerank=0.002101
+31. examples/demo-app/src/CartService.js centrality=2 pagerank=0.003352
+32. examples/demo-app/src/CheckoutService.js centrality=2 pagerank=0.003352
+33. examples/demo-app/src/InventoryService.js centrality=2 pagerank=0.003352
+34. examples/demo-app/src/NotificationService.js centrality=2 pagerank=0.003352
+35. examples/demo-app/src/OrderService.js centrality=2 pagerank=0.003352
+36. examples/demo-app/src/PaymentProcessor.js centrality=2 pagerank=0.003352
+37. bin/modonome.mjs centrality=2 pagerank=0.003114
+38. tests/chaos.test.mjs centrality=3 pagerank=0.001683
+39. tests/performance.test.mjs centrality=3 pagerank=0.001683
+40. tests/run-cycle-openai.test.mjs centrality=3 pagerank=0.001683
+41. tests/snapshot-incremental.test.mjs centrality=3 pagerank=0.001683
+42. tests/snapshot-security.test.mjs centrality=3 pagerank=0.001683
+43. tests/ws-b-harness.test.mjs centrality=3 pagerank=0.001683
+44. tests/ws-h-config.test.mjs centrality=3 pagerank=0.001683
+45. scripts/lib/repo-detect.mjs centrality=2 pagerank=0.002942
+46. scripts/lib/lang-adapters/tree-sitter.mjs centrality=2 pagerank=0.002577
+47. scripts/agent/apply-patch.mjs centrality=2 pagerank=0.002536
+48. scripts/agent/action-queue.mjs centrality=2 pagerank=0.002059
+49. scripts/lib/packet-id.mjs centrality=2 pagerank=0.002041
+50. scripts/sign-packet.mjs centrality=2 pagerank=0.002041
 

@@ -79,17 +79,25 @@ export function buildSnapshot(root, opts = {}) {
   const files = walkRepo(root, { ignore });
   const fileSet = new Set(files.map((f) => f.relPath));
 
-  const fileHashes = {};
-  const languageMix = {};
+  // Object.create(null) rather than {}: these maps are keyed directly by a raw
+  // relative path from the walked repo (or, for cacheEntriesIn, from an untrusted
+  // JSON cache file). A repo or cache entry containing the literal name "__proto__"
+  // would otherwise repoint the map's prototype when the assigned value is an
+  // object (as with cacheEntries), which is the shape CodeQL's
+  // js/prototype-polluting-assignment flags. A null-prototype object has no
+  // __proto__ accessor to hijack, and every read below already uses
+  // Object.entries/hasOwnProperty.call rather than inherited methods.
+  const fileHashes = Object.create(null);
+  const languageMix = Object.create(null);
   let totalBytes = 0;
   let reusedCount = 0;
   const perFile = []; // { relPath, symbols, imports, purposeRaw }
-  const cacheEntries = {}; // relPath -> { hash, symbols, imports, purposeRaw }
+  const cacheEntries = Object.create(null); // relPath -> { hash, symbols, imports, purposeRaw }
   // Incremental reuse: trust the cache for a file only when git reported it did not
   // change. When `changed` is null (git unavailable) every file is treated as changed,
   // which is a full rebuild. Reused entries are byte-identical to a fresh read because
   // the content is unchanged, so the artifact matches a from-scratch build exactly.
-  const cacheEntriesIn = (cache && cache.entries) || {};
+  const cacheEntriesIn = (cache && cache.entries) || Object.create(null);
 
   for (const f of files) {
     const ext = extOf(f.relPath);

@@ -9,6 +9,16 @@ or CVE identifier where one exists.
 
 ## Unreleased
 
+### Repo snapshot utility hardening
+
+- Fixed a CodeQL-flagged time-of-check-to-time-of-use race in `scaffold`'s `AGENTS.md`
+  creation by making it an atomic exclusive write. A follow-up manual security audit (the
+  snapshot tool reads arbitrary repositories, including untrusted ones) found and fixed three
+  more issues: git revision values from the local cache and `--since` are now validated before
+  reaching `git` (argument injection), the ignore-pattern compiler collapses adjacent
+  wildcards (polynomial ReDoS on a crafted `.gitignore`), and per-file maps keyed by raw paths
+  use `Object.create(null)` (prototype pollution via a file named `__proto__`).
+
 ### Repo snapshot utility
 
 - Added `modonome snapshot`, a dependency-free utility that reads any repo and writes a

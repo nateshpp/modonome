@@ -30,8 +30,17 @@ function enableSnapshot(target, here) {
     return;
   }
   const agentsPath = join(target, "AGENTS.md");
-  if (!existsSync(agentsPath)) {
-    writeFileSync(agentsPath, AGENTS_POINTER);
+  // Create only if absent, atomically: "wx" opens with O_CREAT|O_EXCL so the
+  // check and the write are one syscall, closing the TOCTOU window a separate
+  // existsSync + writeFileSync would leave open to a symlink swap.
+  let created = false;
+  try {
+    writeFileSync(agentsPath, AGENTS_POINTER, { flag: "wx" });
+    created = true;
+  } catch (e) {
+    if (e.code !== "EEXIST") throw e;
+  }
+  if (created) {
     console.log("  created: AGENTS.md (snapshot pointer)");
   } else if (!readFileSync(agentsPath, "utf8").includes(".modonome/snapshot/map.md")) {
     console.log("  note: point your AGENTS.md at .modonome/snapshot/map.md so agents read it first.");

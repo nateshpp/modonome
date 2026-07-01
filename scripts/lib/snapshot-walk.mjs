@@ -29,6 +29,15 @@ const DEFAULT_IGNORES = [
 // Compile one gitignore-style pattern into a tester over a posix relative path.
 // Supported: comments, negation (!), leading / (anchored), trailing / (directory),
 // * (within a segment), ** (across segments), and ? (single non-slash char).
+//
+// Consecutive wildcard tokens (from patterns like "***" or "**" followed directly
+// by another "*") are collapsed into a single wildcard emission instead of being
+// concatenated. Emitting adjacent unbounded quantifiers (".*.*", "[^/]*[^/]*", or a
+// mix) makes matching a non-matching string polynomial or worse in the number of
+// stacked wildcards, a real denial-of-service risk since these patterns come from
+// .gitignore/.modonomeignore files inside the very repository being scanned, which
+// may be untrusted. Collapsing preserves gitignore semantics (repeated stars mean
+// the same as one) while keeping the compiled regex free of that shape.
 function compilePattern(pattern) {
   let negate = false;
   let p = pattern;
@@ -38,19 +47,33 @@ function compilePattern(pattern) {
   if (anchored) p = p.slice(1);
   const hasSlash = p.includes("/");
 
-  let body = "";
+  // Tokenize first so adjacent wildcards can be collapsed regardless of whether
+  // they originated from "**" or a run of plain "*"/"?" characters.
+  const tokens = [];
   for (let i = 0; i < p.length; i++) {
     const c = p[i];
     if (c === "*") {
-      if (p[i + 1] === "*") { body += ".*"; i++; } else { body += "[^/]*"; }
+      if (p[i + 1] === "*") { tokens.push({ wild: true, cross: true }); i++; } else { tokens.push({ wild: true, cross: false }); }
     } else if (c === "?") {
-      body += "[^/]";
+      tokens.push({ wild: true, cross: false });
     } else if ("\\^$.|+()[]{}".includes(c)) {
-      body += "\\" + c;
+      tokens.push({ wild: false, text: "\\" + c });
     } else {
-      body += c;
+      tokens.push({ wild: false, text: c });
     }
   }
+
+  const collapsed = [];
+  for (const t of tokens) {
+    const prev = collapsed[collapsed.length - 1];
+    if (t.wild && prev && prev.wild) {
+      prev.cross = prev.cross || t.cross; // a cross-segment wildcard in the run wins
+      continue;
+    }
+    collapsed.push({ ...t });
+  }
+
+  const body = collapsed.map((t) => (t.wild ? (t.cross ? ".*" : "[^/]*") : t.text)).join("");
 
   const prefix = anchored || hasSlash ? "^" : "(^|.*/)";
   const re = new RegExp(`${prefix}${body}(/.*)?$`);

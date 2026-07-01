@@ -110,7 +110,17 @@ function recomputeMerkle(root) {
   return { files, ...buildMerkleTree(entries), fileHashes: Object.fromEntries(entries.map((e) => [e.relPath, e.hash])) };
 }
 
+// A --since ref is free-form git revision syntax (branch, tag, HEAD~N, a SHA), so
+// it cannot be restricted to a fixed pattern the way a cache-internal SHA can. The
+// one property that must hold is that it does not start with "-": a value like
+// "--output=/path" would otherwise be parsed by git as an option, not a revision,
+// and some git options can read or write files (argument injection).
+function isSafeGitRevision(value) {
+  return typeof value === "string" && value.length > 0 && !value.startsWith("-");
+}
+
 function gitDelta(root, ref) {
+  if (!isSafeGitRevision(ref)) return { error: `refusing unsafe git ref: ${ref}`, added: [], removed: [], changed: [] };
   const r = spawnSync("git", ["diff", "--name-status", ref, "--"], { cwd: root, encoding: "utf8", timeout: 15000 });
   if (r.status !== 0) return { error: `git diff against ${ref} failed`, added: [], removed: [], changed: [] };
   const added = [], removed = [], changed = [];
