@@ -178,6 +178,11 @@ function main(argv) {
       process.exit(0);
     };
     if (!committed) { console.error("No committed snapshot found."); fail(); return; }
+    // Fast path: the map and signature are derived deterministically from file
+    // content, so if the recomputed Merkle root matches, the snapshot is provably
+    // current without the cost of a full rebuild (extraction, graph, render).
+    const liveRoot = recomputeMerkle(root).root;
+    if (liveRoot === committed.merkle_root) { console.log("Snapshot is current."); process.exit(0); }
     const built = buildSnapshot(root, buildOptions(root, argv, committed.generated_at));
     const dir = snapshotDir(root);
     const sameSig = canonicalize(built.signature) === canonicalize(committed);

@@ -64,6 +64,7 @@ lines.push(`Target: ${target}`);
 lines.push(`State directory: ${adopted}`);
 lines.push(`Detected stack: ${stack.name} (${stack.pm})`);
 lines.push(`Repo instructions found: ${instructions.length ? instructions.join(", ") : "none"}`);
+lines.push(`Repo snapshot: ${has(".modonome/snapshot/signature.json") ? "present. Read .modonome/snapshot/map.md for context; run `modonome snapshot . --verify` to check freshness." : "none. Run `modonome snapshot .` to generate an LLM-ready map."}`);
 lines.push("\nGates it would adopt:");
 for (const g of stack.gates) lines.push(`  - ${g}`);
 lines.push("\nProtected paths it would never auto-merge:");

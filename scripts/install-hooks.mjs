@@ -22,8 +22,9 @@ writeFileSync(
     "# Auto-regenerate RELEASE-EVIDENCE.md so CI freshness check never fails.",
     "node scripts/build-release-evidence.mjs",
     'git add RELEASE-EVIDENCE.md',
-    "# Auto-regenerate the repo snapshot so its freshness check stays green.",
-    "node scripts/snapshot.mjs .",
+    "# Refresh the repo snapshot only when content changed. --verify is a cheap",
+    "# Merkle-only check; the full rebuild runs solely when it reports drift.",
+    "node scripts/snapshot.mjs . --verify >/dev/null 2>&1 || node scripts/snapshot.mjs .",
     "git add .modonome/snapshot llms.txt",
   ].join("\n") + "\n"
 );

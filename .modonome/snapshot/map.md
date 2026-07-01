@@ -2,8 +2,8 @@
 
 Modonome snapshot. Read this before reading the repo. Tier 0 (signature.json) is the fingerprint: if merkle_root matches your last read, nothing changed. Tier 1 (map.json / map.md) lists modules, public API signatures, import edges, and attention ranking. Cite anchors (F: for files, S: for symbols); each resolves to a path and line so you can act without re-reading the whole repo.
 
-Merkle root: sha256:21662c95ab674f9e63c0650d88a2833655c12b708d6ef4eeb1ff8b51144117a9
-Files: 462  Bytes: 1398850  Map tokens: 36092/120000
+Merkle root: sha256:647d915f493f415cc61c9d31fcf82e0549aa99d4e8d4d84dfda1af4ad1b02a11
+Files: 463  Bytes: 1403524  Map tokens: 36139/120000
 
 ## Modules
 
@@ -17,6 +17,7 @@ Files: 462  Bytes: 1398850  Map tokens: 36092/120000
 - AGENTS.md [F:a54ff182c7]: Agent instructions for modonome
 - ARCHITECTURE.md [F:8f6366fd8e]: Architecture
 - CHANGELOG.md [F:06572a96a5]: Changelog
+- CODEX.md [F:2f41a784d9]: Codex instructions for modonome
 - CODE_OF_CONDUCT.md [F:ffdbe3a1e7]: Contributor Covenant Code of Conduct
 - CONTRIBUTING.md [F:eca12c0a30]: Contributing to Modonome
 - GOVERNANCE.md [F:b60c6a93e9]: Governance
@@ -606,10 +607,10 @@ Files: 462  Bytes: 1398850  Map tokens: 36092/120000
 ### scripts/check-checker-engagement.mjs [F:fc5d887ff6]
 - S:aa00911a72 function readEvents `function readEvents(path)` L23
 ### scripts/check-md-governance.mjs [F:fd08562f92]
-- S:99ae98a428 function walkMd `function walkMd(dir, out = [])` L58
-- S:575af01d8c function checkTarget `function checkTarget(fileDir, rawTarget, srcFile)` L103
-- S:bc1fd2c5b3 function adrNumbers `function adrNumbers(dir)` L139 : 4. ADR number uniqueness across docs/adr and docs/research.
-- S:24c6a3dc6c function parseFrontMatter `function parseFrontMatter(text)` L172 : Front-matter parsing for canonical uniqueness and advisory presence.
+- S:99ae98a428 function walkMd `function walkMd(dir, out = [])` L60
+- S:575af01d8c function checkTarget `function checkTarget(fileDir, rawTarget, srcFile)` L105
+- S:bc1fd2c5b3 function adrNumbers `function adrNumbers(dir)` L141 : 4. ADR number uniqueness across docs/adr and docs/research.
+- S:24c6a3dc6c function parseFrontMatter `function parseFrontMatter(text)` L174 : Front-matter parsing for canonical uniqueness and advisory presence.
 ### scripts/agent/render-prompt.mjs [F:fd660a117b]
 - S:22e3bba95f function snapshotContext `export function snapshotContext(root = process.cwd())` L23 : Build a compact repository-snapshot context block from the committed Tier 0 signature, so every rendered role prompt starts pre-oriented and an agent can read the map instead of scanning the whole tre
 - S:2b5847c683 function renderPrompt `export function renderPrompt(role, env = process.env)` L58 : Substitute every ${VAR} from env. Throw if a referenced variable is unset, so a missing identity or branch fails loudly instead of rendering an empty value into a model prompt.
@@ -730,54 +731,54 @@ Files: 462  Bytes: 1398850  Map tokens: 36092/120000
 
 ## Attention (centrality + pagerank)
 
-1. scripts/lib/yaml-lite.mjs centrality=12 pagerank=0.015051
-2. scripts/lib/jsonschema.mjs centrality=7 pagerank=0.017768
-3. scripts/validate-config.mjs centrality=9 pagerank=0.008383
-4. scripts/lib/learnings.mjs centrality=7 pagerank=0.010937
-5. scripts/lib/canonical-json.mjs centrality=7 pagerank=0.009523
-6. scripts/lib/snapshot-core.mjs centrality=11 pagerank=0.002244
-7. scripts/validate-knowledge-packet.mjs centrality=7 pagerank=0.006923
-8. scripts/lib/secret-patterns.mjs centrality=4 pagerank=0.009912
-9. scripts/lib/graph.mjs centrality=4 pagerank=0.007785
-10. scripts/validate-work-item.mjs centrality=5 pagerank=0.005721
-11. scripts/agent/run-cycle.mjs centrality=6 pagerank=0.004091
-12. examples/demo-app/src/index.js centrality=6 pagerank=0.001918
-13. scripts/agent/render-prompt.mjs centrality=3 pagerank=0.00496
-14. scripts/agent/resolve-role.mjs centrality=3 pagerank=0.00496
-15. scripts/snapshot.mjs centrality=5 pagerank=0.001918
-16. scripts/verify-packet.mjs centrality=4 pagerank=0.002325
-17. tests/config.test.mjs centrality=4 pagerank=0.001918
-18. tests/packet-signing.test.mjs centrality=4 pagerank=0.001918
-19. scripts/migrate-config.mjs centrality=3 pagerank=0.00314
-20. scripts/lib/branch-name.mjs centrality=2 pagerank=0.004363
-21. scripts/lib/commit-identity.mjs centrality=2 pagerank=0.004363
-22. scripts/lib/run-gate-capped.mjs centrality=2 pagerank=0.004363
-23. scripts/lib/merkle.mjs centrality=3 pagerank=0.002434
-24. examples/demo-app/src/CartService.js centrality=2 pagerank=0.003819
-25. examples/demo-app/src/CheckoutService.js centrality=2 pagerank=0.003819
-26. examples/demo-app/src/InventoryService.js centrality=2 pagerank=0.003819
-27. examples/demo-app/src/NotificationService.js centrality=2 pagerank=0.003819
-28. examples/demo-app/src/OrderService.js centrality=2 pagerank=0.003819
-29. examples/demo-app/src/PaymentProcessor.js centrality=2 pagerank=0.003819
-30. scripts/lib/repo-detect.mjs centrality=2 pagerank=0.003738
-31. scripts/lib/lang-adapters/index.mjs centrality=3 pagerank=0.002108
-32. bin/modonome.mjs centrality=2 pagerank=0.003548
-33. tests/chaos.test.mjs centrality=3 pagerank=0.001918
-34. tests/performance.test.mjs centrality=3 pagerank=0.001918
-35. tests/ws-b-harness.test.mjs centrality=3 pagerank=0.001918
-36. tests/ws-h-config.test.mjs centrality=3 pagerank=0.001918
-37. scripts/lib/snapshot-walk.mjs centrality=2 pagerank=0.002434
-38. scripts/lib/packet-id.mjs centrality=2 pagerank=0.002325
-39. scripts/sign-packet.mjs centrality=2 pagerank=0.002325
-40. scripts/lib/snapshot-graph.mjs centrality=2 pagerank=0.002108
-41. scripts/lib/snapshot-redact.mjs centrality=2 pagerank=0.002108
-42. scripts/transition-work-item.mjs centrality=1 pagerank=0.003548
-43. scripts/build-release-evidence.mjs centrality=2 pagerank=0.001918
-44. scripts/check-drift.mjs centrality=2 pagerank=0.001918
-45. scripts/check-repo-hygiene.mjs centrality=2 pagerank=0.001918
-46. scripts/check-self-application.mjs centrality=2 pagerank=0.001918
-47. scripts/check-work-items.mjs centrality=2 pagerank=0.001918
-48. scripts/run-gate-pipeline.mjs centrality=2 pagerank=0.001918
-49. tests/ws-e-negative-controls.test.mjs centrality=2 pagerank=0.001918
-50. scripts/lib/lang-adapters/generic.mjs centrality=1 pagerank=0.002814
+1. scripts/lib/yaml-lite.mjs centrality=12 pagerank=0.015022
+2. scripts/lib/jsonschema.mjs centrality=7 pagerank=0.017734
+3. scripts/validate-config.mjs centrality=9 pagerank=0.008367
+4. scripts/lib/learnings.mjs centrality=7 pagerank=0.010916
+5. scripts/lib/canonical-json.mjs centrality=7 pagerank=0.009504
+6. scripts/lib/snapshot-core.mjs centrality=11 pagerank=0.002239
+7. scripts/validate-knowledge-packet.mjs centrality=7 pagerank=0.00691
+8. scripts/lib/secret-patterns.mjs centrality=4 pagerank=0.009893
+9. scripts/lib/graph.mjs centrality=4 pagerank=0.00777
+10. scripts/validate-work-item.mjs centrality=5 pagerank=0.00571
+11. scripts/agent/run-cycle.mjs centrality=6 pagerank=0.004083
+12. examples/demo-app/src/index.js centrality=6 pagerank=0.001914
+13. scripts/agent/render-prompt.mjs centrality=3 pagerank=0.004951
+14. scripts/agent/resolve-role.mjs centrality=3 pagerank=0.004951
+15. scripts/snapshot.mjs centrality=5 pagerank=0.001914
+16. scripts/verify-packet.mjs centrality=4 pagerank=0.002321
+17. tests/config.test.mjs centrality=4 pagerank=0.001914
+18. tests/packet-signing.test.mjs centrality=4 pagerank=0.001914
+19. scripts/migrate-config.mjs centrality=3 pagerank=0.003134
+20. scripts/lib/branch-name.mjs centrality=2 pagerank=0.004354
+21. scripts/lib/commit-identity.mjs centrality=2 pagerank=0.004354
+22. scripts/lib/run-gate-capped.mjs centrality=2 pagerank=0.004354
+23. scripts/lib/merkle.mjs centrality=3 pagerank=0.00243
+24. examples/demo-app/src/CartService.js centrality=2 pagerank=0.003812
+25. examples/demo-app/src/CheckoutService.js centrality=2 pagerank=0.003812
+26. examples/demo-app/src/InventoryService.js centrality=2 pagerank=0.003812
+27. examples/demo-app/src/NotificationService.js centrality=2 pagerank=0.003812
+28. examples/demo-app/src/OrderService.js centrality=2 pagerank=0.003812
+29. examples/demo-app/src/PaymentProcessor.js centrality=2 pagerank=0.003812
+30. scripts/lib/repo-detect.mjs centrality=2 pagerank=0.003731
+31. scripts/lib/lang-adapters/index.mjs centrality=3 pagerank=0.002104
+32. bin/modonome.mjs centrality=2 pagerank=0.003541
+33. tests/chaos.test.mjs centrality=3 pagerank=0.001914
+34. tests/performance.test.mjs centrality=3 pagerank=0.001914
+35. tests/ws-b-harness.test.mjs centrality=3 pagerank=0.001914
+36. tests/ws-h-config.test.mjs centrality=3 pagerank=0.001914
+37. scripts/lib/snapshot-walk.mjs centrality=2 pagerank=0.00243
+38. scripts/lib/packet-id.mjs centrality=2 pagerank=0.002321
+39. scripts/sign-packet.mjs centrality=2 pagerank=0.002321
+40. scripts/lib/snapshot-graph.mjs centrality=2 pagerank=0.002104
+41. scripts/lib/snapshot-redact.mjs centrality=2 pagerank=0.002104
+42. scripts/transition-work-item.mjs centrality=1 pagerank=0.003541
+43. scripts/build-release-evidence.mjs centrality=2 pagerank=0.001914
+44. scripts/check-drift.mjs centrality=2 pagerank=0.001914
+45. scripts/check-repo-hygiene.mjs centrality=2 pagerank=0.001914
+46. scripts/check-self-application.mjs centrality=2 pagerank=0.001914
+47. scripts/check-work-items.mjs centrality=2 pagerank=0.001914
+48. scripts/run-gate-pipeline.mjs centrality=2 pagerank=0.001914
+49. tests/ws-e-negative-controls.test.mjs centrality=2 pagerank=0.001914
+50. scripts/lib/lang-adapters/generic.mjs centrality=1 pagerank=0.002808
 

@@ -37,9 +37,10 @@ share_raw_code_across_repos: false
 share_repo_identifiers_by_default: false
 
 # Snapshot utility levers. Host admins tune these. ci_mode warn keeps a stale
-# snapshot from failing CI; set fail to make the freshness gate blocking.
+# snapshot from failing CI; fail makes the freshness gate blocking. Modonome runs
+# fail on itself (dogfooding) while the shipped template default stays warn.
 snapshot:
-  ci_mode: warn
+  ci_mode: fail
   sign: false
   parser: heuristic
   token_budget: 120000
