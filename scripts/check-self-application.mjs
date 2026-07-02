@@ -42,16 +42,13 @@ const REQUIRED_GATES = [
   { name: "checker engagement", needle: "check-checker-engagement.mjs" },
   { name: "license and adapter boundary", needle: "check-licenses.mjs" },
   { name: "prompt behavioral regression", needle: "test-prompt-behavior.mjs" },
-<<<<<<< HEAD
-  { name: "decisions authority", needle: "check-decisions-authority.mjs" },
-=======
   { name: "markdown governance", needle: "check-md-governance.mjs" },
   { name: "architecture drift", needle: "check-architecture-drift.mjs" },
+  { name: "decisions authority", needle: "check-decisions-authority.mjs" },
   // This script checking for its own name is not circular: it is a text search over
   // ci.yml, not a re-invocation. It exists because this exact gate went unwired into
   // CI for a period with nothing catching it.
   { name: "self-application conformance", needle: "check-self-application.mjs" },
->>>>>>> origin/main
 ];
 for (const g of REQUIRED_GATES) {
   if (!activeCI.includes(g.needle)) problems.push(`ci.yml does not run the ${g.name} gate (${g.needle}).`);

@@ -31,22 +31,19 @@ jobs:
       - run: node scripts/check-promotion-readiness.mjs
       - run: node scripts/check-work-items.mjs
       - run: node scripts/check-checker-engagement.mjs
-<<<<<<< HEAD
       - run: node scripts/check-decisions-authority.mjs
-=======
       - run: node scripts/check-licenses.mjs
       - run: node scripts/test-prompt-behavior.mjs
       - run: node scripts/check-md-governance.mjs
       - run: node scripts/check-architecture-drift.mjs
       - run: node scripts/check-self-application.mjs
       - run: node scripts/snapshot.mjs . --check
->>>>>>> origin/main
-      - run: git checkout "origin/\${{ github.base_ref }}" -- scripts/guard-ratchet.mjs
-      - run: git checkout "origin/\${{ github.base_ref }}" -- scripts/check-style.mjs
-      - run: git checkout "origin/\${{ github.base_ref }}" -- scripts/check-repo-hygiene.mjs
-      - run: git checkout "origin/\${{ github.base_ref }}" -- scripts/lib/branch-name.mjs
-      - run: git checkout "origin/\${{ github.base_ref }}" -- scripts/lib/commit-identity.mjs
-      - run: git checkout "origin/\${{ github.base_ref }}" -- scripts/lib/detect-attribution.mjs
+      - run: git checkout "origin/${{ github.base_ref }}" -- scripts/guard-ratchet.mjs
+      - run: git checkout "origin/${{ github.base_ref }}" -- scripts/check-style.mjs
+      - run: git checkout "origin/${{ github.base_ref }}" -- scripts/check-repo-hygiene.mjs
+      - run: git checkout "origin/${{ github.base_ref }}" -- scripts/lib/branch-name.mjs
+      - run: git checkout "origin/${{ github.base_ref }}" -- scripts/lib/commit-identity.mjs
+      - run: git checkout "origin/${{ github.base_ref }}" -- scripts/lib/detect-attribution.mjs
 `;
 
 // A minimal safe template config.yaml.
