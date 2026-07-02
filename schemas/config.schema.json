@@ -31,33 +31,30 @@
     "repo_network_dry_run": { "type": "boolean" },
     "share_raw_code_across_repos": { "type": "boolean" },
     "share_repo_identifiers_by_default": { "type": "boolean" },
-    "roles": {
+    "snapshot": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "maker": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "runner": { "type": "string", "enum": ["local", "container"] },
-            "model": { "type": "string", "minLength": 1 }
-          }
-        },
-        "checker": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "runner": { "type": "string", "enum": ["local", "container"] },
-            "model": { "type": "string", "minLength": 1 }
-          }
-        },
-        "self-govern": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "runner": { "type": "string", "enum": ["local", "container"] },
-            "model": { "type": "string", "minLength": 1 }
-          }
+        "ci_mode": { "type": "string", "enum": ["warn", "fail", "disabled"] },
+        "sign": { "type": "boolean" },
+        "parser": { "type": "string" },
+        "token_budget": { "type": "integer", "minimum": 0 },
+        "strict_redact": { "type": "boolean" }
+      }
+    },
+    "roles": {
+      "type": "object",
+      "description": "Role registry. maker and checker are the first-class separation-of-duties pair (a distinct model each is enforced by require_distinct_maker_checker_model). Any other key is a crew role added in config with no core-code change; it carries the same optional runner/model/provider/transport/trigger/execution-target fields.",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "runner": { "type": "string", "enum": ["local", "container"] },
+          "model": { "type": "string", "minLength": 1 },
+          "provider": { "type": "string", "minLength": 1 },
+          "transport": { "type": "string", "minLength": 1 },
+          "trigger": { "type": "string", "minLength": 1 },
+          "execution_target": { "type": "string", "minLength": 1 }
         }
       }
     },
@@ -96,7 +93,8 @@
         "additionalProperties": false,
         "properties": {
           "provider": { "type": "string", "minLength": 1 },
-          "base_url": { "type": "string", "minLength": 1 }
+          "base_url": { "type": "string", "minLength": 1 },
+          "exec_mode": { "type": "string", "enum": ["patch", "tool-loop"] }
         }
       }
     },

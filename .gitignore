@@ -39,3 +39,9 @@ ds-bundle/
 # Frontend build output and local caches (dist/ already ignored above)
 .vite/
 *.tsbuildinfo
+
+# Modonome snapshot portable pack (regenerate with: modonome snapshot --pack)
+*.msnap
+
+# Modonome snapshot local incremental cache (regenerated, never committed)
+.modonome/cache/

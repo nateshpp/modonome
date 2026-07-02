@@ -59,7 +59,10 @@ export interface ModonomeConfig {
   repo_network_dry_run: boolean;
   share_raw_code_across_repos: boolean;
   share_repo_identifiers_by_default: boolean;
-  roles: Record<string, { runner: string; model: string }>;
+  roles: Record<
+    string,
+    { runner: string; model: string; provider?: string; transport?: string; trigger?: string; execution_target?: string }
+  >;
   models: Record<string, { provider: string; base_url?: string }>;
   runners: Record<string, { labels: string[]; cli_path: string; environment?: string }>;
 }
