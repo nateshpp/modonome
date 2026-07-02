@@ -2,8 +2,8 @@
 
 Modonome snapshot. Read this before reading the repo. Tier 0 (signature.json) is the fingerprint: if merkle_root matches your last read, nothing changed. Tier 1 (map.json / map.md) lists modules, public API signatures, import edges, and attention ranking. Cite anchors (F: for files, S: for symbols); each resolves to a path and line so you can act without re-reading the whole repo.
 
-Merkle root: sha256:0e6aae729138cc918ff8fa8d6494505fdf36d617b4f2961a89bcdd5cea95984f
-Files: 770  Bytes: 2505583  Map tokens: 88757/120000
+Merkle root: sha256:7b9c7bf89f4fbc1f5ffb9bcea99f59a34ac3714ea33d96c04c1382fee55645f7
+Files: 770  Bytes: 2506085  Map tokens: 88711/120000
 
 ## Modules
 
@@ -280,7 +280,7 @@ Files: 770  Bytes: 2505583  Map tokens: 88757/120000
 - scripts/lib/canonical-json.mjs [F:245efb551c]: Domain separation tag binds a signature to this packet type and version so a signature over one structure cannot be replayed as another.
 - scripts/lib/commit-identity.mjs [F:e4ff19bbe2]: True when a name or email belongs to a denylisted agent or vendor identity. * Real automation such as dependabot is allowed; only coding-agent and model * vendo
 - scripts/lib/control-panel-audit.mjs [F:1a19f02364]: Today's real high-water mark is 7 (Arming & Safety, Caps & budget tab). The budget is set a few above that: a real ratchet against regression, not an arbitrary 
-- scripts/lib/detect-attribution.mjs [F:4a7eaceb5c]: Single source of truth for the AI-authorship-signature pattern. check-style.mjs imports this so the house-style linter and the detector can never drift apart. M
+- scripts/lib/detect-attribution.mjs [F:4a7eaceb5c]: True when any path segment of a branch name exactly equals a denylisted token. * This is a strict superset of isModelIdentifierBranch (which checks only the fir
 - scripts/lib/ed25519.mjs [F:0cacf66a3b]: Raw 32-byte public key as base64, accepting either a public or private KeyObject.
 - scripts/lib/graph.mjs [F:f51cba9beb]: isCyclic(adjacency) -> { cyclic: bool, cycle: [...] } Detects whether the graph contains a cycle. When a cycle is found, `cycle` holds the nodes involved in the
 - scripts/lib/jsonschema.mjs [F:34cb2b6c48]: A small, dependency-free JSON Schema validator.
@@ -700,14 +700,14 @@ Files: 770  Bytes: 2505583  Map tokens: 88757/120000
 - S:7c9eb8f22d function runScript `function runScript(tmp)` L101
 - S:43cc2b28a1 function withStubRunner `function withStubRunner(tmp, score, extendedScore, totalScore)` L215
 ### scripts/lib/detect-attribution.mjs [F:4a7eaceb5c]
-- S:bb570e99d8 const AI_SIGNATURE_RE `export const AI_SIGNATURE_RE =` L29 : Single source of truth for the AI-authorship-signature pattern. check-style.mjs imports this so the house-style linter and the detector can never drift apart. Matches: co-author trailers, "generated b
-- S:ba4cb77f9c function branchHasModelSegment `export function branchHasModelSegment(name)` L41 : True when any path segment of a branch name exactly equals a denylisted token. * This is a strict superset of isModelIdentifierBranch (which checks only the first * segment): it also catches evasions 
-- S:4bfc88b9a8 function suggestBranchName `export function suggestBranchName(name)` L55 : Propose a compliant branch name by replacing any denylisted segment with a neutral * placeholder, preserving the rest of the path so the suggestion stays meaningful. * "claude/fix-config" -> "change/f
-- S:38e44b5fa7 function detectBranch `export function detectBranch(name)` L69 : Scan a branch name and return a finding if it carries a model identifier.
-- S:e0f397f4e1 function detectCommits `export function detectCommits(logOutput, bodies = [])` L92 : Scan commits for forbidden author/committer identity (reusing commit-identity.mjs) * AND for AI signatures inside commit-message bodies. The identity check and the body * check are complementary: the 
-- S:099c6ccde0 function detectText `export function detectText(kind, where, text)` L121 : Scan a block of free text (PR body, a comment, a tracked file) for AI signatures. * Returns one finding per matching line so the remedy can point at the exact spot.
-- S:6c21b6660b function firstMatch `function firstMatch(text)` L138
-- S:af6abeace9 function formatRemedy `export function formatRemedy(findings)` L148 : Render a precomputed, actionable remedy so a blocked violation is never a dead end. * The message names the exact fix and, where applicable, the literal git commands to * apply it, so a reviewer paste
+- S:bb570e99d8 const AI_SIGNATURE_RE `export const AI_SIGNATURE_RE = new RegExp(P, "iu");` L40
+- S:ba4cb77f9c function branchHasModelSegment `export function branchHasModelSegment(name)` L51 : True when any path segment of a branch name exactly equals a denylisted token. * This is a strict superset of isModelIdentifierBranch (which checks only the first * segment): it also catches evasions 
+- S:4bfc88b9a8 function suggestBranchName `export function suggestBranchName(name)` L65 : Propose a compliant branch name by replacing any denylisted segment with a neutral * placeholder, preserving the rest of the path so the suggestion stays meaningful. * "claude/fix-config" -> "change/f
+- S:38e44b5fa7 function detectBranch `export function detectBranch(name)` L79 : Scan a branch name and return a finding if it carries a model identifier.
+- S:e0f397f4e1 function detectCommits `export function detectCommits(logOutput, bodies = [])` L103 : Scan commits for forbidden author/committer identity (reusing commit-identity.mjs) * AND for AI signatures inside commit-message bodies. The identity check and the body * check are complementary: the 
+- S:099c6ccde0 function detectText `export function detectText(kind, where, text)` L132 : Scan a block of free text (PR body, a comment, a tracked file) for AI signatures. * Returns one finding per matching line so the remedy can point at the exact spot.
+- S:6c21b6660b function firstMatch `function firstMatch(text)` L149
+- S:af6abeace9 function formatRemedy `export function formatRemedy(findings)` L159 : Render a precomputed, actionable remedy so a blocked violation is never a dead end. * The message names the exact fix and, where applicable, the literal git commands to * apply it, so a reviewer paste
 ### scripts/lib/snapshot-redact.mjs [F:4b91a9f65b]
 - S:3ef15e4c1b function redactText `export function redactText(text, { strict = false } = {})` L13 : Mask every matching secret in `text`. Returns { text, redactions } where each redaction records the pattern name and how many matches it masked.
 ### scripts/lib/learnings.mjs [F:4ebb5aa8a0]
