@@ -344,8 +344,11 @@ for (const [file, { added, removed }] of Object.entries(files)) {
     added.length === 0 &&
     removed.some((l) => /from\s+['"]vitest['"]/.test(l));
   if (isTest && !isOrphanedFramework) {
-    let addedAsserts   = count(added,   ASSERT);
-    let removedAsserts = count(removed, ASSERT);
+    // Strip inline comments before counting: an assertion commented out in place
+    // (removed line: real assertion, added line: `// ` + same call) would otherwise
+    // net to zero delta, since the raw ASSERT regex matches inside comments too.
+    let addedAsserts   = count(added.map(stripInlineComment),   ASSERT);
+    let removedAsserts = count(removed.map(stripInlineComment), ASSERT);
     if (isPyTest) {
       addedAsserts   += countBareAsserts(added);
       removedAsserts += countBareAsserts(removed);
@@ -491,9 +494,13 @@ for (const [file, { added, removed }] of Object.entries(files)) {
   // proves. The count-only check (check 1) cannot see this. Flag a net decrease in
   // strong assertions that coincides with newly added existence-only checks.
   if (isTest) {
-    const strongRemoved = count(removed, STRONG_ASSERT);
-    const strongAdded   = count(added,   STRONG_ASSERT);
-    const weakAdded     = count(added,   WEAK_EXISTENCE);
+    // Same comment-stripping rationale as check 1: a strong assertion commented
+    // out in place must not net to zero against its own commented reappearance.
+    const removedClean  = removed.map(stripInlineComment);
+    const addedClean    = added.map(stripInlineComment);
+    const strongRemoved = count(removedClean, STRONG_ASSERT);
+    const strongAdded   = count(addedClean,   STRONG_ASSERT);
+    const weakAdded     = count(addedClean,   WEAK_EXISTENCE);
     if (strongRemoved > strongAdded && weakAdded > 0) {
       problems.push(
         `${file}: downgrades assertion strength (strong value-checks ${strongAdded} added / ${strongRemoved} removed, replaced by ${weakAdded} existence-only check(s)). Existence checks do not prove the expected value.`

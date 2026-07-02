@@ -122,3 +122,20 @@ test("A5: lowering coverage threshold value (80 -> 0) is detected", () => {
   assert.equal(r.status, 1, `coverage threshold lowering must be rejected:\n${r.stdout}`);
   assert.match(r.stderr, /coverage threshold/, "must report coverage threshold change");
 });
+
+test("A6: commenting out an assertion in place does not net to zero (check 1)", () => {
+  // Removed line is a real assertion; added line is the same call text behind `//`.
+  // The raw ASSERT regex matches inside the comment, so an uncleaned count sees
+  // +1/-1 and stays silent while the test's coverage was actually deleted.
+  const r = ratchet(join(fx, "ratchet-diffs", "gaming", "comment-out-evasion.diff"));
+  assert.equal(r.status, 1, `commented-out assertion must be rejected:\n${r.stdout}`);
+  assert.match(r.stderr, /removes more test assertions/, "must report the net assertion drop");
+});
+
+test("A7: commenting out a strong assertion while adding an existence check is a strength downgrade (check 6)", () => {
+  // Same evasion against check 6: the commented-out toBe() must not count as a
+  // surviving strong assertion, so the added toBeDefined() reads as a downgrade.
+  const r = ratchet(join(fx, "ratchet-diffs", "gaming", "comment-out-strength-downgrade.diff"));
+  assert.equal(r.status, 1, `commented-out strong assertion must be rejected:\n${r.stdout}`);
+  assert.match(r.stderr, /downgrades assertion strength/, "must report the strength downgrade");
+});

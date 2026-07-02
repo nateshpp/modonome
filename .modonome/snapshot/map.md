@@ -2,8 +2,8 @@
 
 Modonome snapshot. Read this before reading the repo. Tier 0 (signature.json) is the fingerprint: if merkle_root matches your last read, nothing changed. Tier 1 (map.json / map.md) lists modules, public API signatures, import edges, and attention ranking. Cite anchors (F: for files, S: for symbols); each resolves to a path and line so you can act without re-reading the whole repo.
 
-Merkle root: sha256:9ed4f70fee28741f9cc21b9972ae3fc146814f35be805c1ae748f9aedb1e73ae
-Files: 526  Bytes: 1685876  Map tokens: 51656/120000
+Merkle root: sha256:1eb1efff5e5bd0b3e35a01f1bc7064a25a361b10de986c21a6aa0692d1c4df16
+Files: 528  Bytes: 1688065  Map tokens: 51655/120000
 
 ## Modules
 
@@ -520,14 +520,14 @@ Files: 526  Bytes: 1685876  Map tokens: 51656/120000
 - S:b4e887ed4f function schemaLevers `function schemaLevers()` L25
 - S:e09a554f44 function templateLevers `function templateLevers()` L30
 ### scripts/guard-ratchet.mjs [F:8a10462927]
-- S:89e92655dd function normalizeLF `function normalizeLF(s)` L21
-- S:a34306cc67 function getDiff `function getDiff()` L25
-- S:974654287c function count `function count(lines, re)` L272
-- S:fd230402e2 function deconfuse `function deconfuse(line)` L291
-- S:457528354e function stripInlineComment `function stripInlineComment(line)` L299
-- S:a4c389d72a function isVacuousAssertion `function isVacuousAssertion(line)` L304
-- S:17945c542e function countBareAsserts `function countBareAsserts(lines)` L314
-- S:4d3ac94b7c function isVacuousPyAssert `function isVacuousPyAssert(line)` L322
+- S:89e92655dd function normalizeLF `function normalizeLF(s)` L20
+- S:a34306cc67 function getDiff `function getDiff()` L24
+- S:974654287c function count `function count(lines, re)` L258
+- S:fd230402e2 function deconfuse `function deconfuse(line)` L277
+- S:457528354e function stripInlineComment `function stripInlineComment(line)` L285
+- S:a4c389d72a function isVacuousAssertion `function isVacuousAssertion(line)` L290
+- S:17945c542e function countBareAsserts `function countBareAsserts(lines)` L300
+- S:4d3ac94b7c function isVacuousPyAssert `function isVacuousPyAssert(line)` L308
 ### tests/report-impact.test.mjs [F:8a3433b070]
 - S:69f3537d3b function tmp `function tmp()` L13
 - S:1fe8548dac function fixture `function fixture()` L17
@@ -780,7 +780,7 @@ Files: 526  Bytes: 1685876  Map tokens: 51656/120000
 - S:c3ace341b4 function governanceErrors `export function governanceErrors(item, config = {})` L30 : Governance rules that JSON Schema cannot express (cross-field invariants).
 - S:33100346b9 function validateWorkItem `export function validateWorkItem(item, config = {})` L88
 ### tests/ratchet.test.mjs [F:f238d164c9]
-- S:2e93f745f3 function ratchet `function ratchet(diffPath)` L17
+- S:2e93f745f3 function ratchet `function ratchet(diffPath)` L16
 ### scripts/lib/graph.mjs [F:f51cba9beb]
 - S:3c3cd672a7 function isCyclic `export function isCyclic(adjacency)` L11 : isCyclic(adjacency) -> { cyclic: bool, cycle: [...] } Detects whether the graph contains a cycle. When a cycle is found, `cycle` holds the nodes involved in the order they were detected via DFS (the f
 - S:075e86ea7c function topoSort `export function topoSort(adjacency, nodes)` L48 : topoSort(adjacency, nodes) -> { order: [...], error?: string } Returns a topological ordering of `nodes` given the directed edges in `adjacency`. Nodes not present in `nodes` but reachable via edges a
@@ -980,54 +980,54 @@ Files: 526  Bytes: 1685876  Map tokens: 51656/120000
 
 ## Attention (centrality + pagerank)
 
-1. scripts/lib/jsonschema.mjs centrality=8 pagerank=0.01798
-2. scripts/lib/yaml-lite.mjs centrality=12 pagerank=0.013187
-3. scripts/agent/run-cycle.mjs centrality=17 pagerank=0.006226
-4. scripts/lib/learnings.mjs centrality=9 pagerank=0.011982
-5. scripts/validate-config.mjs centrality=11 pagerank=0.007786
-6. scripts/lib/canonical-json.mjs centrality=8 pagerank=0.008622
-7. scripts/lib/snapshot-core.mjs centrality=13 pagerank=0.002768
-8. scripts/validate-knowledge-packet.mjs centrality=7 pagerank=0.005974
-9. scripts/lib/secret-patterns.mjs centrality=4 pagerank=0.008614
-10. scripts/validate-work-item.mjs centrality=6 pagerank=0.00564
-11. scripts/lib/lang-adapters/index.mjs centrality=8 pagerank=0.002769
-12. scripts/agent/resolve-role.mjs centrality=6 pagerank=0.004832
-13. scripts/lib/graph.mjs centrality=4 pagerank=0.006778
-14. scripts/snapshot.mjs centrality=8 pagerank=0.001655
-15. scripts/agent/providers.mjs centrality=3 pagerank=0.006595
-16. examples/demo-app/src/index.js centrality=6 pagerank=0.001655
-17. scripts/agent/render-prompt.mjs centrality=3 pagerank=0.004011
-18. scripts/verify-packet.mjs centrality=4 pagerank=0.002006
-19. scripts/lib/snapshot-cache.mjs centrality=3 pagerank=0.002768
-20. tests/config.test.mjs centrality=4 pagerank=0.001655
-21. tests/packet-signing.test.mjs centrality=4 pagerank=0.001655
-22. tests/providers.test.mjs centrality=4 pagerank=0.001655
-23. scripts/migrate-config.mjs centrality=3 pagerank=0.00271
-24. scripts/lib/branch-name.mjs centrality=2 pagerank=0.003765
-25. scripts/lib/commit-identity.mjs centrality=2 pagerank=0.003765
-26. scripts/lib/run-gate-capped.mjs centrality=2 pagerank=0.003765
-27. scripts/lib/snapshot-walk.mjs centrality=3 pagerank=0.002535
-28. tests/helpers/mock-openai-server.mjs centrality=2 pagerank=0.00353
-29. scripts/dry-run-sweep.mjs centrality=3 pagerank=0.002358
-30. examples/demo-app/src/CartService.js centrality=2 pagerank=0.003296
-31. examples/demo-app/src/CheckoutService.js centrality=2 pagerank=0.003296
-32. examples/demo-app/src/InventoryService.js centrality=2 pagerank=0.003296
-33. examples/demo-app/src/NotificationService.js centrality=2 pagerank=0.003296
-34. examples/demo-app/src/OrderService.js centrality=2 pagerank=0.003296
-35. examples/demo-app/src/PaymentProcessor.js centrality=2 pagerank=0.003296
-36. scripts/lib/merkle.mjs centrality=3 pagerank=0.002066
-37. bin/modonome.mjs centrality=2 pagerank=0.003061
-38. scripts/lib/repo-detect.mjs centrality=2 pagerank=0.002892
-39. tests/chaos.test.mjs centrality=3 pagerank=0.001655
-40. tests/performance.test.mjs centrality=3 pagerank=0.001655
-41. tests/role-registry.test.mjs centrality=3 pagerank=0.001655
-42. tests/run-cycle-openai.test.mjs centrality=3 pagerank=0.001655
-43. tests/snapshot-incremental.test.mjs centrality=3 pagerank=0.001655
-44. tests/snapshot-security.test.mjs centrality=3 pagerank=0.001655
-45. tests/ws-b-harness.test.mjs centrality=3 pagerank=0.001655
-46. tests/ws-h-config.test.mjs centrality=3 pagerank=0.001655
-47. scripts/agent/apply-patch.mjs centrality=2 pagerank=0.002605
-48. scripts/lib/lang-adapters/tree-sitter.mjs centrality=2 pagerank=0.002534
-49. scripts/agent/action-queue.mjs centrality=2 pagerank=0.002136
-50. scripts/lib/packet-id.mjs centrality=2 pagerank=0.002006
+1. scripts/lib/jsonschema.mjs centrality=8 pagerank=0.017921
+2. scripts/lib/yaml-lite.mjs centrality=12 pagerank=0.013144
+3. scripts/agent/run-cycle.mjs centrality=17 pagerank=0.006206
+4. scripts/lib/learnings.mjs centrality=9 pagerank=0.011942
+5. scripts/validate-config.mjs centrality=11 pagerank=0.00776
+6. scripts/lib/canonical-json.mjs centrality=8 pagerank=0.008593
+7. scripts/lib/snapshot-core.mjs centrality=13 pagerank=0.002759
+8. scripts/validate-knowledge-packet.mjs centrality=7 pagerank=0.005954
+9. scripts/lib/secret-patterns.mjs centrality=4 pagerank=0.008585
+10. scripts/validate-work-item.mjs centrality=6 pagerank=0.005621
+11. scripts/lib/lang-adapters/index.mjs centrality=8 pagerank=0.00276
+12. scripts/agent/resolve-role.mjs centrality=6 pagerank=0.004816
+13. scripts/lib/graph.mjs centrality=4 pagerank=0.006755
+14. scripts/snapshot.mjs centrality=8 pagerank=0.001649
+15. scripts/agent/providers.mjs centrality=3 pagerank=0.006573
+16. examples/demo-app/src/index.js centrality=6 pagerank=0.001649
+17. scripts/agent/render-prompt.mjs centrality=3 pagerank=0.003998
+18. scripts/verify-packet.mjs centrality=4 pagerank=0.002
+19. scripts/lib/snapshot-cache.mjs centrality=3 pagerank=0.002759
+20. tests/config.test.mjs centrality=4 pagerank=0.001649
+21. tests/packet-signing.test.mjs centrality=4 pagerank=0.001649
+22. tests/providers.test.mjs centrality=4 pagerank=0.001649
+23. scripts/migrate-config.mjs centrality=3 pagerank=0.002701
+24. scripts/lib/branch-name.mjs centrality=2 pagerank=0.003752
+25. scripts/lib/commit-identity.mjs centrality=2 pagerank=0.003752
+26. scripts/lib/run-gate-capped.mjs centrality=2 pagerank=0.003752
+27. scripts/lib/snapshot-walk.mjs centrality=3 pagerank=0.002526
+28. tests/helpers/mock-openai-server.mjs centrality=2 pagerank=0.003519
+29. scripts/dry-run-sweep.mjs centrality=3 pagerank=0.00235
+30. examples/demo-app/src/CartService.js centrality=2 pagerank=0.003285
+31. examples/demo-app/src/CheckoutService.js centrality=2 pagerank=0.003285
+32. examples/demo-app/src/InventoryService.js centrality=2 pagerank=0.003285
+33. examples/demo-app/src/NotificationService.js centrality=2 pagerank=0.003285
+34. examples/demo-app/src/OrderService.js centrality=2 pagerank=0.003285
+35. examples/demo-app/src/PaymentProcessor.js centrality=2 pagerank=0.003285
+36. scripts/lib/merkle.mjs centrality=3 pagerank=0.002059
+37. bin/modonome.mjs centrality=2 pagerank=0.003051
+38. scripts/lib/repo-detect.mjs centrality=2 pagerank=0.002883
+39. tests/chaos.test.mjs centrality=3 pagerank=0.001649
+40. tests/performance.test.mjs centrality=3 pagerank=0.001649
+41. tests/role-registry.test.mjs centrality=3 pagerank=0.001649
+42. tests/run-cycle-openai.test.mjs centrality=3 pagerank=0.001649
+43. tests/snapshot-incremental.test.mjs centrality=3 pagerank=0.001649
+44. tests/snapshot-security.test.mjs centrality=3 pagerank=0.001649
+45. tests/ws-b-harness.test.mjs centrality=3 pagerank=0.001649
+46. tests/ws-h-config.test.mjs centrality=3 pagerank=0.001649
+47. scripts/agent/apply-patch.mjs centrality=2 pagerank=0.002596
+48. scripts/lib/lang-adapters/tree-sitter.mjs centrality=2 pagerank=0.002526
+49. scripts/agent/action-queue.mjs centrality=2 pagerank=0.002129
+50. scripts/lib/packet-id.mjs centrality=2 pagerank=0.002
 
