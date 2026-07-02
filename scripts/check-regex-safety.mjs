@@ -111,14 +111,28 @@ async function exportedRegexSources(absFile) {
 // 2/3. Static: new RegExp("..."|`...`) string args (no interpolation) and /.../ literals.
 function staticPatternSources(src) {
   const out = [];
-  for (const m of src.matchAll(/new\s+RegExp\(\s*(["'])((?:\\.|(?!\1).)*)\1/g)) {
-    if (!m[2].includes("${")) out.push({ label: "new RegExp(string)", source: m[2] });
+  // Every body alternation below is kept deterministic: "\\." starts with a
+  // backslash and each companion character class excludes the backslash (and the
+  // relevant delimiter), so the alternatives never overlap and matching is
+  // linear-time. An earlier char-class-aware variant overlapped and caused the very
+  // ReDoS this gate exists to catch, which its own nested-quantifier heuristic could
+  // not self-detect (that heuristic covers nested quantifiers, not overlapping
+  // alternation). A double-quoted and a single-quoted matcher replace one
+  // backreference matcher, since a backreference cannot go inside a character class.
+  for (const m of src.matchAll(/new\s+RegExp\(\s*"((?:\\.|[^"\\])*)"/g)) {
+    if (!m[1].includes("${")) out.push({ label: "new RegExp(string)", source: m[1] });
+  }
+  for (const m of src.matchAll(/new\s+RegExp\(\s*'((?:\\.|[^'\\])*)'/g)) {
+    if (!m[1].includes("${")) out.push({ label: "new RegExp(string)", source: m[1] });
   }
   for (const m of src.matchAll(/new\s+RegExp\(\s*`([^`]*)`/g)) {
     if (!m[1].includes("${")) out.push({ label: "new RegExp(template)", source: m[1] });
   }
-  // Regex literals in a plausible regex position (assignment, call arg, array, return).
-  const litRe = /(?:[=(,:[!&|?{}]|=>|return|\s)\s*\/((?:\\.|\[(?:\\.|[^\]])*\]|[^/\\\n])+)\/[gimsuy]*/g;
+  // Regex literals in a plausible regex position (assignment, call arg, array,
+  // return). A literal with a "/" inside a character class is only partially
+  // captured, which yields a safe non-finding rather than a false positive; a
+  // dangerous shape such as /(a+)+/ has no such slash and is still captured.
+  const litRe = /(?:[=(,:[!&|?{}]|=>|return|\s)\s*\/((?:\\.|[^/\\\n])+)\/[gimsuy]*/g;
   for (const m of src.matchAll(litRe)) out.push({ label: "regex literal", source: m[1] });
   return out;
 }

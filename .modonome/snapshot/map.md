@@ -2,8 +2,8 @@
 
 Modonome snapshot. Read this before reading the repo. Tier 0 (signature.json) is the fingerprint: if merkle_root matches your last read, nothing changed. Tier 1 (map.json / map.md) lists modules, public API signatures, import edges, and attention ranking. Cite anchors (F: for files, S: for symbols); each resolves to a path and line so you can act without re-reading the whole repo.
 
-Merkle root: sha256:0b17f2ea8be2c85a2042b02fe50f124440194e1135c8a96cccc93d7d0fa8db91
-Files: 781  Bytes: 2566201  Map tokens: 93262/120000
+Merkle root: sha256:18290b0d64d5a601380b3ff02b923197d7517cecd6910ea5d76457a769c4093b
+Files: 781  Bytes: 2567686  Map tokens: 93262/120000
 
 ## Modules
 
@@ -1350,7 +1350,7 @@ Files: 781  Bytes: 2566201  Map tokens: 93262/120000
 - S:ca3e7d6f59 function redosFindings `export function redosFindings(source)` L70 : Detect nested quantifiers: a group (...) that is itself quantified by an unbounded quantifier (+, *, or {n,}) AND whose body contains an unbounded quantifier. This is the catastrophic-backtracking cla
 - S:c52b041088 function exportedRegexSources `async function exportedRegexSources(absFile)` L100 : 1. Runtime: exported RegExp sources (including RegExps inside an exported array).
 - S:dcc6653dc4 function staticPatternSources `function staticPatternSources(src)` L112 : 2/3. Static: new RegExp("..."|`...`) string args (no interpolation) and /.../ literals.
-- S:979cd75d0e function regexSafetyProblems `export async function regexSafetyProblems(rootDir = root)` L128 : Collect every regex-safety problem across the target files. Exported (not run at import time) so the gate can be exercised without triggering process.exit.
+- S:979cd75d0e function regexSafetyProblems `export async function regexSafetyProblems(rootDir = root)` L142 : Collect every regex-safety problem across the target files. Exported (not run at import time) so the gate can be exercised without triggering process.exit.
 ### scripts/check-attribution-fp-corpus.mjs [F:e8676a18b7]
 - S:42d4f014b5 function corpusProblems `export function corpusProblems({ strictBranch, fuzzyBranch, strictId, fuzzyId, strictText, fuzzyText })` L34 : Run the corpus through the two layers. The detector predicates are injected so the * gate's own logic is testable with a deliberately over-broad matcher (proving it * would catch a bad promotion). Eac
 - S:59f6d857da const LIVE_DETECTORS `export const LIVE_DETECTORS =` L68 : The real detectors, wired to the injectable checker.
