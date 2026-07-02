@@ -17,7 +17,7 @@ be added here once the owner arms the loop on this repo.
 
 | Gate | Result |
 |---|---|
-| Drift guard | pass |
+| Drift guard | FAIL |
 | Style check | pass |
 | Repo hygiene | pass |
 | Self-application conformance | pass |
@@ -25,7 +25,7 @@ be added here once the owner arms the loop on this repo.
 | Capability promotion readiness | pass |
 | Work item validation | pass |
 | Checker engagement | pass |
-| AgentProof | 25/25 HARDENED |
+| AgentProof | 21/25 UNHARDENED |
 
 ## Work queue
 
