@@ -9,6 +9,9 @@ on:
 jobs:
   ratchet:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
       - uses: actions/checkout@v7
         with:
@@ -40,6 +43,10 @@ jobs:
         if: github.event_name == 'pull_request'
         run: git checkout "origin/${{ github.base_ref }}" -- scripts/check-style.mjs
 
+      - name: Load check-decisions-authority.mjs from the base branch
+        if: github.event_name == 'pull_request'
+        run: git checkout "origin/${{ github.base_ref }}" -- scripts/check-decisions-authority.mjs
+
       # Governance-relevant change assertion matching tests/ws-d-governed-change.test.mjs criteria
       - name: Governance-relevant change assertion
         run: node scripts/assert-governed-change.mjs origin/main
@@ -56,6 +63,11 @@ jobs:
 
       - name: Run markdown governance gate
         run: node scripts/check-md-governance.mjs
+
+      - name: Run decisions-authority gate
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/check-decisions-authority.mjs origin/main
 
       - name: Run license and adapter boundary gate
         run: node scripts/check-licenses.mjs

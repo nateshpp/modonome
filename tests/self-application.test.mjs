@@ -31,6 +31,7 @@ jobs:
       - run: node scripts/check-promotion-readiness.mjs
       - run: node scripts/check-work-items.mjs
       - run: node scripts/check-checker-engagement.mjs
+      - run: node scripts/check-decisions-authority.mjs
       - run: git checkout "origin/\${{ github.base_ref }}" -- scripts/guard-ratchet.mjs
       - run: git checkout "origin/\${{ github.base_ref }}" -- scripts/check-style.mjs
 `;
