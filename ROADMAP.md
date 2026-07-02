@@ -22,9 +22,10 @@ shift. Each item lands only when its own gates are green.
 
 **Status: in progress.** A reference implementation lives at `apps/control-panel/` (see its
 [README](apps/control-panel/README.md)): a React app that reads, and, opt-in, writes real
-`.modonome/` state through a small dev-server API, in both host and self-governance mode.
-Remaining before this milestone closes: a production hosting story beyond `npm run dev`, and
-folding the app's build and tests into the root `npm run verify` chain.
+`.modonome/` state through a small dev-server API, in both host and self-governance mode. Its
+build, typecheck, and its own coverage/coherence gates now run in CI (`ratchet` job) and in
+`npm run verify`. Remaining before this milestone closes: a production hosting story beyond
+`npm run dev`.
 
 - Rendered control panel for any repo with a docs or app surface.
 - Queue board, lease table, gate panel, cost panel, learning queue, and decision queue.
