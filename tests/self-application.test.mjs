@@ -36,6 +36,7 @@ jobs:
       - run: node scripts/check-md-governance.mjs
       - run: node scripts/check-architecture-drift.mjs
       - run: node scripts/check-self-application.mjs
+      - run: node bin/modonome.mjs hygiene check --pr 1
       - run: node scripts/snapshot.mjs . --check
       - run: git checkout "origin/\${{ github.base_ref }}" -- scripts/guard-ratchet.mjs
       - run: git checkout "origin/\${{ github.base_ref }}" -- scripts/check-style.mjs

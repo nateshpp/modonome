@@ -48,6 +48,9 @@ const REQUIRED_GATES = [
   // ci.yml, not a re-invocation. It exists because this exact gate went unwired into
   // CI for a period with nothing catching it.
   { name: "self-application conformance", needle: "check-self-application.mjs" },
+  // Scans the PR body and comments for AI-participation signatures (operational-note 6):
+  // the one attribution surface no tracked-file gate can see.
+  { name: "PR body and comment hygiene", needle: "hygiene check --pr" },
 ];
 for (const g of REQUIRED_GATES) {
   if (!activeCI.includes(g.needle)) problems.push(`ci.yml does not run the ${g.name} gate (${g.needle}).`);
