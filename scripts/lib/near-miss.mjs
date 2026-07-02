@@ -125,19 +125,28 @@ export function matchNearMissIdentity(name, email) {
   return null;
 }
 
+// An attribution cue: a word that signals a line is crediting authorship, not just
+// mentioning a vendor. Requiring a cue keeps the widener from firing on ordinary
+// prose that happens to name a model ("we evaluated mistral for the adapter").
+const ATTRIBUTION_CUE_RE =
+  /\b(generated|authored|coauthored|assisted|written|created|powered|signed|committed)\b/i;
+
 /**
- * Near-miss on free text, scanned line by line. Only the distinctive new-vendor
- * TEXT_TOKENS are matched, as whole words, and only on lines the strict
- * AI_SIGNATURE_RE does not already catch. Returns one finding per matching line.
+ * Near-miss on free text, scanned line by line. A line is a candidate only when it
+ * both names a distinctive new-vendor TEXT_TOKEN (as a whole word) AND carries an
+ * attribution cue, and the strict AI_SIGNATURE_RE does not already catch it.
+ * Separators are normalized to spaces first, so "Co_Authored_By: Mistral" and
+ * "mistral-ai" tokenize. Returns one finding per matching line.
  */
 export function matchNearMissText(where, text) {
   const findings = [];
   const lines = clamp(text).split("\n");
-  const wordRe = new RegExp(`\\b(${TEXT_TOKENS.join("|")})\\b`, "i");
+  const tokenRe = new RegExp(`\\b(${TEXT_TOKENS.join("|")})\\b`, "i");
   lines.forEach((line, i) => {
     if (AI_SIGNATURE_RE.test(line)) return; // strict already catches it
-    const m = line.match(wordRe);
-    if (m) {
+    const norm = line.replace(/[-_.]+/g, " ");
+    const m = norm.match(tokenRe);
+    if (m && ATTRIBUTION_CUE_RE.test(norm)) {
       findings.push({
         tier: 1,
         surface: "text",
