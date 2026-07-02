@@ -1,5 +1,4 @@
 import { execSync } from 'child_process';
-import fs from 'fs';
 
 const baseBranch = process.argv[2] || 'origin/main';
 
@@ -24,9 +23,20 @@ try {
     process.exit(0);
   }
 
-  // 3. Triviality check for actual code lines
-  const diff = execSync(`git diff ${baseBranch}...HEAD`, { encoding: 'utf8' });
-  const addedLines = diff.split('\n').filter(line => line.startsWith('+') && !line.startsWith('+++')).length;
+  // 3. Triviality check for actual code lines. Uses --numstat (one summary line per
+  // file: added, deleted, path) rather than the full diff body: a large but
+  // legitimate change (a new package, a generated artifact) can produce a diff body
+  // that overruns the OS pipe buffer under execSync and fails with ENOBUFS before
+  // the line count is ever read. --numstat carries the same added-line count in a
+  // fraction of the bytes.
+  const numstat = execSync(`git diff --numstat ${baseBranch}...HEAD`, { encoding: 'utf8' });
+  const addedLines = numstat
+    .split('\n')
+    .filter(Boolean)
+    .reduce((sum, line) => {
+      const added = parseInt(line.split('\t')[0], 10);
+      return sum + (Number.isNaN(added) ? 0 : added);
+    }, 0);
 
   if (addedLines < 5) {
     console.log("Change is trivial (< 5 lines). Governance check requires substantive change.");

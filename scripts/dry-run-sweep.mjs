@@ -6,7 +6,7 @@ import { existsSync, readdirSync, mkdirSync, writeFileSync, unlinkSync } from "n
 import { join } from "node:path";
 import { detectStack, detectProtected, detectInstructions, detectHotFiles } from "./lib/repo-detect.mjs";
 import { deriveSignals, scoreProposals } from "./score-proposals.mjs";
-import { auditCoverage, auditCoherence, MAX_CONTROLS_PER_TAB } from "./lib/control-panel-audit.mjs";
+import { auditCoverage, auditCoherence } from "./lib/control-panel-audit.mjs";
 
 const args = process.argv.slice(2);
 const target = args[0] || ".";

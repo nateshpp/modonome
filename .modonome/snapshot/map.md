@@ -2,8 +2,8 @@
 
 Modonome snapshot. Read this before reading the repo. Tier 0 (signature.json) is the fingerprint: if merkle_root matches your last read, nothing changed. Tier 1 (map.json / map.md) lists modules, public API signatures, import edges, and attention ranking. Cite anchors (F: for files, S: for symbols); each resolves to a path and line so you can act without re-reading the whole repo.
 
-Merkle root: sha256:d3e673a4b8d10ce4077494ec7369cb9a362da59fe51fbdf66f3701903b453ac0
-Files: 760  Bytes: 2408487  Map tokens: 85626/120000
+Merkle root: sha256:ffb4951a211431ed234636ba846e0eb8333fb6688c102bfd3cfeb0a5d24d0f2d
+Files: 760  Bytes: 2408922  Map tokens: 85615/120000
 
 ## Modules
 
@@ -577,14 +577,14 @@ Files: 760  Bytes: 2408487  Map tokens: 85626/120000
 - S:f93b3b8c7c function buildEvidence `export function buildEvidence(root, generatedAt)` L94
 - S:43f1c85009 function renderMarkdown `export function renderMarkdown(evidence)` L107
 ### design-system/src/components/States/States.tsx [F:2f6c42c5ee]
-- S:c504685956 interface EmptyStateProps `export interface EmptyStateProps` L5
-- S:80e9a1f555 function EmptyState `export function EmptyState({ title, message, icon = "queue", action }: EmptyStateProps)` L21 : Calm, muted placeholder for a screen or panel that has no content yet. Use for * empty queues, empty search results, or a fresh workspace before any work items * exist. Centered and low-emphasis so it
-- S:baacff5701 interface LoadingStateProps `export interface LoadingStateProps` L34
-- S:0a9b63cb4b function LoadingState `export function LoadingState({ label = "Loading" }: LoadingStateProps)` L45 : Centered spinner with a label, used while a screen or panel is fetching data. * The spinner is a decorative rotating ring; the label carries the accessible * status via `role="status"` so assistive te
-- S:9382da6a24 interface ErrorStateProps `export interface ErrorStateProps` L54
-- S:78e9af551d function ErrorState `export function ErrorState({ title = "Something went wrong", message, action }: ErrorStateProps)` L69 : Danger-toned placeholder for a screen or panel that failed to load. Pairs the * danger color with an alert icon and text so the failure is never color-only. * Use `role="alert"` semantics are carried 
-- S:79676d74df interface PermissionDeniedStateProps `export interface PermissionDeniedStateProps` L82
-- S:3800b0c645 function PermissionDeniedState `export function PermissionDeniedState(` L96 : Owner-toned placeholder shown when the current actor lacks the role needed to * view or act on a screen. Pairs the owner color with a lock icon and text so the * restriction is never color-only.
+- S:c504685956 interface EmptyStateProps `export interface EmptyStateProps` L4
+- S:80e9a1f555 function EmptyState `export function EmptyState({ title, message, icon = "queue", action }: EmptyStateProps)` L20 : Calm, muted placeholder for a screen or panel that has no content yet. Use for * empty queues, empty search results, or a fresh workspace before any work items * exist. Centered and low-emphasis so it
+- S:baacff5701 interface LoadingStateProps `export interface LoadingStateProps` L33
+- S:0a9b63cb4b function LoadingState `export function LoadingState({ label = "Loading" }: LoadingStateProps)` L44 : Centered spinner with a label, used while a screen or panel is fetching data. * The spinner is a decorative rotating ring; the label carries the accessible * status via `role="status"` so assistive te
+- S:9382da6a24 interface ErrorStateProps `export interface ErrorStateProps` L53
+- S:78e9af551d function ErrorState `export function ErrorState({ title = "Something went wrong", message, action }: ErrorStateProps)` L68 : Danger-toned placeholder for a screen or panel that failed to load. Pairs the * danger color with an alert icon and text so the failure is never color-only. * Use `role="alert"` semantics are carried 
+- S:79676d74df interface PermissionDeniedStateProps `export interface PermissionDeniedStateProps` L81
+- S:3800b0c645 function PermissionDeniedState `export function PermissionDeniedState(` L95 : Owner-toned placeholder shown when the current actor lacks the role needed to * view or act on a screen. Pairs the owner color with a lock icon and text so the * restriction is never color-only.
 ### design-system/src/components/StatusPill/StatusPill.tsx [F:2fc610bd94]
 - S:fc6f0e771f type StatusPillTone `export type StatusPillTone = "neutral" | "ok" | "info" | "attention" | "blocked";` L5
 - S:0518e5f603 type StatusPillSize `export type StatusPillSize = "sm" | "md";` L6
@@ -1425,7 +1425,6 @@ Files: 760  Bytes: 2408487  Map tokens: 85626/120000
 - tests/snapshot-golden.test.mjs -> scripts/lib/lang-adapters/tree-sitter.mjs
 - scripts/lib/merkle.mjs -> scripts/lib/canonical-json.mjs
 - scripts/check-control-panel-coherence.mjs -> scripts/lib/control-panel-audit.mjs
-- design-system/src/components/States/States.tsx -> design-system/src/lib/cx.ts
 - design-system/src/components/States/States.tsx -> design-system/src/components/Icon/Icon.tsx
 - design-system/src/components/StatusPill/StatusPill.tsx -> design-system/src/lib/cx.ts
 - design-system/src/components/StatusPill/StatusPill.tsx -> design-system/src/components/Icon/Icon.tsx
@@ -1748,8 +1747,8 @@ Files: 760  Bytes: 2408487  Map tokens: 85626/120000
 
 ## Attention (centrality + pagerank)
 
-1. design-system/src/lib/cx.ts centrality=33 pagerank=0.039284
-2. design-system/src/components/Icon/Icon.tsx centrality=23 pagerank=0.024145
+1. design-system/src/lib/cx.ts centrality=32 pagerank=0.038482
+2. design-system/src/components/Icon/Icon.tsx centrality=23 pagerank=0.024947
 3. design-system/src/index.ts centrality=48 pagerank=0.001012
 4. design-system/src/components/HelpHint/HelpHint.tsx centrality=12 pagerank=0.00849
 5. apps/control-panel/src/state/types.ts centrality=12 pagerank=0.008481
@@ -1781,16 +1780,16 @@ Files: 760  Bytes: 2408487  Map tokens: 85626/120000
 31. design-system/src/components/LeaseTable/LeaseTable.tsx centrality=6 pagerank=0.001887
 32. scripts/agent/providers.mjs centrality=3 pagerank=0.004032
 33. apps/control-panel/src/state/adapter.ts centrality=6 pagerank=0.001134
-34. design-system/src/components/ActivationLadder/ActivationLadder.tsx centrality=5 pagerank=0.001887
-35. design-system/src/components/CostPanel/CostPanel.tsx centrality=5 pagerank=0.001887
-36. design-system/src/components/GatePanel/GatePanel.tsx centrality=5 pagerank=0.001887
-37. design-system/src/components/ProtectedPathRow/ProtectedPathRow.tsx centrality=5 pagerank=0.001887
-38. design-system/src/components/Modal/Modal.tsx centrality=4 pagerank=0.002689
+34. design-system/src/components/Modal/Modal.tsx centrality=4 pagerank=0.002689
+35. design-system/src/components/ActivationLadder/ActivationLadder.tsx centrality=5 pagerank=0.001887
+36. design-system/src/components/CostPanel/CostPanel.tsx centrality=5 pagerank=0.001887
+37. design-system/src/components/GatePanel/GatePanel.tsx centrality=5 pagerank=0.001887
+38. design-system/src/components/ProtectedPathRow/ProtectedPathRow.tsx centrality=5 pagerank=0.001887
 39. design-system/src/components/TierBadge/TierBadge.tsx centrality=4 pagerank=0.002657
 40. examples/demo-app/src/index.js centrality=6 pagerank=0.001012
 41. design-system/src/components/Table/Table.tsx centrality=4 pagerank=0.002609
-42. design-system/src/components/IdentityChip/IdentityChip.tsx centrality=4 pagerank=0.002475
-43. apps/control-panel/server/learningsFormat.mjs centrality=2 pagerank=0.004084
+42. apps/control-panel/server/learningsFormat.mjs centrality=2 pagerank=0.004084
+43. design-system/src/components/IdentityChip/IdentityChip.tsx centrality=4 pagerank=0.002475
 44. scripts/lib/control-panel-audit.mjs centrality=3 pagerank=0.00314
 45. design-system/src/components/ArmingStateBadge/ArmingStateBadge.tsx centrality=4 pagerank=0.001887
 46. design-system/src/components/Checkbox/Checkbox.tsx centrality=4 pagerank=0.001887
