@@ -2,8 +2,8 @@
 
 Modonome snapshot. Read this before reading the repo. Tier 0 (signature.json) is the fingerprint: if merkle_root matches your last read, nothing changed. Tier 1 (map.json / map.md) lists modules, public API signatures, import edges, and attention ranking. Cite anchors (F: for files, S: for symbols); each resolves to a path and line so you can act without re-reading the whole repo.
 
-Merkle root: sha256:a37ffe5516e6466e13f59f5c6311936a51f7d2f09535f26564fc26aeaf59e9dc
-Files: 766  Bytes: 2444075  Map tokens: 87117/120000
+Merkle root: sha256:66a3df3de063a17d79d2603251f50da5b139d51e203e5860ee9768f8fea1e204
+Files: 766  Bytes: 2445663  Map tokens: 87117/120000
 
 ## Modules
 
@@ -967,9 +967,9 @@ Files: 766  Bytes: 2444075  Map tokens: 87117/120000
 - S:183f710a08 function readCodeownersUsers `function readCodeownersUsers(rootDir)` L122
 - S:fe27a88258 function hasEligibleApproval `export function hasEligibleApproval(reviews, prAuthorLogin, codeownersUsers)` L145 : Given a PR's reviews (GitHub API shape: [{ user: { login }, state }]) and its author login, is there at least one APPROVED review from a CODEOWNERS-listed login that is not the author themselves? Self
 - S:890ccb5d6b function fetchPRReviews `async function fetchPRReviews(repoSlug, prNumber, token)` L164
-- S:9554538925 function readPRContext `function readPRContext()` L182 : Read the current PR's number, author login, and repo slug from GitHub Actions' standard environment (or from MODONOME_PR_* overrides, for tests and manual runs against a specific PR). Returns null whe
-- S:eb67f0edae function getFileAt `function getFileAt(ref, rootDir)` L204
-- S:e18ceff2c8 function main `async function main()` L215
+- S:9554538925 function readPRContext `function readPRContext()` L190 : Read the current PR's number, author login, and repo slug from GitHub Actions' standard environment (or from MODONOME_PR_* overrides, for tests and manual runs against a specific PR). Returns null whe
+- S:eb67f0edae function getFileAt `function getFileAt(ref, rootDir)` L213
+- S:e18ceff2c8 function main `async function main()` L224
 ### scripts/validate-config.mjs [F:932d33be00]
 - S:7c4655c6d7 function loadConfig `export function loadConfig(path)` L13
 - S:cfad347ef3 function safetyErrors `export function safetyErrors(cfg)` L27 : Safety rules beyond structural validation. These keep a config from claiming an armed posture without the controls that make arming safe. Note on arming levers: config values such as autonomy_enabled 

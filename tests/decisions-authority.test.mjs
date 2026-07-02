@@ -183,6 +183,34 @@ function runGateWithPRContext(dir, baseSha, { apiBase, reviews, prAuthor = "some
   });
 }
 
+test("CLI: a malformed PR number (not a bare integer) is treated as no PR context", async () => {
+  // GITHUB_EVENT_PATH is GitHub-Actions-written, but it's still file input, not
+  // a hardcoded value; a PR number that doesn't look like one must not flow
+  // into the reviews API URL.
+  const { dir, baseSha } = repoWithNewEntry();
+  const mock = await startMockReviewServer([{ user: { login: "owner1" }, state: "APPROVED" }]);
+  try {
+    const r = spawnSync("node", [SCRIPT, baseSha], {
+      cwd: dir,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        MODONOME_ROOT: dir,
+        GITHUB_REPOSITORY: "enumind/modonome",
+        GITHUB_TOKEN: "fake-token-for-test",
+        MODONOME_PR_NUMBER: "1/../reviews",
+        MODONOME_PR_AUTHOR: "some-agent",
+        MODONOME_GITHUB_API_BASE: mock.url,
+      },
+    });
+    assert.equal(r.status, 1, `expected rejection:\n${r.stdout}\n${r.stderr}`);
+    assert.match(r.stderr, /no PR context/);
+  } finally {
+    await mock.close();
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test("CLI: new Resolved entry with no PR context is rejected", async () => {
   const { dir, baseSha } = repoWithNewEntry();
   try {
@@ -237,7 +265,7 @@ test("CLI: new Resolved entry with no approving reviews is rejected", async () =
 });
 
 test("CLI: no new Resolved entries skips provenance entirely, even with no PR context", () => {
-  const { dir, baseSha } = repoWithNewEntry();
+  const { dir } = repoWithNewEntry();
   try {
     // Diff against HEAD itself: no new entries relative to "base" == HEAD.
     const r = spawnSync("node", [SCRIPT, "HEAD"], {

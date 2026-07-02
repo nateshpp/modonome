@@ -176,6 +176,14 @@ async function fetchPRReviews(repoSlug, prNumber, token) {
   return res.json();
 }
 
+// PR number must be a bare positive integer and repo slug must be exactly
+// "owner/repo": both flow straight into the fetch() URL path in
+// fetchPRReviews, so anything else in this shape is rejected here rather
+// than trusted, regardless of source (GITHUB_EVENT_PATH is a GitHub-Actions-
+// written file, but a file is still an input, not a hardcoded value).
+const PR_NUMBER_RE = /^[1-9]\d*$/;
+const REPO_SLUG_RE = /^[A-Za-z0-9._-]+\/[A-Za-z0-9._-]+$/;
+
 // Read the current PR's number, author login, and repo slug from GitHub Actions'
 // standard environment (or from MODONOME_PR_* overrides, for tests and manual
 // runs against a specific PR). Returns null when there is no PR context.
@@ -198,6 +206,7 @@ function readPRContext() {
   }
 
   if (!repoSlug || !token || !prNumber) return null;
+  if (!PR_NUMBER_RE.test(prNumber) || !REPO_SLUG_RE.test(repoSlug)) return null;
   return { repoSlug, token, prNumber, prAuthor };
 }
 
